@@ -1,0 +1,129 @@
+-- tables of schema faculty data
+
+-- faculty of the university
+CREATE TABLE faculty_data.faculty(
+  id INTEGER DEFAULT nextval('faculty_data.faculty_id_seq'::regclass) NOT NULL,
+  code INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  is_active BIT(1) NOT NULL,
+  is_deleted BIT(1) NOT NULL,
+  last_modified_by BIGINT NOT NULL,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  CONSTRAINT faculty_code_unique UNIQUE (code)
+);
+
+-- schools of the faculty
+CREATE TABLE faculty_data.schools(
+  id INTEGER DEFAULT nextval('faculty_data.school_id_seq'::regclass) NOT NULL,
+  code INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  faculty_id INTEGER NOT NULL,
+  is_active BIT(1) NOT NULL,
+  is_deleted BIT(1) NOT NULL,
+  last_modified_by BIGINT NOT NULL,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  CONSTRAINT schools_code_unique UNIQUE (code)
+);
+
+-- institutes of the faculty
+
+CREATE TABLE faculty_data.institutes(
+  id INTEGER DEFAULT nextval('faculty_data.institute_id_seq'::regclass) NOT NULL,
+  code INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  faculty_id INTEGER NOT NULL,
+  is_active BIT(1) NOT NULL,
+  is_deleted BIT(1) NOT NULL,
+  last_modified_by BIGINT NOT NULL,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  CONSTRAINT institutes_code_unique UNIQUE (code)
+);
+
+-- departaments of schools or institutes of the faculty
+
+CREATE TABLE faculty_data.departaments(
+  id INTEGER DEFAULT nextval('faculty_data.departament_id_seq'::regclass) NOT NULL,
+  code INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  school_id INTEGER,
+  institute_id INTEGER,
+  is_active BIT(1) NOT NULL,
+  is_deleted BIT(1) NOT NULL,
+  last_modified_by BIGINT NOT NULL,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  CONSTRAINT departaments_code_unique UNIQUE (code)
+);
+
+-- chairs of departaments of the schools or institutes of the faculty
+
+CREATE TABLE faculty_data.chairs(
+  id INTEGER DEFAULT nextval('faculty_data.chairs_id_seq'::regclass) NOT NULL,
+  code INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  departament_id INTEGER NOT NULL,
+  is_active BIT(1) NOT NULL,
+  is_deleted BIT(1) NOT NULL,
+  last_modified_by BIGINT NOT NULL,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  CONSTRAINT chairs_code_unique UNIQUE (code)
+);
+
+-- cordinations of the faculty
+
+CREATE TABLE faculty_data.coordinations(
+  id INTEGER DEFAULT nextval('faculty_data.coordination_id_seq'::regclass) NOT NULL,
+  code INTEGER NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  faculty_id INTEGER NOT NULL,
+  is_active BIT(1) NOT NULL,
+  is_deleted BIT(1) NOT NULL,
+  last_modified_by BIGINT NOT NULL,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  CONSTRAINT coordinations_code_unique UNIQUE (code)
+);
+
+-- ADD pk in the tables
+
+ALTER TABLE ONLY faculty_data.faculty
+  ADD CONSTRAINT faculty_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY faculty_data.schools
+  ADD CONSTRAINT school_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY faculty_data.institutes
+  ADD CONSTRAINT institute_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY faculty_data.departaments
+  ADD CONSTRAINT departament_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY faculty_data.chairs
+  ADD CONSTRAINT chair_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY faculty_data.coordinations
+  ADD CONSTRAINT coordination_id_pk PRIMARY KEY (id);
+
+-- ADD fk in the tables
+
+ALTER TABLE ONLY faculty_data.schools
+  ADD CONSTRAINT school_faculty_id_fk FOREIGN KEY (faculty_id) 
+  REFERENCES faculty_data.faculty(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY faculty_data.institutes
+  ADD CONSTRAINT institute_faculty_id_fk FOREIGN KEY (faculty_id) 
+  REFERENCES faculty_data.faculty(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY faculty_data.coordinations
+  ADD CONSTRAINT coordinations_faculty_id_fk FOREIGN KEY (faculty_id) 
+  REFERENCES faculty_data.faculty(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY faculty_data.departaments
+  ADD CONSTRAINT departaments_school_id_fk FOREIGN KEY (school_id) 
+  REFERENCES faculty_data.schools(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY faculty_data.departaments
+  ADD CONSTRAINT departaments_institute_id_fk FOREIGN KEY (institute_id) 
+  REFERENCES faculty_data.institutes(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+  ALTER TABLE ONLY faculty_data.chairs
+  ADD CONSTRAINT chairs_departament_id_fk FOREIGN KEY (departament_id) 
+  REFERENCES faculty_data.departaments(id) ON UPDATE CASCADE ON DELETE CASCADE;
