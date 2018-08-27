@@ -82,6 +82,95 @@ CREATE TABLE faculty_data.coordinations(
   CONSTRAINT coordinations_code_unique UNIQUE (code)
 );
 
+-- tables of logs
+
+CREATE TABLE faculty_data.faculty_history(
+  id BIGINT,
+  code INTEGER ,
+  name VARCHAR(100) ,
+  is_active BIT(1) ,
+  is_deleted BIT(1) ,
+  last_modified_by BIGINT ,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+  change_type character varying(50),
+  change_description character varying(500)
+);
+
+-- schools of the faculty
+CREATE TABLE faculty_data.schools_history(
+  id BIGINT,
+  code INTEGER ,
+  name VARCHAR(100) ,
+  faculty_id INTEGER ,
+  is_active BIT(1) ,
+  is_deleted BIT(1) ,
+  last_modified_by BIGINT ,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+  change_type character varying(50),
+  change_description character varying(500)
+);
+
+-- institutes of the faculty
+
+CREATE TABLE faculty_data.institutes_history(
+  id BIGINT,
+  code INTEGER ,
+  name VARCHAR(100) ,
+  faculty_id INTEGER ,
+  is_active BIT(1) ,
+  is_deleted BIT(1) ,
+  last_modified_by BIGINT ,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+  change_type character varying(50),
+  change_description character varying(500)
+);
+
+-- departaments of schools or institutes of the faculty
+
+CREATE TABLE faculty_data.departaments_history(
+  id BIGINT,
+  code INTEGER ,
+  name VARCHAR(100) ,
+  school_id INTEGER,
+  institute_id INTEGER,
+  is_active BIT(1) ,
+  is_deleted BIT(1) ,
+  last_modified_by BIGINT ,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+  change_type character varying(50),
+  change_description character varying(500)
+);
+
+-- chairs of departaments of the schools or institutes of the faculty
+
+CREATE TABLE faculty_data.chairs_history(
+  id BIGINT,
+  code INTEGER ,
+  name VARCHAR(100) ,
+  departament_id INTEGER ,
+  is_active BIT(1) ,
+  is_deleted BIT(1) ,
+  last_modified_by BIGINT ,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+  change_type character varying(50),
+  change_description character varying(500)
+);
+
+-- cordinations of the faculty
+
+CREATE TABLE faculty_data.coordinations_history(
+  id BIGINT,
+  code INTEGER ,
+  name VARCHAR(100) ,
+  faculty_id INTEGER ,
+  is_active BIT(1) ,
+  is_deleted BIT(1) ,
+  last_modified_by BIGINT ,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+  change_type character varying(50),
+  change_description character varying(500)
+);
+
 -- ADD pk in the tables
 
 ALTER TABLE ONLY faculty_data.faculty

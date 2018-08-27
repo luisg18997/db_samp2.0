@@ -14,6 +14,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    local_school_id BIGINT;
   BEGIN
     IF EXISTS
     ( 
@@ -29,7 +30,8 @@ AS $udf$
     THEN
       RETURN local_is_successful;
     ELSE
-      INSERT INTO faculty_data.schools(
+      INSERT INTO faculty_data.schools
+      (
         code,
         name,
         faculty_id,
@@ -47,10 +49,69 @@ AS $udf$
         '0',
         param_user_id,
         CLOCK_TIMESTAMP()
-      );
+      )
+      RETURNING id
+      INTO local_school_id;
+
+    PERFORM faculty_data.schools_insert_history(
+      param_school_id := local_school_id,
+      param_change_type := 'FIRST INSERT',
+      param_change_description := 'FIRST INSERT'
+    );
+
     local_is_successful :='1';
     RETURN local_is_successful;
     END IF;
+  END;
+$udf$;
+
+CREATE OR REPLACE FUNCTION faculty_data.schools_insert_history(
+  param_school_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+    INSERT INTO faculty_data.schools_history
+    (
+      id,
+      code,
+      name,
+      faculty_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      change_type,
+      change_description
+    )
+    SELECT
+      id,
+      code,
+      name,
+      faculty_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      param_change_type,
+      param_change_description
+    FROM 
+      faculty_data.schools sch
+    WHERE 
+      sch.id = param_school_id
+    ORDER BY
+      sch.last_modified_date
+    DESC
+    LIMIT 1;
+
+    local_is_successful :='1';
+    RETURN local_is_successful;
   END;
 $udf$;
 
@@ -156,6 +217,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.schools_insert_history(
+      param_school_id := param_id,
+      param_change_type := 'UPDATE all_columns',
+      param_change_description := 'UPDATE value of all columns'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -181,6 +249,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.schools_insert_history(
+      param_school_id := param_id,
+      param_change_type := 'UPDATE is_active',
+      param_change_description := 'UPDATE value of is_active'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -206,6 +281,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.schools_insert_history(
+      param_school_id := param_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -227,6 +309,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    local_institute_id BIGINT;
   BEGIN
     IF EXISTS
     (
@@ -259,15 +342,72 @@ AS $udf$
         '0',
         param_user_id,
         CLOCK_TIMESTAMP()
-      );
+      )RETURNING id
+      INTO local_institute_id;
+
+    PERFORM faculty_data.institute_insert_history(
+      param_institute_id := local_institute_id,
+      param_change_type := 'FIRST INSERT',
+      param_change_description := 'FIRST INSERT'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
     END IF;
   END;
 $udf$;
 
--- function get all the institutes
+-- function insert history
+CREATE OR REPLACE FUNCTION faculty_data.institute_insert_history(
+  param_institute_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+    INSERT INTO faculty_data.institutes_history
+    (
+      id,
+      code,
+      name,
+      faculty_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      change_type,
+      change_description
+    )
+    SELECT
+      id,
+      code,
+      name,
+      faculty_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      param_change_type,
+      param_change_description
+    FROM 
+      faculty_data.institutes inst
+    WHERE 
+      inst.id = param_institute_id
+    ORDER BY
+      inst.last_modified_date
+    DESC
+    LIMIT 1;
 
+    local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- function get all in list
 CREATE OR REPLACE FUNCTION faculty_data.get_all_institutes_list(
   param_faculty_id INTEGER
 )
@@ -367,6 +507,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.institute_insert_history(
+      param_institute_id := param_id,
+      param_change_type := 'UPDATE all_columns',
+      param_change_description := 'UPDATE value of all columns'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -392,6 +539,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.institute_insert_history(
+      param_institute_id := param_id,
+      param_change_type := 'UPDATE is_active',
+      param_change_description := 'UPDATE value of is_active'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -417,6 +571,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.institute_insert_history(
+      param_institute_id := param_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -438,6 +599,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    local_departament_id BIGINT;
   BEGIN
     IF EXISTS
     (
@@ -472,16 +634,22 @@ AS $udf$
         '0',
         param_user_id,
         CLOCK_TIMESTAMP()
-      );
+      )RETURNING id
+      INTO local_departament_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := local_departament_id,
+      param_change_type := 'FIRST INSERT',
+      param_change_description := 'FIRST INSERT'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
     END IF;
   END;
 $udf$;
 
-
 -- function of departament insert of the institute
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_institute_insert(
   param_code INTEGER,
   param_name VARCHAR,
@@ -494,6 +662,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    local_departament_id BIGINT;
   BEGIN
     IF EXISTS
     (
@@ -528,15 +697,75 @@ AS $udf$
         '0',
         param_user_id,
         CLOCK_TIMESTAMP()
-      );
+      )RETURNING id
+      INTO local_departament_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := local_departament_id,
+      param_change_type := 'FIRST INSERT',
+      param_change_description := 'FIRST INSERT'
+    );
+
     local_is_successful :='1';
     RETURN local_is_successful;
     END IF;
   END;
 $udf$;
 
--- function of get all the departaments of the school
+-- function insert history 
+CREATE OR REPLACE FUNCTION faculty_data.departament_insert_history(
+  param_departament_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+    INSERT INTO faculty_data.departaments_history
+    (
+      id,
+      code,
+      name,
+      school_id,
+      institute_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      change_type,
+      change_description
+    )
+    SELECT
+      id,
+      code,
+      name,
+      school_id,
+      institute_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      param_change_type,
+      param_change_description
+    FROM 
+      faculty_data.departaments dept
+    WHERE 
+      dept.id = param_departament_id
+    ORDER BY
+      dept.last_modified_date
+    DESC
+    LIMIT 1;
 
+    local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- function of get all the departaments of the school
 CREATE OR REPLACE FUNCTION faculty_data.get_all_departaments_school_list(
   param_school_id INTEGER
 )
@@ -709,6 +938,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := param_id,
+      param_change_type := 'UPDATE all_columns',
+      param_change_description := 'UPDATE value of all columns'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -737,6 +973,13 @@ AS $udf$
       id = param_id
     AND 
       school_id = param_school_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := param_id,
+      param_change_type := 'UPDATE is_active',
+      param_change_description := 'UPDATE value of is_active'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -765,12 +1008,19 @@ AS $udf$
       id = param_id 
     AND 
       school_id = param_school_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := param_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
 
--- function departament of school update all columns
+-- function departament of institutes update all columns
 
 CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_all_columns(
   param_id INTEGER,
@@ -798,6 +1048,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := param_id,
+      param_change_type := 'UPDATE all_columns',
+      param_change_description := 'UPDATE value of all columns'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -826,6 +1083,13 @@ AS $udf$
       id = param_id
     AND
       institute_id = param_institute_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := param_id,
+      param_change_type := 'UPDATE is_active',
+      param_change_description := 'UPDATE value of is_active'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -854,6 +1118,13 @@ AS $udf$
       id = param_id
     AND
       institute_id = param_institute_id;
+
+    PERFORM faculty_data.departament_insert_history(
+      param_departament_id := param_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -875,6 +1146,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    local_coordination_id BIGINT;
   BEGIN
     IF EXISTS
     ( 
@@ -908,10 +1180,68 @@ AS $udf$
         '0',
         param_user_id,
         CLOCK_TIMESTAMP()
+      )RETURNING id
+      INTO local_coordination_id;
+
+      PERFORM faculty_data.coordination_insert_history(
+        param_coordination_id := local_coordination_id,
+        param_change_type := 'FIRST INSERT',
+        param_change_description := 'FIRST INSERT' 
       );
+
     local_is_successful :='1';
     RETURN local_is_successful;
     END IF;
+  END;
+$udf$;
+
+-- function insert history
+CREATE OR REPLACE FUNCTION faculty_data.coordination_insert_history(
+  param_coordination_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+    INSERT INTO faculty_data.coordinations_history
+    (
+      id,
+      code,
+      name,
+      departament_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      change_type,
+      change_description
+    )
+    SELECT
+      id,
+      code,
+      name,
+      departament_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      param_change_type,
+      param_change_description
+    FROM 
+      faculty_data.coordinations coord
+    WHERE 
+      coord.id = param_coordination_id
+    ORDER BY
+      coord.last_modified_date
+    DESC
+    LIMIT 1;
+
+    local_is_successful :='1';
+    RETURN local_is_successful;
   END;
 $udf$;
 
@@ -991,7 +1321,7 @@ $BODY$;
 
 --function update coordnation all columns
 
-CREATE OR REPLACE FUNCTION faculty_data.school_update_all_columns(
+CREATE OR REPLACE FUNCTION faculty_data.coordination_update_all_columns(
   param_id INTEGER,
   param_code INTEGER,
   param_name VARCHAR,
@@ -1017,6 +1347,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.coordination_insert_history(
+      param_coordination_id := param_id,
+      param_change_type := 'UPDATE all_columns',
+      param_change_description := 'UPDATE value of all columns'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1042,6 +1379,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.coordination_insert_history(
+      param_coordination_id := param_id,
+      param_change_type := 'UPDATE is_active',
+      param_change_description := 'UPDATE value of is_active'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1067,6 +1411,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.coordination_insert_history(
+      param_coordination_id := param_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1088,6 +1439,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    local_chair_id BIGINT;
   BEGIN
     IF EXISTS
     ( 
@@ -1120,15 +1472,73 @@ AS $udf$
         '0',
         param_user_id,
         CLOCK_TIMESTAMP()
+      )
+      RETURNING id
+      INTO local_chair_id;
+
+      PERFORM faculty_data.chair_insert_history(
+        param_chair_id := local_chair_id,
+        param_change_type := 'FIRST INSERT',
+        param_change_description := 'FIRST INSERT'
       );
+
     local_is_successful :='1';
     RETURN local_is_successful;
     END IF;
   END;
 $udf$;
 
--- function get all the chairs
+-- function insert history
+CREATE OR REPLACE FUNCTION faculty_data.chair_insert_history(
+  param_chair_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+    INSERT INTO faculty_data.chairs_history
+    (
+      id,
+      code,
+      name,
+      departament_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      change_type,
+      change_description
+    )
+    SELECT
+      id,
+      code,
+      name,
+      departament_id,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      param_change_type,
+      param_change_description
+    FROM 
+      faculty_data.chairs cha
+    WHERE 
+      cha.id = param_chair_id
+    ORDER BY
+      cha.last_modified_date
+    DESC
+    LIMIT 1;
 
+    local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- function get all the chairs
 CREATE OR REPLACE FUNCTION faculty_data.get_all_chairs_list(
   param_departament_id INTEGER
 )
@@ -1226,6 +1636,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.chair_insert_history(
+      param_chair_id := param_id,
+      param_change_type := 'UPDATE all_columns',
+      param_change_description := 'UPDATE value of all columns'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1254,6 +1671,13 @@ AS $udf$
       id = param_id
     AND
       departament_id = param_departament_id;
+
+    PERFORM faculty_data.chair_insert_history(
+      param_chair_id := param_id,
+      param_change_type := 'UPDATE is_active',
+      param_change_description := 'UPDATE value of is_active'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1282,6 +1706,13 @@ AS $udf$
       id = param_id
     AND
       departament_id = param_departament_id;
+
+    PERFORM faculty_data.chair_insert_history(
+      param_chair_id := param_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1302,6 +1733,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    local_faculty_id BIGINT;
   BEGIN
     IF EXISTS
     ( 
@@ -1332,10 +1764,67 @@ AS $udf$
         '0',
         param_user_id,
         CLOCK_TIMESTAMP()
+      )
+      RETURNING id
+      INTO local_faculty_id;
+
+      PERFORM faculty_data.faculty_insert_history(
+        param_faculty_id := local_faculty_id,
+        param_change_type := 'FIRST INSERT',
+        param_change_description := 'FIRST INSERT'  
       );
+
     local_is_successful :='1';
     RETURN local_is_successful;
     END IF;
+  END;
+$udf$;
+
+-- function insert history
+CREATE OR REPLACE FUNCTION faculty_data.faculty_insert_history(
+  param_faculty_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+    INSERT INTO faculty_data.faculty_history
+    (
+      id,
+      code,
+      name,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      change_type,
+      change_description
+    )
+    SELECT
+      id,
+      code,
+      name,
+      is_active,
+      is_deleted,
+      last_modified_by,
+      last_modified_date,
+      param_change_type,
+      param_change_description
+    FROM 
+      faculty_data.faculty fac
+    WHERE 
+      fac.id = param_faculty_id
+    ORDER BY
+      fac.last_modified_date
+    DESC
+    LIMIT 1;
+
+    local_is_successful :='1';
+    RETURN local_is_successful;
   END;
 $udf$;
 
@@ -1415,6 +1904,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.faculty_insert_history(
+      param_faculty_id := param_id,
+      param_change_type := 'UPDATE all_columns',
+      param_change_description := 'UPDATE value of all columns'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1440,6 +1936,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.faculty_insert_history(
+      param_faculty_id := param_id,
+      param_change_type := 'UPDATE is_active',
+      param_change_description := 'UPDATE value of is_active'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;
@@ -1465,6 +1968,13 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE 
       id = param_id;
+
+    PERFORM faculty_data.faculty_insert_history(
+      param_faculty_id := param_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted'
+    );
+
     local_is_successful := '1';
     RETURN local_is_successful;
   END;

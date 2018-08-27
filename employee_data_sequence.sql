@@ -7,6 +7,27 @@ CREATE SEQUENCE employee_data.employee_id_seq
     NO MAXVALUE
     CACHE 1;
 
+CREATE SEQUENCE employee_data.documentation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    MINVALUE 0
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE employee_data.nacionality_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    MINVALUE 0
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE SEQUENCE employee_data.gender_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    MINVALUE 0
+    NO MAXVALUE
+    CACHE 1;
+
 CREATE SEQUENCE employee_data.estates_id_seq
     START WITH 1
     INCREMENT BY 1
