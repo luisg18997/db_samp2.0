@@ -1561,6 +1561,8 @@ AS $BODY$
       dept.is_active = '1'
     AND
       dept.is_deleted = '0'
+    AND
+      dept.id = cha.departament_id
       WHERE
         cha.departament_id = param_departament_id
       AND
