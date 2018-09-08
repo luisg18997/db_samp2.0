@@ -536,7 +536,7 @@ AS $udf$
 		INTO local_parish_id;
 
 		PERFORM employee_data.parish_insert_history(
-      		param_municipality_id := local_parish_id,
+      		param_parish_id := local_parish_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
@@ -691,7 +691,7 @@ AS $udf$
       		municipality_id = param_municipality_id;
 
       	PERFORM employee_data.parish_insert_history(
-      		param_municipality_id := param_id,
+      		param_parish_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
@@ -725,7 +725,7 @@ AS $udf$
       		municipality_id = param_municipality_id;
 
       	PERFORM employee_data.parish_insert_history(
-      		param_municipality_id := param_id,
+      		param_parish_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
@@ -759,7 +759,7 @@ AS $udf$
       		municipality_id = param_municipality_id;
 
       	PERFORM employee_data.parish_insert_history(
-      		param_municipality_id := param_id,
+      		param_parish_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
@@ -782,6 +782,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		local_ingress_id BIGINT;
 	BEGIN
 		INSERT INTO employee_data.ingress(
 			description,
@@ -796,10 +797,65 @@ AS $udf$
 			'0',
 			param_user_id,
 			CLOCK_TIMESTAMP()
-		);
+		)
+		RETURNING id
+		INTO local_ingress_id;
+
+		PERFORM employee_data.ingress_insert_history(
+      		param_ingress_id := local_ingress_id,
+      		param_change_type := 'FIRST INSERT',
+      		param_change_description := 'FIRST INSERT'
+      	);
+
 		local_is_successful :='1';
     	RETURN local_is_successful;
     END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.ingress_insert_history(
+  param_ingress_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.ingress_history
+  	(
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.ingress ing
+	WHERE
+		ing.id = param_ingress_id
+	ORDER BY
+		ing.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
 $udf$;
 
 -- funciton of list
@@ -871,6 +927,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.ingress_insert_history(
+      		param_ingress_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -895,6 +958,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.ingress_insert_history(
+      		param_ingress_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -919,6 +989,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.ingress_insert_history(
+      		param_ingress_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -937,6 +1014,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		local_income_type_id BIGINT;
 	BEGIN
 		INSERT INTO employee_data.income_types(
 			description,
@@ -951,10 +1029,65 @@ AS $udf$
 			'0',
 			param_user_id,
 			CLOCK_TIMESTAMP()
+		)
+		RETURNING id
+		INTO local_income_type_id;
+
+		PERFORM employee_data.income_type_insert_history(
+			param_income_type_id := local_income_type_id,
+  			param_change_type := 'FIRST INSERT',
+      		param_change_description := 'FIRST INSERT'
 		);
-		local_is_successful :='1';
+
+		local_is_successful := '1';
     	RETURN local_is_successful;
     END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.income_type_insert_history(
+  param_income_type_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.income_types_history
+  	(
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.income_types inc
+	WHERE
+		inc.id = param_income_type_id
+	ORDER BY
+		inc.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
 $udf$;
 
 -- funciton of list
@@ -1026,6 +1159,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.income_type_insert_history(
+      		param_income_type_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1050,6 +1190,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.income_type_insert_history(
+      		param_income_type_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1074,6 +1221,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.income_type_insert_history(
+      		param_income_type_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1093,6 +1247,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		local_category_id BIGINT;
 	BEGIN
 		IF EXISTS
 		(
@@ -1123,11 +1278,68 @@ AS $udf$
 				'0',
 				param_user_id,
 				CLOCK_TIMESTAMP()
-			);
+			)
+			RETURNING id
+			INTO local_category_id;
+
+			PERFORM employee_data.category_type_insert_history(
+      			param_category_id := local_category_id,
+      			param_change_type := 'FIRST INSERT',
+      			param_change_description := 'FIRST INSERT'
+      		);
+
 			local_is_successful := '1';
     		RETURN local_is_successful;
     	END IF;
   	END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.category_type_insert_history(
+  param_category_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.category_types_history
+  	(
+  		id,
+  		code,
+		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		code,
+		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.category_types cat
+	WHERE
+		cat.id = param_category_id
+	ORDER BY
+		cat.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
 $udf$;
 
 -- function get list
@@ -1141,6 +1353,7 @@ AS $BODY$
 	FROM (
 		SELECT
 			cat.id,
+			cat.code,
 			cat.description as category_type
 		FROM
 			employee_data.category_types cat
@@ -1164,6 +1377,7 @@ AS $BODY$
 	FROM (
 		SELECT
 			cat.id,
+			cat.code,
 			cat.description as category_type
 		FROM
 			employee_data.category_types cat
@@ -1199,6 +1413,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.category_type_insert_history(
+      		param_category_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1223,6 +1444,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.category_type_insert_history(
+      		param_category_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1247,6 +1475,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.category_type_insert_history(
+      		param_category_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1266,6 +1501,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		local_dedication_id BIGINT;
 	BEGIN
 		IF EXISTS
 		(
@@ -1296,24 +1532,82 @@ AS $udf$
 				'0',
 				param_user_id,
 				CLOCK_TIMESTAMP()
-			);
+			)
+			RETURNING id
+			INTO local_dedication_id;
+
+			PERFORM employee_data.dedication_type_insert_history(
+      			param_dedication_id := local_dedication_id,
+      			param_change_type := 'FIRST INSERT',
+      			param_change_description := 'FIRST INSERT'
+      		);
+
 			local_is_successful := '1';
     		RETURN local_is_successful;
     	END IF;
   	END;
 $udf$;
 
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.dedication_type_insert_history(
+  param_dedication_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.dedication_types_history
+  	(
+  		id,
+  		code,
+		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		code,
+		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.dedication_types ded
+	WHERE
+		ded.id = param_dedication_id
+	ORDER BY
+		ded.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
 -- function get list
 CREATE OR REPLACE FUNCTION employee_data.get_dedication_types_list()
 RETURNS SETOF json
 LANGUAGE 'sql'
-COST 100.0
+COST 100.0	
 VOLATILE ROWS 1000.0
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
 		SELECT
 			ded.id,
+			ded.code,
 			ded.description as dedication_type
 		FROM
 			employee_data.dedication_types ded
@@ -1337,6 +1631,7 @@ AS $BODY$
 	FROM (
 		SELECT
 			ded.id,
+			ded.code,
 			ded.description as dedication_type
 		FROM
 			employee_data.dedication_types ded
@@ -1372,6 +1667,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.dedication_type_insert_history(
+      		param_dedication_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1396,6 +1698,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.dedication_type_insert_history(
+      		param_dedication_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1420,6 +1729,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.dedication_type_insert_history(
+      		param_dedication_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+      		
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1439,6 +1755,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		local_execunting_unit_id BIGINT;
 	BEGIN
 		IF EXISTS
 		(
@@ -1469,11 +1786,68 @@ AS $udf$
 				'0',
 				param_user_id,
 				CLOCK_TIMESTAMP()
-			);
+			)
+			RETURNING id
+			INTO local_execunting_unit_id;
+
+			PERFORM employee_data.execunting_unit_insert_history(
+      			param_execunting_unit_id := local_execunting_unit_id,
+      			param_change_type := 'FIRST INSERT',
+      			param_change_description := 'FIRST INSERT'
+      		);
+
 			local_is_successful := '1';
     		RETURN local_is_successful;
     	END IF;
   	END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.execunting_unit_insert_history(
+  param_execunting_unit_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.execunting_unit_history
+  	(
+  		id,
+  		code,
+		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		code,
+		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.execunting_unit exec
+	WHERE
+		exec.id = param_execunting_unit_id
+	ORDER BY
+		exec.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
 $udf$;
 
 -- function get list
@@ -1487,6 +1861,7 @@ AS $BODY$
 	FROM (
 		SELECT
 			exec.id,
+			exec.code,
 			exec.description as execunting_unit
 		FROM
 			employee_data.execunting_unit exec
@@ -1510,6 +1885,7 @@ AS $BODY$
 	FROM (
 		SELECT
 			exec.id,
+			exec.code,
 			exec.description as execunting_unit
 		FROM
 			employee_data.execunting_unit exec
@@ -1545,6 +1921,13 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.execunting_unit_insert_history(
+      		param_execunting_unit_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1569,6 +1952,12 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.execunting_unit_insert_history(
+      		param_execunting_unit_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1593,6 +1982,12 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+
+      	PERFORM employee_data.execunting_unit_insert_history(
+      		param_execunting_unit_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
       	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
@@ -1613,6 +2008,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		local_salary_id BIGINT;
 	BEGIN
 		INSERT INTO employee_data.salaries(
 			category_type_id,
@@ -1631,8 +2027,67 @@ AS $udf$
 			'0',
 			param_user_id,
 			CLOCK_TIMESTAMP()
-		);
+		)
+		RETURNING id
+		INTO local_salary_id;
+
+		PERFORM employee_data.salary_insert_history(
+      		param_salary_id := local_salary_id,
+      		param_change_type := 'FIRST INSERT',
+      		param_change_description := 'FIRST INSERT'
+      	);
+
 		local_is_successful :='1';
     	RETURN local_is_successful;
     END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.salary_insert_history(
+  param_salary_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.salaries_history
+  	(
+  		id,
+  		category_type_id,
+		dedication_type_id,
+		salary,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		category_type_id,
+		dedication_type_id,
+		salary,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.salaries sal
+	WHERE
+		sal.id = param_salary_id
+	ORDER BY
+		sal.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful :='1';
+    RETURN local_is_successful;
+  END;
 $udf$;

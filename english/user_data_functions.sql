@@ -29,6 +29,7 @@ AS $udf$
 				OR
 					usr.is_active = '0'
 				)
+            AND
 				usr.is_deleted = '0'
 		)
 		THEN
@@ -92,6 +93,7 @@ AS $udf$
 				OR
 					usr.is_active = '0'
 				)
+            AND
 				usr.is_deleted = '0'
 		)
 		THEN
