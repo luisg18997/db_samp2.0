@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION faculty_data.schools_insert(
   param_user_id BIGINT,
   param_faculty_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -17,10 +17,10 @@ AS $udf$
     local_school_id BIGINT;
   BEGIN
     IF EXISTS
-    ( 
+    (
       SELECT sch.code
       FROM faculty_data.schools sch
-      WHERE 
+      WHERE
         sch.code = param_code
       AND
         sch.is_active = '1'
@@ -69,7 +69,7 @@ CREATE OR REPLACE FUNCTION faculty_data.schools_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -100,9 +100,9 @@ AS $udf$
       last_modified_date,
       param_change_type,
       param_change_description
-    FROM 
+    FROM
       faculty_data.schools sch
-    WHERE 
+    WHERE
       sch.id = param_school_id
     ORDER BY
       sch.last_modified_date
@@ -119,10 +119,10 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.get_all_schools_list(
   param_faculty_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -132,11 +132,11 @@ AS $BODY$
       sch.name as school
     FROM
       faculty_data.schools sch
-    INNER JOIN 
+    INNER JOIN
       faculty_data.faculty fac
     ON
       fac.is_active = '1'
-    AND 
+    AND
       fac.is_deleted = '0'
     AND
       fac.id = sch.faculty_id
@@ -155,10 +155,10 @@ CREATE OR REPLACE FUNCTION faculty_data.get_school(
   param_id INTEGER,
   param_faculty_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -168,17 +168,17 @@ AS $BODY$
       sch.name as school
     FROM
       faculty_data.schools sch
-    INNER JOIN 
+    INNER JOIN
       faculty_data.faculty fac
     ON
       fac.is_active = '1'
-    AND 
+    AND
       fac.is_deleted = '0'
-    AND 
+    AND
       fac.id = sch.faculty_id
       WHERE
         sch.faculty_id = param_faculty_id
-      AND 
+      AND
         sch.id = param_id
       AND
         sch.is_active = '1'
@@ -199,7 +199,7 @@ CREATE OR REPLACE FUNCTION faculty_data.school_update_all_columns(
   param_is_active BIT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -214,7 +214,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
@@ -234,7 +234,7 @@ CREATE OR REPLACE FUNCTION faculty_data.school_update_is_active(
   param_user_id BIGINT,
   param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -245,7 +245,7 @@ AS $udf$
       is_active = param_is_active,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
@@ -254,7 +254,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_active'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -266,7 +266,7 @@ CREATE OR REPLACE FUNCTION faculty_data.school_update_is_deleted(
   param_user_id BIGINT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -277,7 +277,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
@@ -286,7 +286,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -294,14 +294,14 @@ $udf$;
 -- Functions of institute
 
 -- function of institute insert
-  
+
 CREATE OR REPLACE FUNCTION faculty_data.institute_insert(
   param_code INTEGER,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_faculty_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -311,7 +311,7 @@ AS $udf$
   BEGIN
     IF EXISTS
     (
-      SELECT code 
+      SELECT code
       FROM faculty_data.institutes inst
       WHERE
        inst.code = param_code
@@ -349,7 +349,7 @@ AS $udf$
       param_change_description := 'FIRST INSERT'
     );
 
-    
+
     RETURN local_is_successful;
     END IF;
   END;
@@ -360,7 +360,7 @@ CREATE OR REPLACE FUNCTION faculty_data.institute_insert_history(
   param_institute_id BIGINT,
   param_change_type VARCHAR,
   param_change_description VARCHAR
-)RETURNS BIT 
+)RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -391,9 +391,9 @@ AS $udf$
       last_modified_date,
       param_change_type,
       param_change_description
-    FROM 
+    FROM
       faculty_data.institutes inst
-    WHERE 
+    WHERE
       inst.id = param_institute_id
     ORDER BY
       inst.last_modified_date
@@ -409,10 +409,10 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.get_all_institutes_list(
   param_faculty_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -422,13 +422,13 @@ AS $BODY$
       inst.name as institute
     FROM
       faculty_data.institutes inst
-    INNER JOIN 
+    INNER JOIN
       faculty_data.faculty fac
     ON
       fac.is_active = '1'
-    AND 
+    AND
       fac.is_deleted = '0'
-    AND 
+    AND
       fac.id = inst.faculty_id
       WHERE
         inst.faculty_id = param_faculty_id
@@ -445,10 +445,10 @@ CREATE OR REPLACE FUNCTION faculty_data.get_institute(
   param_id INTEGER,
   param_faculty_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -458,13 +458,13 @@ AS $BODY$
       inst.name as institute
     FROM
       faculty_data.institutes inst
-    INNER JOIN 
+    INNER JOIN
       faculty_data.faculty fac
     ON
       fac.is_active = '1'
-    AND 
+    AND
       fac.is_deleted = '0'
-    AND 
+    AND
       fac.id = inst.faculty_id
       WHERE
         inst.faculty_id = param_faculty_id
@@ -488,7 +488,7 @@ CREATE OR REPLACE FUNCTION faculty_data.institute_update_all_columns(
   param_is_active BIT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -503,7 +503,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
@@ -512,7 +512,7 @@ AS $udf$
       param_change_description := 'UPDATE value of all columns'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -524,7 +524,7 @@ CREATE OR REPLACE FUNCTION faculty_data.institute_update_is_active(
   param_user_id BIGINT,
   param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -535,7 +535,7 @@ AS $udf$
       is_active = param_is_active,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
@@ -544,7 +544,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_active'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -556,7 +556,7 @@ CREATE OR REPLACE FUNCTION faculty_data.institute_update_is_deleted(
   param_user_id BIGINT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -567,7 +567,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
@@ -576,7 +576,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -591,7 +591,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_school_insert(
   param_user_id BIGINT,
   param_school_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -605,7 +605,7 @@ AS $udf$
       FROM faculty_data.departaments dept
       WHERE
         dept.code = param_code
-      AND 
+      AND
         dept.is_active = '1'
       AND
         dept.is_deleted = '0'
@@ -641,7 +641,7 @@ AS $udf$
       param_change_description := 'FIRST INSERT'
     );
 
-    
+
     RETURN local_is_successful;
     END IF;
   END;
@@ -654,7 +654,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_institute_insert(
   param_user_id BIGINT,
   param_institute_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -668,7 +668,7 @@ AS $udf$
       FROM faculty_data.departaments dept
       WHERE
         dept.code = param_code
-      AND 
+      AND
         dept.is_active = '1'
       AND
         dept.is_deleted = '0'
@@ -704,19 +704,19 @@ AS $udf$
       param_change_description := 'FIRST INSERT'
     );
 
-    
+
     RETURN local_is_successful;
     END IF;
   END;
 $udf$;
 
--- function insert history 
+-- function insert history
 CREATE OR REPLACE FUNCTION faculty_data.departament_insert_history(
   param_departament_id BIGINT,
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -749,9 +749,9 @@ AS $udf$
       last_modified_date,
       param_change_type,
       param_change_description
-    FROM 
+    FROM
       faculty_data.departaments dept
-    WHERE 
+    WHERE
       dept.id = param_departament_id
     ORDER BY
       dept.last_modified_date
@@ -767,10 +767,10 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.get_all_departaments_school_list(
   param_school_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -779,14 +779,14 @@ AS $BODY$
       dept.code,
       dept.name as departament
     FROM
-      faculty_data.departaments dept 
-    INNER JOIN 
-      faculty_data.schools sch 
-    ON 
+      faculty_data.departaments dept
+    INNER JOIN
+      faculty_data.schools sch
+    ON
       sch.is_active = '1'
     AND
       sch.is_deleted = '0'
-    AND 
+    AND
      sch.id = dept.school_id
       WHERE
         dept.school_id = param_school_id
@@ -802,10 +802,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION faculty_data.get_all_departaments_institute_list(
   param_institute_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -817,11 +817,11 @@ AS $BODY$
       faculty_data.departaments dept
     INNER JOIN
       faculty_data.institutes inst
-    ON 
+    ON
       inst.is_active = '1'
     AND
       inst.is_deleted = '0'
-    AND 
+    AND
      inst.id = dept.institute_id
       WHERE
         dept.institute_id = param_institute_id
@@ -838,10 +838,10 @@ CREATE OR REPLACE FUNCTION faculty_data.get_departament_school(
   param_id INTEGER,
   param_school_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -850,10 +850,10 @@ AS $BODY$
       dept.code,
       dept.name as departament
     FROM
-      faculty_data.departaments dept 
-    INNER JOIN 
-      faculty_data.schools sch 
-    ON 
+      faculty_data.departaments dept
+    INNER JOIN
+      faculty_data.schools sch
+    ON
       sch.is_active = '1'
     AND
       sch.is_deleted = '0'
@@ -874,12 +874,12 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION faculty_data.get_departament_institute(
   param_id INTEGER,
-  param_institute_id INTEGER  
+  param_institute_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -891,7 +891,7 @@ AS $BODY$
       faculty_data.departaments dept
     INNER JOIN
       faculty_data.institutes inst
-    ON 
+    ON
       inst.is_active = '1'
     AND
       inst.is_deleted = '0'
@@ -919,7 +919,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_school_update_all_columns(
   param_is_active BIT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -934,7 +934,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
@@ -943,7 +943,7 @@ AS $udf$
       param_change_description := 'UPDATE value of all columns'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -956,7 +956,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_school_update_is_active(
   param_user_id BIGINT,
   param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -967,9 +967,9 @@ AS $udf$
       is_active = param_is_active,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id
-    AND 
+    AND
       school_id = param_school_id;
 
     SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
@@ -978,7 +978,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_active'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -991,7 +991,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_school_update_is_deleted(
   param_user_id BIGINT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1002,9 +1002,9 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
-      id = param_id 
-    AND 
+    WHERE
+      id = param_id
+    AND
       school_id = param_school_id;
 
     SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
@@ -1013,7 +1013,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1029,7 +1029,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_all_columns
   param_is_active BIT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1044,7 +1044,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
@@ -1053,7 +1053,7 @@ AS $udf$
       param_change_description := 'UPDATE value of all columns'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1066,7 +1066,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_is_active(
   param_user_id BIGINT,
   param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1077,7 +1077,7 @@ AS $udf$
       is_active = param_is_active,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id
     AND
       institute_id = param_institute_id;
@@ -1088,7 +1088,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_active'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1101,7 +1101,7 @@ CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_is_deleted(
   param_user_id BIGINT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1112,7 +1112,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id
     AND
       institute_id = param_institute_id;
@@ -1123,7 +1123,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1138,7 +1138,7 @@ CREATE OR REPLACE FUNCTION faculty_data.coordination_insert(
   param_user_id BIGINT,
   param_faculty_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1147,10 +1147,10 @@ AS $udf$
     local_coordination_id BIGINT;
   BEGIN
     IF EXISTS
-    ( 
+    (
       SELECT coord.code
       FROM faculty_data.coordinations coord
-      WHERE 
+      WHERE
         coord.code = param_code
       AND
         coord.is_active = '1'
@@ -1184,10 +1184,10 @@ AS $udf$
       SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
         param_coordination_id := local_coordination_id,
         param_change_type := 'FIRST INSERT',
-        param_change_description := 'FIRST INSERT' 
+        param_change_description := 'FIRST INSERT'
       );
 
-    
+
     RETURN local_is_successful;
     END IF;
   END;
@@ -1198,7 +1198,7 @@ CREATE OR REPLACE FUNCTION faculty_data.coordination_insert_history(
   param_coordination_id BIGINT,
   param_change_type VARCHAR,
   param_change_description VARCHAR
-)RETURNS BIT 
+)RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1227,9 +1227,9 @@ AS $udf$
       last_modified_date,
       param_change_type,
       param_change_description
-    FROM 
+    FROM
       faculty_data.coordinations coord
-    WHERE 
+    WHERE
       coord.id = param_coordination_id
     ORDER BY
       coord.last_modified_date
@@ -1246,10 +1246,10 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.get_all_coordinations_list(
   param_faculty_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -1259,13 +1259,13 @@ AS $BODY$
       coord.name as coordination
     FROM
       faculty_data.coordinations coord
-    INNER JOIN 
+    INNER JOIN
       faculty_data.faculty fac
     ON
       fac.is_active = '1'
-    AND 
+    AND
       fac.is_deleted = '0'
-    AND 
+    AND
       fac.id = coord.faculty_id
       WHERE
         coord.faculty_id = param_faculty_id
@@ -1282,10 +1282,10 @@ CREATE OR REPLACE FUNCTION faculty_data.get_coordination(
   param_id INTEGER,
   param_faculty_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -1295,13 +1295,13 @@ AS $BODY$
       coord.name as coordination
     FROM
       faculty_data.coordinations coord
-    INNER JOIN 
+    INNER JOIN
       faculty_data.faculty fac
     ON
       fac.is_active = '1'
-    AND 
+    AND
       fac.is_deleted = '0'
-    AND 
+    AND
       fac.id = coord.faculty_id
       WHERE
        coord.faculty_id = param_faculty_id
@@ -1326,7 +1326,7 @@ CREATE OR REPLACE FUNCTION faculty_data.coordination_update_all_columns(
   param_is_active BIT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1341,7 +1341,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
@@ -1350,7 +1350,7 @@ AS $udf$
       param_change_description := 'UPDATE value of all columns'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1362,7 +1362,7 @@ CREATE OR REPLACE FUNCTION faculty_data.coordination_update_is_active(
   param_user_id BIGINT,
   param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1373,7 +1373,7 @@ AS $udf$
       is_active = param_is_active,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
@@ -1382,7 +1382,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_active'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1394,7 +1394,7 @@ CREATE OR REPLACE FUNCTION faculty_data.coordination_update_is_deleted(
   param_user_id BIGINT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1405,7 +1405,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
@@ -1414,7 +1414,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1429,7 +1429,7 @@ CREATE OR REPLACE FUNCTION faculty_data.chair_insert(
   param_user_id BIGINT,
   param_departament_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1438,7 +1438,7 @@ AS $udf$
     local_chair_id BIGINT;
   BEGIN
     IF EXISTS
-    ( 
+    (
       SELECT cha.code
       FROM faculty_data.chairs cha
       WHERE
@@ -1478,7 +1478,7 @@ AS $udf$
         param_change_description := 'FIRST INSERT'
       );
 
-    
+
     RETURN local_is_successful;
     END IF;
   END;
@@ -1489,7 +1489,7 @@ CREATE OR REPLACE FUNCTION faculty_data.chair_insert_history(
   param_chair_id BIGINT,
   param_change_type VARCHAR,
   param_change_description VARCHAR
-)RETURNS BIT 
+)RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1520,9 +1520,9 @@ AS $udf$
       last_modified_date,
       param_change_type,
       param_change_description
-    FROM 
+    FROM
       faculty_data.chairs cha
-    WHERE 
+    WHERE
       cha.id = param_chair_id
     ORDER BY
       cha.last_modified_date
@@ -1538,10 +1538,10 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.get_all_chairs_list(
   param_departament_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -1553,7 +1553,7 @@ AS $BODY$
       faculty_data.chairs cha
     INNER JOIN
       faculty_data.departaments dept
-    ON 
+    ON
       dept.is_active = '1'
     AND
       dept.is_deleted = '0'
@@ -1574,10 +1574,10 @@ CREATE OR REPLACE FUNCTION faculty_data.get_chair(
   param_id INTEGER,
   param_departament_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -1589,7 +1589,7 @@ AS $BODY$
       faculty_data.chairs cha
     INNER JOIN
       faculty_data.departaments dept
-    ON 
+    ON
       dept.is_active = '1'
     AND
       dept.is_deleted = '0'
@@ -1617,7 +1617,7 @@ CREATE OR REPLACE FUNCTION faculty_data.chair_update_all_columns(
   param_is_active BIT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1632,7 +1632,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
@@ -1641,7 +1641,7 @@ AS $udf$
       param_change_description := 'UPDATE value of all columns'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1654,7 +1654,7 @@ CREATE OR REPLACE FUNCTION faculty_data.chair_update_is_active(
   param_user_id BIGINT,
   param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1665,7 +1665,7 @@ AS $udf$
       is_active = param_is_active,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id
     AND
       departament_id = param_departament_id;
@@ -1676,7 +1676,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_active'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1689,7 +1689,7 @@ CREATE OR REPLACE FUNCTION faculty_data.chair_update_is_deleted(
   param_user_id BIGINT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1700,7 +1700,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id
     AND
       departament_id = param_departament_id;
@@ -1711,7 +1711,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1725,7 +1725,7 @@ CREATE OR REPLACE FUNCTION faculty_data.faculty_insert(
   param_name VARCHAR,
   param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1734,7 +1734,7 @@ AS $udf$
     local_faculty_id BIGINT;
   BEGIN
     IF EXISTS
-    ( 
+    (
       SELECT code
       FROM faculty_data.faculty fac
       WHERE
@@ -1769,10 +1769,10 @@ AS $udf$
       SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
         param_faculty_id := local_faculty_id,
         param_change_type := 'FIRST INSERT',
-        param_change_description := 'FIRST INSERT'  
+        param_change_description := 'FIRST INSERT'
       );
 
-    
+
     RETURN local_is_successful;
     END IF;
   END;
@@ -1783,7 +1783,7 @@ CREATE OR REPLACE FUNCTION faculty_data.faculty_insert_history(
   param_faculty_id BIGINT,
   param_change_type VARCHAR,
   param_change_description VARCHAR
-)RETURNS BIT 
+)RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1812,9 +1812,9 @@ AS $udf$
       last_modified_date,
       param_change_type,
       param_change_description
-    FROM 
+    FROM
       faculty_data.faculty fac
-    WHERE 
+    WHERE
       fac.id = param_faculty_id
     ORDER BY
       fac.last_modified_date
@@ -1829,10 +1829,10 @@ $udf$;
 -- function get all data
 
 CREATE OR REPLACE FUNCTION faculty_data.get_all_facultys_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -1854,10 +1854,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION faculty_data.get_faculty(
   param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
   SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
   FROM (
@@ -1886,7 +1886,7 @@ CREATE OR REPLACE FUNCTION faculty_data.faculty_update_all_columns(
   param_is_active BIT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1900,7 +1900,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
@@ -1909,7 +1909,7 @@ AS $udf$
       param_change_description := 'UPDATE value of all columns'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1921,7 +1921,7 @@ CREATE OR REPLACE FUNCTION faculty_data.faculty_update_is_active(
   param_user_id BIGINT,
   param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1932,7 +1932,7 @@ AS $udf$
       is_active = param_is_active,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
@@ -1941,7 +1941,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_active'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1953,7 +1953,7 @@ CREATE OR REPLACE FUNCTION faculty_data.faculty_update_is_deleted(
   param_user_id BIGINT,
   param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1964,7 +1964,7 @@ AS $udf$
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
       last_modified_date = CLOCK_TIMESTAMP()
-    WHERE 
+    WHERE
       id = param_id;
 
     SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
@@ -1973,7 +1973,7 @@ AS $udf$
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    
+
     RETURN local_is_successful;
   END;
 $udf$;

@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION employee_data.state_insert(
 	param_name VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -46,7 +46,7 @@ CREATE OR REPLACE FUNCTION employee_data.state_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -89,10 +89,10 @@ $udf$;
 
 -- funciton of list
 CREATE OR REPLACE FUNCTION employee_data.get_states_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -103,7 +103,7 @@ AS $BODY$
 			employee_data.states st
 		WHERE
 			st.is_active = '1'
-		AND 
+		AND
 			st.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -112,10 +112,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_state(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -128,7 +128,7 @@ AS $BODY$
 			st.id = param_id
 		AND
 			st.is_active = '1'
-		AND 
+		AND
 			st.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -141,7 +141,7 @@ CREATE OR REPLACE FUNCTION employee_data.state_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -173,7 +173,7 @@ CREATE OR REPLACE FUNCTION employee_data.state_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -203,7 +203,7 @@ CREATE OR REPLACE FUNCTION employee_data.state_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -235,7 +235,7 @@ CREATE OR REPLACE FUNCTION employee_data.municipality_insert(
 	param_name VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -279,7 +279,7 @@ CREATE OR REPLACE FUNCTION employee_data.municipality_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -325,10 +325,10 @@ $udf$;
 CREATE OR REPLACE FUNCTION employee_data.get_municipalitys_list(
 	param_state_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -337,19 +337,19 @@ AS $BODY$
 			mun.name as municipality
 		FROM
 			employee_data.municipalitys mun
-		INNER JOIN 
+		INNER JOIN
 			employee_data.states st
-		ON 
+		ON
 			st.id = mun.state_id
-		AND 
+		AND
 			st.is_active = '1'
-		AND 
+		AND
 			st.is_deleted = '0'
 			WHERE
 				mun.state_id = param_state_id
 			AND
 				mun.is_active = '1'
-			AND 
+			AND
 				mun.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -359,10 +359,10 @@ CREATE OR REPLACE FUNCTION employee_data.get_state(
 	param_id INTEGER,
 	param_state_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -371,13 +371,13 @@ AS $BODY$
 			mun.name as municipality
 		FROM
 			employee_data.municipalitys mun
-		INNER JOIN 
+		INNER JOIN
 			employee_data.states st
-		ON 
+		ON
 			st.id = mun.state_id
-		AND 
+		AND
 			st.is_active = '1'
-		AND 
+		AND
 			st.is_deleted = '0'
 			WHERE
 				mun.state_id = param_state_id
@@ -385,7 +385,7 @@ AS $BODY$
 				mun.id = param_id
 			AND
 				mun.is_active = '1'
-			AND 
+			AND
 				mun.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -399,7 +399,7 @@ CREATE OR REPLACE FUNCTION employee_data.municipality_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -434,7 +434,7 @@ CREATE OR REPLACE FUNCTION employee_data.municipality_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -456,7 +456,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -468,7 +468,7 @@ CREATE OR REPLACE FUNCTION employee_data.municipality_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -490,7 +490,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -503,7 +503,7 @@ CREATE OR REPLACE FUNCTION employee_data.parish_insert(
 	param_name VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -536,7 +536,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -547,7 +547,7 @@ CREATE OR REPLACE FUNCTION employee_data.parish_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -593,10 +593,10 @@ $udf$;
 CREATE OR REPLACE FUNCTION employee_data.get_parish_list(
 	param_municipality_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -605,19 +605,19 @@ AS $BODY$
 			par.name as parish
 		FROM
 			employee_data.parish par
-		INNER JOIN 
+		INNER JOIN
 			employee_data.municipalitys mun
-		ON 
+		ON
 			mun.id = par.municipality_id
-		AND 
+		AND
 			mun.is_active = '1'
-		AND 
+		AND
 			mun.is_deleted = '0'
 			WHERE
 				par.municipality_id = param_municipality_id
 			AND
 				par.is_active = '1'
-			AND 
+			AND
 				par.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -627,10 +627,10 @@ CREATE OR REPLACE FUNCTION employee_data.get_parish(
 	param_id INTEGER,
 	param_municipality_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -639,13 +639,13 @@ AS $BODY$
 			par.name as parish
 		FROM
 			employee_data.parish par
-		INNER JOIN 
+		INNER JOIN
 			employee_data.municipalitys mun
-		ON 
+		ON
 			mun.id = par.municipality_id
-		AND 
+		AND
 			mun.is_active = '1'
-		AND 
+		AND
 			mun.is_deleted = '0'
 			WHERE
 				par.municipality_id = param_municipality_id
@@ -653,7 +653,7 @@ AS $BODY$
 				par.id = param_id
 			AND
 				par.is_active = '1'
-			AND 
+			AND
 				par.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -667,7 +667,7 @@ CREATE OR REPLACE FUNCTION employee_data.parish_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -691,7 +691,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -703,7 +703,7 @@ CREATE OR REPLACE FUNCTION employee_data.parish_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -725,7 +725,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -737,7 +737,7 @@ CREATE OR REPLACE FUNCTION employee_data.parish_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -759,7 +759,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -771,7 +771,7 @@ CREATE OR REPLACE FUNCTION employee_data.ingress_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -802,7 +802,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -813,7 +813,7 @@ CREATE OR REPLACE FUNCTION employee_data.ingress_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -855,10 +855,10 @@ $udf$;
 
 -- funciton of list
 CREATE OR REPLACE FUNCTION employee_data.get_ingress_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -869,7 +869,7 @@ AS $BODY$
 			employee_data.ingress ing
 		WHERE
 			ing.is_active = '1'
-		AND 
+		AND
 			ing.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -878,10 +878,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_ingres(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -894,7 +894,7 @@ AS $BODY$
 			ing.id = param_id
 		AND
 			ing.is_active = '1'
-		AND 
+		AND
 			ing.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -907,7 +907,7 @@ CREATE OR REPLACE FUNCTION employee_data.ingres_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -929,7 +929,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -940,7 +940,7 @@ CREATE OR REPLACE FUNCTION employee_data.ingres_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -960,7 +960,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -971,7 +971,7 @@ CREATE OR REPLACE FUNCTION employee_data.ingres_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1002,7 +1002,7 @@ CREATE OR REPLACE FUNCTION employee_data.income_type_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1033,7 +1033,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
 		);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -1044,7 +1044,7 @@ CREATE OR REPLACE FUNCTION employee_data.income_type_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1086,10 +1086,10 @@ $udf$;
 
 -- funciton of list
 CREATE OR REPLACE FUNCTION employee_data.get_income_type_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1100,7 +1100,7 @@ AS $BODY$
 			employee_data.income_types inc
 		WHERE
 			inc.is_active = '1'
-		AND 
+		AND
 			inc.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1109,10 +1109,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_income_type(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1125,7 +1125,7 @@ AS $BODY$
 			inc.id = param_id
 		AND
 			inc.is_active = '1'
-		AND 
+		AND
 			inc.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1138,7 +1138,7 @@ CREATE OR REPLACE FUNCTION employee_data.income_type_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1160,7 +1160,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1171,7 +1171,7 @@ CREATE OR REPLACE FUNCTION employee_data.income_type_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1191,7 +1191,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1202,7 +1202,7 @@ CREATE OR REPLACE FUNCTION employee_data.income_type_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1222,7 +1222,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1235,7 +1235,7 @@ CREATE OR REPLACE FUNCTION employee_data.category_type_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1245,7 +1245,7 @@ AS $udf$
 	BEGIN
 		IF EXISTS
 		(
-			SELECT cat.code 
+			SELECT cat.code
 			FROM employee_data.category_types cat
 			WHERE
 				cat.code = param_code
@@ -1282,7 +1282,7 @@ AS $udf$
       			param_change_description := 'FIRST INSERT'
       		);
 
-			
+
     		RETURN local_is_successful;
     	END IF;
   	END;
@@ -1294,7 +1294,7 @@ CREATE OR REPLACE FUNCTION employee_data.category_type_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1338,10 +1338,10 @@ $udf$;
 
 -- function get list
 CREATE OR REPLACE FUNCTION employee_data.get_category_types_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1353,7 +1353,7 @@ AS $BODY$
 			employee_data.category_types cat
 		WHERE
 			cat.is_active = '1'
-		AND 
+		AND
 			cat.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1362,10 +1362,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_category_type(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1379,7 +1379,7 @@ AS $BODY$
 			cat.id = param_id
 		AND
 			cat.is_active = '1'
-		AND 
+		AND
 			cat.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1393,7 +1393,7 @@ CREATE OR REPLACE FUNCTION employee_data.category_type_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1416,7 +1416,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1427,7 +1427,7 @@ CREATE OR REPLACE FUNCTION employee_data.category_type_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1447,7 +1447,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1458,7 +1458,7 @@ CREATE OR REPLACE FUNCTION employee_data.category_type_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1478,7 +1478,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1491,7 +1491,7 @@ CREATE OR REPLACE FUNCTION employee_data.dedication_type_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1501,7 +1501,7 @@ AS $udf$
 	BEGIN
 		IF EXISTS
 		(
-			SELECT ded.code 
+			SELECT ded.code
 			FROM employee_data.dedication_types ded
 			WHERE
 				ded.code = param_code
@@ -1538,7 +1538,7 @@ AS $udf$
       			param_change_description := 'FIRST INSERT'
       		);
 
-			
+
     		RETURN local_is_successful;
     	END IF;
   	END;
@@ -1550,7 +1550,7 @@ CREATE OR REPLACE FUNCTION employee_data.dedication_type_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1594,10 +1594,10 @@ $udf$;
 
 -- function get list
 CREATE OR REPLACE FUNCTION employee_data.get_dedication_types_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
-COST 100.0	
-VOLATILE ROWS 1000.0
+COST 100.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1609,7 +1609,7 @@ AS $BODY$
 			employee_data.dedication_types ded
 		WHERE
 			ded.is_active = '1'
-		AND 
+		AND
 			ded.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1618,10 +1618,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_dedication_type(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1635,7 +1635,7 @@ AS $BODY$
 			ded.id = param_id
 		AND
 			ded.is_active = '1'
-		AND 
+		AND
 			ded.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1649,7 +1649,7 @@ CREATE OR REPLACE FUNCTION employee_data.dedication_type_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1672,7 +1672,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1683,7 +1683,7 @@ CREATE OR REPLACE FUNCTION employee_data.dedication_type_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1703,7 +1703,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1714,7 +1714,7 @@ CREATE OR REPLACE FUNCTION employee_data.dedication_type_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1733,7 +1733,7 @@ AS $udf$
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
-      		
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1746,7 +1746,7 @@ CREATE OR REPLACE FUNCTION employee_data.execunting_unit_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1756,7 +1756,7 @@ AS $udf$
 	BEGIN
 		IF EXISTS
 		(
-			SELECT exec.code 
+			SELECT exec.code
 			FROM employee_data.execunting_unit exec
 			WHERE
 				exec.code = param_code
@@ -1793,7 +1793,7 @@ AS $udf$
       			param_change_description := 'FIRST INSERT'
       		);
 
-			
+
     		RETURN local_is_successful;
     	END IF;
   	END;
@@ -1805,7 +1805,7 @@ CREATE OR REPLACE FUNCTION employee_data.execunting_unit_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1849,10 +1849,10 @@ $udf$;
 
 -- function get list
 CREATE OR REPLACE FUNCTION employee_data.get_execunting_unit_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1864,7 +1864,7 @@ AS $BODY$
 			employee_data.execunting_unit exec
 		WHERE
 			exec.is_active = '1'
-		AND 
+		AND
 			exec.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1873,10 +1873,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_execunting_unit(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -1890,7 +1890,7 @@ AS $BODY$
 			exec.id = param_id
 		AND
 			exec.is_active = '1'
-		AND 
+		AND
 			exec.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -1903,7 +1903,7 @@ CREATE OR REPLACE FUNCTION employee_data.execunting_unit_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1925,7 +1925,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1936,7 +1936,7 @@ CREATE OR REPLACE FUNCTION employee_data.execunting_unit_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1955,7 +1955,7 @@ AS $udf$
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1966,7 +1966,7 @@ CREATE OR REPLACE FUNCTION employee_data.execunting_unit_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1985,7 +1985,7 @@ AS $udf$
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1999,7 +1999,7 @@ CREATE OR REPLACE FUNCTION employee_data.salary_insert(
 	param_salary INTEGER,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2034,7 +2034,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -2045,7 +2045,7 @@ CREATE OR REPLACE FUNCTION employee_data.salary_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2091,10 +2091,10 @@ $udf$;
 
 --function get list
 CREATE OR REPLACE FUNCTION employee_data.get_salary_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2116,10 +2116,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_salary_for_category_type_list(
 	param_category_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2142,7 +2142,7 @@ AS $BODY$
 			sal.is_active = '1'
 		AND
 			sal.is_deleted = '0'
-		AND 
+		AND
 			sal.category_type_id = param_category_id
 	)DATA;
 $BODY$;
@@ -2151,10 +2151,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_type_list(
 	param_dedication_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2177,7 +2177,7 @@ AS $BODY$
 			sal.is_active = '1'
 		AND
 			sal.is_deleted = '0'
-		AND 
+		AND
 			sal.category_type_id = param_dedication_id
 	)DATA;
 $BODY$;
@@ -2186,10 +2186,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_and_category_type_list(
 	param_dedication_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2212,7 +2212,7 @@ AS $BODY$
 			sal.is_active = '1'
 		AND
 			sal.is_deleted = '0'
-		AND 
+		AND
 			sal.dedication_type_id = param_dedication_id
 	)DATA;
 $BODY$;
@@ -2222,10 +2222,10 @@ CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_type_category
 	param_dedication_id INTEGER,
 	param_category_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2251,12 +2251,12 @@ AS $BODY$
 			AND
 				cat.is_deleted = '0'
 			AND
-				cat.is_active = '1' 
+				cat.is_active = '1'
 		WHERE
 			sal.is_active = '1'
 		AND
 			sal.is_deleted = '0'
-		AND 
+		AND
 			sal.category_type_id =  param_category_id
 		AND
 			sal.dedication_type_id = param_dedication_id
@@ -2269,10 +2269,10 @@ CREATE OR REPLACE FUNCTION employee_data.get_salary(
 	param_dedication_id INTEGER,
 	param_category_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2298,16 +2298,16 @@ AS $BODY$
 			AND
 				cat.is_deleted = '0'
 			AND
-				cat.is_active = '1' 
+				cat.is_active = '1'
 		WHERE
 			sal.is_active = '1'
 		AND
 			sal.is_deleted = '0'
-		AND 
+		AND
 			sal.category_type_id =  param_category_id
 		AND
 			sal.dedication_type_id = param_dedication_id
-		AND 
+		AND
 			sal.id  = param_salary_id
 	)DATA;
 $BODY$;
@@ -2323,7 +2323,7 @@ CREATE OR REPLACE FUNCTION employee_data.salary_update_all_columns(
 	param_is_deleted BIT,
 	param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2338,7 +2338,7 @@ AS $udf$
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
   			last_modified_date = CLOCK_TIMESTAMP()
-  		WHERE 
+  		WHERE
   			id = param_id;
 
   			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
@@ -2346,7 +2346,7 @@ AS $udf$
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
-      		
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2357,7 +2357,7 @@ CREATE OR REPLACE FUNCTION employee_data.salary_update_is_active(
 	param_is_active BIT,
 	param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2368,7 +2368,7 @@ AS $udf$
   			is_active = param_is_active,
   			last_modified_by = param_user_id,
   			last_modified_date = CLOCK_TIMESTAMP()
-  		WHERE 
+  		WHERE
   			id = param_id;
 
   			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
@@ -2376,7 +2376,7 @@ AS $udf$
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
-      		
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2387,7 +2387,7 @@ CREATE OR REPLACE FUNCTION employee_data.salary_update_is_deleted(
 	param_is_deleted BIT,
 	param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2398,7 +2398,7 @@ AS $udf$
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
   			last_modified_date = CLOCK_TIMESTAMP()
-  		WHERE 
+  		WHERE
   			id = param_id;
 
   			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
@@ -2406,7 +2406,7 @@ AS $udf$
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
-      		
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2418,7 +2418,7 @@ CREATE OR REPLACE FUNCTION employee_data.documentations_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2449,7 +2449,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -2460,7 +2460,7 @@ CREATE OR REPLACE FUNCTION employee_data.documentations_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2502,10 +2502,10 @@ $udf$;
 
 -- funciton of list
 CREATE OR REPLACE FUNCTION employee_data.get_documentations_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2516,7 +2516,7 @@ AS $BODY$
 			employee_data.documentations doc
 		WHERE
 			doc.is_active = '1'
-		AND 
+		AND
 			doc.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -2525,10 +2525,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_documentation(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2539,9 +2539,9 @@ AS $BODY$
 			employee_data.documentations doc
 		WHERE
 			doc.is_active = '1'
-		AND 
+		AND
 			doc.is_deleted = '0'
-		AND 
+		AND
 			doc.id = param_id
 	)DATA;
 $BODY$;
@@ -2554,7 +2554,7 @@ CREATE OR REPLACE FUNCTION employee_data.documentation_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2576,7 +2576,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2587,7 +2587,7 @@ CREATE OR REPLACE FUNCTION employee_data.documentation_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2607,7 +2607,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2618,7 +2618,7 @@ CREATE OR REPLACE FUNCTION employee_data.documentation_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2649,7 +2649,7 @@ CREATE OR REPLACE FUNCTION employee_data.genders_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2680,7 +2680,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -2691,7 +2691,7 @@ CREATE OR REPLACE FUNCTION employee_data.genders_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2733,10 +2733,10 @@ $udf$;
 
 -- funciton of list
 CREATE OR REPLACE FUNCTION employee_data.get_genders_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2747,7 +2747,7 @@ AS $BODY$
 			employee_data.genders gen
 		WHERE
 			gen.is_active = '1'
-		AND 
+		AND
 			gen.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -2756,10 +2756,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_gender(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2770,9 +2770,9 @@ AS $BODY$
 			employee_data.genders gen
 		WHERE
 			gen.is_active = '1'
-		AND 
+		AND
 			gen.is_deleted = '0'
-		AND 
+		AND
 			gen.id = param_id
 	)DATA;
 $BODY$;
@@ -2785,7 +2785,7 @@ CREATE OR REPLACE FUNCTION employee_data.gender_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2807,7 +2807,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2818,7 +2818,7 @@ CREATE OR REPLACE FUNCTION employee_data.gender_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2838,7 +2838,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2849,7 +2849,7 @@ CREATE OR REPLACE FUNCTION employee_data.gender_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2880,7 +2880,7 @@ CREATE OR REPLACE FUNCTION employee_data.nacionalities_insert(
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2911,7 +2911,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -2922,7 +2922,7 @@ CREATE OR REPLACE FUNCTION employee_data.nacionalities_insert_history(
   param_change_type VARCHAR,
   param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -2964,10 +2964,10 @@ $udf$;
 
 -- funciton of list
 CREATE OR REPLACE FUNCTION employee_data.get_nacionalities_list()
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -2978,7 +2978,7 @@ AS $BODY$
 			employee_data.nacionalities nac
 		WHERE
 			nac.is_active = '1'
-		AND 
+		AND
 			nac.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -2987,10 +2987,10 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.get_nacionality(
 	param_id INTEGER
 )
-RETURNS SETOF json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-VOLATILE ROWS 1000.0
+
 AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
@@ -3001,9 +3001,9 @@ AS $BODY$
 			employee_data.nacionalities nac
 		WHERE
 			nac.is_active = '1'
-		AND 
+		AND
 			nac.is_deleted = '0'
-		AND 
+		AND
 			nac.id = param_id
 	)DATA;
 $BODY$;
@@ -3016,7 +3016,7 @@ CREATE OR REPLACE FUNCTION employee_data.nacionality_update_all_columns(
 	param_is_active BIT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -3038,7 +3038,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -3049,7 +3049,7 @@ CREATE OR REPLACE FUNCTION employee_data.nacionality_update_is_active(
 	param_user_id BIGINT,
 	param_is_active BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -3069,7 +3069,7 @@ AS $udf$
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	
+
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -3080,7 +3080,7 @@ CREATE OR REPLACE FUNCTION employee_data.nacionality_update_is_deleted(
 	param_user_id BIGINT,
 	param_is_deleted BIT
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
