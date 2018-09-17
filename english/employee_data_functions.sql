@@ -28,15 +28,14 @@ AS $udf$
 			CLOCK_TIMESTAMP()
 		)
 		RETURNING id
-      	INTO local_state_id;
+      	INTO STRICT local_state_id;
 
-      	PERFORM employee_data.state_insert_history(
+      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
       		param_state_id := local_state_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
 
-		local_is_successful :='1';
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -82,7 +81,8 @@ AS $udf$
 		st.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -157,13 +157,12 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.state_insert_history(
+      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
       		param_state_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -188,13 +187,12 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.state_insert_history(
+      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
       		param_state_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -219,13 +217,12 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.state_insert_history(
+      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
       		param_state_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -263,15 +260,14 @@ AS $udf$
 			CLOCK_TIMESTAMP()
 		)
 		RETURNING id
-		INTO local_municipality_id;
+		INTO STRICT local_municipality_id;
 
-		PERFORM employee_data.municipality_insert_history(
+		SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
       		param_municipality_id := local_municipality_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
 
-		local_is_successful :='1';
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -320,7 +316,7 @@ AS $udf$
 		mun.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -421,13 +417,12 @@ AS $udf$
       	AND
       		state_id = param_state_id;
 
-      	PERFORM employee_data.municipality_insert_history(
+      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
       		param_municipality_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -455,13 +450,13 @@ AS $udf$
       	AND
       		state_id = param_state_id;
 
-      	PERFORM employee_data.municipality_insert_history(
+      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
       		param_municipality_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -489,13 +484,13 @@ AS $udf$
       	AND
       		state_id = param_state_id;
 
-      	PERFORM employee_data.municipality_insert_history(
+      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
       		param_municipality_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -533,15 +528,15 @@ AS $udf$
 			CLOCK_TIMESTAMP()
 		)
 		RETURNING id
-		INTO local_parish_id;
+		INTO STRICT local_parish_id;
 
-		PERFORM employee_data.parish_insert_history(
+		SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
       		param_parish_id := local_parish_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
 
-		local_is_successful :='1';
+		
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -589,7 +584,7 @@ AS $udf$
 		par.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -690,13 +685,13 @@ AS $udf$
       	AND
       		municipality_id = param_municipality_id;
 
-      	PERFORM employee_data.parish_insert_history(
+      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
       		param_parish_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -724,13 +719,13 @@ AS $udf$
       	AND
       		municipality_id = param_municipality_id;
 
-      	PERFORM employee_data.parish_insert_history(
+      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
       		param_parish_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -758,13 +753,13 @@ AS $udf$
       	AND
       		municipality_id = param_municipality_id;
 
-      	PERFORM employee_data.parish_insert_history(
+      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
       		param_parish_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -799,15 +794,15 @@ AS $udf$
 			CLOCK_TIMESTAMP()
 		)
 		RETURNING id
-		INTO local_ingress_id;
+		INTO STRICT local_ingress_id;
 
-		PERFORM employee_data.ingress_insert_history(
+		SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
       		param_ingress_id := local_ingress_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
 
-		local_is_successful :='1';
+		
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -853,7 +848,7 @@ AS $udf$
 		ing.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -928,13 +923,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.ingress_insert_history(
+      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
       		param_ingress_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -959,13 +954,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.ingress_insert_history(
+      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
       		param_ingress_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -990,13 +985,12 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.ingress_insert_history(
+      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
       		param_ingress_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1031,15 +1025,15 @@ AS $udf$
 			CLOCK_TIMESTAMP()
 		)
 		RETURNING id
-		INTO local_income_type_id;
+		INTO STRICT local_income_type_id;
 
-		PERFORM employee_data.income_type_insert_history(
+		SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
 			param_income_type_id := local_income_type_id,
   			param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
 		);
 
-		local_is_successful := '1';
+		
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -1085,7 +1079,7 @@ AS $udf$
 		inc.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1160,13 +1154,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.income_type_insert_history(
+      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
       		param_income_type_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1191,13 +1185,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.income_type_insert_history(
+      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
       		param_income_type_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1222,13 +1216,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.income_type_insert_history(
+      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
       		param_income_type_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1280,15 +1274,15 @@ AS $udf$
 				CLOCK_TIMESTAMP()
 			)
 			RETURNING id
-			INTO local_category_id;
+			INTO STRICT local_category_id;
 
-			PERFORM employee_data.category_type_insert_history(
+			SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
       			param_category_id := local_category_id,
       			param_change_type := 'FIRST INSERT',
       			param_change_description := 'FIRST INSERT'
       		);
 
-			local_is_successful := '1';
+			
     		RETURN local_is_successful;
     	END IF;
   	END;
@@ -1337,7 +1331,7 @@ AS $udf$
 		cat.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1394,6 +1388,7 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.category_type_update_all_columns(
 	param_id INTEGER,
 	param_description VARCHAR,
+	param_code INTEGER,
 	param_user_id BIGINT,
 	param_is_active BIT,
 	param_is_deleted BIT
@@ -1407,6 +1402,7 @@ AS $udf$
   	BEGIN
   		UPDATE employee_data.category_types SET
   			description = param_description,
+  			code = param_code,
   			is_active = param_is_active,
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
@@ -1414,13 +1410,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.category_type_insert_history(
+      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
       		param_category_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1445,13 +1441,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.category_type_insert_history(
+      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
       		param_category_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1476,13 +1472,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.category_type_insert_history(
+      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
       		param_category_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1534,15 +1530,15 @@ AS $udf$
 				CLOCK_TIMESTAMP()
 			)
 			RETURNING id
-			INTO local_dedication_id;
+			INTO STRICT local_dedication_id;
 
-			PERFORM employee_data.dedication_type_insert_history(
+			SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
       			param_dedication_id := local_dedication_id,
       			param_change_type := 'FIRST INSERT',
       			param_change_description := 'FIRST INSERT'
       		);
 
-			local_is_successful := '1';
+			
     		RETURN local_is_successful;
     	END IF;
   	END;
@@ -1591,7 +1587,7 @@ AS $udf$
 		ded.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1647,6 +1643,7 @@ $BODY$;
 -- function update all columns
 CREATE OR REPLACE FUNCTION employee_data.dedication_type_update_all_columns(
 	param_id INTEGER,
+	param_code INTEGER,
 	param_description VARCHAR,
 	param_user_id BIGINT,
 	param_is_active BIT,
@@ -1661,6 +1658,7 @@ AS $udf$
   	BEGIN
   		UPDATE employee_data.dedication_types SET
   			description = param_description,
+  			code = param_code,
   			is_active = param_is_active,
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
@@ -1668,13 +1666,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.dedication_type_insert_history(
+      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
       		param_dedication_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1699,13 +1697,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.dedication_type_insert_history(
+      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
       		param_dedication_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1730,13 +1728,12 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.dedication_type_insert_history(
+      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
       		param_dedication_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
       		
-      	local_is_successful := '1';
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1788,15 +1785,15 @@ AS $udf$
 				CLOCK_TIMESTAMP()
 			)
 			RETURNING id
-			INTO local_execunting_unit_id;
+			INTO STRICT local_execunting_unit_id;
 
-			PERFORM employee_data.execunting_unit_insert_history(
+			SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
       			param_execunting_unit_id := local_execunting_unit_id,
       			param_change_type := 'FIRST INSERT',
       			param_change_description := 'FIRST INSERT'
       		);
 
-			local_is_successful := '1';
+			
     		RETURN local_is_successful;
     	END IF;
   	END;
@@ -1845,7 +1842,7 @@ AS $udf$
 		exec.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1922,13 +1919,13 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.execunting_unit_insert_history(
+      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
       		param_execunting_unit_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
 
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1953,12 +1950,12 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.execunting_unit_insert_history(
+      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
       		param_execunting_unit_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -1983,12 +1980,12 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-      	PERFORM employee_data.execunting_unit_insert_history(
+      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
       		param_execunting_unit_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
-      	local_is_successful := '1';
+      	
     	RETURN local_is_successful;
   	END;
 $udf$;
@@ -2029,15 +2026,15 @@ AS $udf$
 			CLOCK_TIMESTAMP()
 		)
 		RETURNING id
-		INTO local_salary_id;
+		INTO STRICT local_salary_id;
 
-		PERFORM employee_data.salary_insert_history(
+		SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
       		param_salary_id := local_salary_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
 
-		local_is_successful :='1';
+		
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -2087,7 +2084,1022 @@ AS $udf$
 		sal.last_modified_date
 	DESC
 	LIMIT 1;
-	local_is_successful :='1';
+	local_is_successful := '1';
     RETURN local_is_successful;
   END;
+$udf$;
+
+--function get list
+CREATE OR REPLACE FUNCTION employee_data.get_salary_list()
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			id,
+			category_type_id,
+			dedication_type_id,
+			salary
+		FROM
+			employee_data.salaries sal
+		WHERE
+			sal.is_active = '1'
+		AND
+			sal.is_deleted = '0'
+	)DATA;
+$BODY$;
+
+--function get list fo category_type
+CREATE OR REPLACE FUNCTION employee_data.get_salary_for_category_type_list(
+	param_category_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			sal.id,
+			sal.category_type_id,
+			sal.dedication_type_id,
+			sal.salary
+		FROM
+			employee_data.salaries sal
+			INNER JOIN
+				employee_data.category_types cat
+			ON
+				cat.id = sal.category_type_id
+			AND
+				cat.is_deleted = '0'
+			AND
+				cat.is_active = '1'
+		WHERE
+			sal.is_active = '1'
+		AND
+			sal.is_deleted = '0'
+		AND 
+			sal.category_type_id = param_category_id
+	)DATA;
+$BODY$;
+
+--function get list for dedication_type
+CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_type_list(
+	param_dedication_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			sal.id,
+			sal.category_type_id,
+			sal.dedication_type_id,
+			sal.salary
+		FROM
+			employee_data.salaries sal
+			INNER JOIN
+				employee_data.dedication_types ded
+			ON
+				ded.id = sal.category_type_id
+			AND
+				ded.is_deleted = '0'
+			AND
+				ded.is_active = '1'
+		WHERE
+			sal.is_active = '1'
+		AND
+			sal.is_deleted = '0'
+		AND 
+			sal.category_type_id = param_dedication_id
+	)DATA;
+$BODY$;
+
+--function get list for dedication_type
+CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_and_category_type_list(
+	param_dedication_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			sal.id,
+			sal.category_type_id,
+			sal.dedication_type_id,
+			sal.salary
+		FROM
+			employee_data.salaries sal
+			INNER JOIN
+				employee_data.dedication_types ded
+			ON
+				ded.id = sal.category_type_id
+			AND
+				ded.is_deleted = '0'
+			AND
+				ded.is_active = '1'
+		WHERE
+			sal.is_active = '1'
+		AND
+			sal.is_deleted = '0'
+		AND 
+			sal.dedication_type_id = param_dedication_id
+	)DATA;
+$BODY$;
+
+--function get list for dedication_type and category_type
+CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_type_category_type_list(
+	param_dedication_id INTEGER,
+	param_category_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			sal.id,
+			sal.category_type_id,
+			sal.dedication_type_id,
+			sal.salary
+		FROM
+			employee_data.salaries sal
+			INNER JOIN
+				employee_data.dedication_types ded
+			ON
+				ded.id = sal.category_type_id
+			AND
+				ded.is_deleted = '0'
+			AND
+				ded.is_active = '1'
+			INNER JOIN
+				employee_data.category_types cat
+			ON
+				cat.id = sal.category_type_id
+			AND
+				cat.is_deleted = '0'
+			AND
+				cat.is_active = '1' 
+		WHERE
+			sal.is_active = '1'
+		AND
+			sal.is_deleted = '0'
+		AND 
+			sal.category_type_id =  param_category_id
+		AND
+			sal.dedication_type_id = param_dedication_id
+	)DATA;
+$BODY$;
+
+--function get list for dedication_type and category_type
+CREATE OR REPLACE FUNCTION employee_data.get_salary(
+	param_salary_id INTEGER,
+	param_dedication_id INTEGER,
+	param_category_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			sal.id,
+			sal.category_type_id,
+			sal.dedication_type_id,
+			sal.salary
+		FROM
+			employee_data.salaries sal
+			INNER JOIN
+				employee_data.dedication_types ded
+			ON
+				ded.id = sal.category_type_id
+			AND
+				ded.is_deleted = '0'
+			AND
+				ded.is_active = '1'
+			INNER JOIN
+				employee_data.category_types cat
+			ON
+				cat.id = sal.category_type_id
+			AND
+				cat.is_deleted = '0'
+			AND
+				cat.is_active = '1' 
+		WHERE
+			sal.is_active = '1'
+		AND
+			sal.is_deleted = '0'
+		AND 
+			sal.category_type_id =  param_category_id
+		AND
+			sal.dedication_type_id = param_dedication_id
+		AND 
+			sal.id  = param_salary_id
+	)DATA;
+$BODY$;
+
+-- function of update all colums
+
+CREATE OR REPLACE FUNCTION employee_data.salary_update_all_columns(
+	param_id INTEGER,
+	param_category_id INTEGER,
+	param_dedication_id INTEGER,
+	param_salary INTEGER,
+	param_is_active BIT,
+	param_is_deleted BIT,
+	param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.salaries SET
+  			category_type_id = param_category_id,
+  			dedication_type_id = param_dedication_id,
+  			salary = param_salary,
+  			is_active = param_is_active,
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+  			last_modified_date = CLOCK_TIMESTAMP()
+  		WHERE 
+  			id = param_id;
+
+  			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
+      		param_salary_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+      		
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is active
+CREATE OR REPLACE FUNCTION employee_data.salary_update_is_active(
+	param_id INTEGER,
+	param_is_active BIT,
+	param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.salaries SET
+  			is_active = param_is_active,
+  			last_modified_by = param_user_id,
+  			last_modified_date = CLOCK_TIMESTAMP()
+  		WHERE 
+  			id = param_id;
+
+  			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
+      		param_salary_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+      		
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+--function is deleted
+CREATE OR REPLACE FUNCTION employee_data.salary_update_is_deleted(
+	param_id INTEGER,
+	param_is_deleted BIT,
+	param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.salaries SET
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+  			last_modified_date = CLOCK_TIMESTAMP()
+  		WHERE 
+  			id = param_id;
+
+  			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
+      		param_salary_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+      		
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function of  documentations
+
+--function of insert
+CREATE OR REPLACE FUNCTION employee_data.documentations_insert(
+	param_description VARCHAR,
+	param_user_id BIGINT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_documentation_id BIGINT;
+	BEGIN
+		INSERT INTO employee_data.documentations(
+			description,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date
+		)
+		VALUES(
+			param_description,
+			'1',
+			'0',
+			param_user_id,
+			CLOCK_TIMESTAMP()
+		)
+		RETURNING id
+		INTO local_documentation_id;
+
+		SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
+      		param_documentation_id := local_documentation_id,
+      		param_change_type := 'FIRST INSERT',
+      		param_change_description := 'FIRST INSERT'
+      	);
+
+		
+    	RETURN local_is_successful;
+    END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.documentations_insert_history(
+  param_documentation_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.documentations_history
+  	(
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.documentations doc
+	WHERE
+		doc.id = param_documentation_id
+	ORDER BY
+		doc.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful := '1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton of list
+CREATE OR REPLACE FUNCTION employee_data.get_documentations_list()
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			doc.id,
+			doc.description as documentation
+		FROM
+			employee_data.documentations doc
+		WHERE
+			doc.is_active = '1'
+		AND 
+			doc.is_deleted = '0'
+	)DATA;
+$BODY$;
+
+--function get one data
+CREATE OR REPLACE FUNCTION employee_data.get_documentation(
+	param_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			doc.id,
+			doc.description as documentation
+		FROM
+			employee_data.documentations doc
+		WHERE
+			doc.is_active = '1'
+		AND 
+			doc.is_deleted = '0'
+		AND 
+			doc.id = param_id
+	)DATA;
+$BODY$;
+
+-- function update all columns
+CREATE OR REPLACE FUNCTION employee_data.documentation_update_all_columns(
+	param_id INTEGER,
+	param_description VARCHAR,
+	param_user_id BIGINT,
+	param_is_active BIT,
+	param_is_deleted BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.documentations SET
+  			description = param_description,
+  			is_active = param_is_active,
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
+      		param_documentation_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
+      	
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is active
+CREATE OR REPLACE FUNCTION employee_data.documentation_update_is_active(
+	param_id INTEGER,
+	param_user_id BIGINT,
+	param_is_active BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.documentations SET
+  			is_active = param_is_active,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
+      		param_documentation_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
+      	
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is deleted
+CREATE OR REPLACE FUNCTION employee_data.documentation_update_is_deleted(
+	param_id INTEGER,
+	param_user_id BIGINT,
+	param_is_deleted BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.documentations SET
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
+      		param_documentation_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function gender
+
+--function of insert
+CREATE OR REPLACE FUNCTION employee_data.genders_insert(
+	param_description VARCHAR,
+	param_user_id BIGINT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_gender_id BIGINT;
+	BEGIN
+		INSERT INTO employee_data.genders(
+			description,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date
+		)
+		VALUES(
+			param_description,
+			'1',
+			'0',
+			param_user_id,
+			CLOCK_TIMESTAMP()
+		)
+		RETURNING id
+		INTO STRICT local_gender_id;
+
+		SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
+      		param_gender_id := local_gender_id,
+      		param_change_type := 'FIRST INSERT',
+      		param_change_description := 'FIRST INSERT'
+      	);
+
+		
+    	RETURN local_is_successful;
+    END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.genders_insert_history(
+  param_gender_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.genders_history
+  	(
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.genders gen
+	WHERE
+		gen.id = param_gender_id
+	ORDER BY
+		gen.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful := '1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton of list
+CREATE OR REPLACE FUNCTION employee_data.get_genders_list()
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			gen.id,
+			gen.description as gender
+		FROM
+			employee_data.genders gen
+		WHERE
+			gen.is_active = '1'
+		AND 
+			gen.is_deleted = '0'
+	)DATA;
+$BODY$;
+
+--function get one data
+CREATE OR REPLACE FUNCTION employee_data.get_gender(
+	param_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			gen.id,
+			gen.description as gender
+		FROM
+			employee_data.genders gen
+		WHERE
+			gen.is_active = '1'
+		AND 
+			gen.is_deleted = '0'
+		AND 
+			gen.id = param_id
+	)DATA;
+$BODY$;
+
+-- function update all columns
+CREATE OR REPLACE FUNCTION employee_data.gender_update_all_columns(
+	param_id INTEGER,
+	param_description VARCHAR,
+	param_user_id BIGINT,
+	param_is_active BIT,
+	param_is_deleted BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.genders SET
+  			description = param_description,
+  			is_active = param_is_active,
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
+      		param_gender_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
+      	
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is active
+CREATE OR REPLACE FUNCTION employee_data.gender_update_is_active(
+	param_id INTEGER,
+	param_user_id BIGINT,
+	param_is_active BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.genders SET
+  			is_active = param_is_active,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
+      		param_gender_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
+      	
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is deleted
+CREATE OR REPLACE FUNCTION employee_data.gender_update_is_deleted(
+	param_id INTEGER,
+	param_user_id BIGINT,
+	param_is_deleted BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.genders SET
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
+      		param_gender_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+--function of nacionality
+
+--function of insert
+CREATE OR REPLACE FUNCTION employee_data.nacionalities_insert(
+	param_description VARCHAR,
+	param_user_id BIGINT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_nacionality_id BIGINT;
+	BEGIN
+		INSERT INTO employee_data.nacionalities(
+			description,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date
+		)
+		VALUES(
+			param_description,
+			'1',
+			'0',
+			param_user_id,
+			CLOCK_TIMESTAMP()
+		)
+		RETURNING id
+		INTO STRICT local_nacionality_id;
+
+		SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
+      		param_nacionality_id := local_nacionality_id,
+      		param_change_type := 'FIRST INSERT',
+      		param_change_description := 'FIRST INSERT'
+      	);
+
+		
+    	RETURN local_is_successful;
+    END;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.nacionalities_insert_history(
+  param_nacionality_id BIGINT,
+  param_change_type VARCHAR,
+  param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.nacionalities_history
+  	(
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		change_type,
+      	change_description
+  	)
+  	SELECT
+  		id,
+  		description,
+		is_active,
+		is_deleted,
+		last_modified_by,
+		last_modified_date,
+		param_change_type,
+		param_change_description
+	FROM
+		employee_data.nacionalities nac
+	WHERE
+		nac.id = param_nacionality_id
+	ORDER BY
+		nac.last_modified_date
+	DESC
+	LIMIT 1;
+	local_is_successful := '1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton of list
+CREATE OR REPLACE FUNCTION employee_data.get_nacionalities_list()
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			nac.id,
+			nac.description as nacionality
+		FROM
+			employee_data.nacionalities nac
+		WHERE
+			nac.is_active = '1'
+		AND 
+			nac.is_deleted = '0'
+	)DATA;
+$BODY$;
+
+--function get one data
+CREATE OR REPLACE FUNCTION employee_data.get_nacionality(
+	param_id INTEGER
+)
+RETURNS SETOF json
+LANGUAGE 'sql'
+COST 100.0
+VOLATILE ROWS 1000.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			nac.id,
+			nac.description as nacionality
+		FROM
+			employee_data.nacionalities nac
+		WHERE
+			nac.is_active = '1'
+		AND 
+			nac.is_deleted = '0'
+		AND 
+			nac.id = param_id
+	)DATA;
+$BODY$;
+
+-- function update all columns
+CREATE OR REPLACE FUNCTION employee_data.nacionality_update_all_columns(
+	param_id INTEGER,
+	param_description VARCHAR,
+	param_user_id BIGINT,
+	param_is_active BIT,
+	param_is_deleted BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.nacionalities SET
+  			description = param_description,
+  			is_active = param_is_active,
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
+      		param_nacionality_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
+      	
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is active
+CREATE OR REPLACE FUNCTION employee_data.nacionality_update_is_active(
+	param_id INTEGER,
+	param_user_id BIGINT,
+	param_is_active BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.nacionalities SET
+  			is_active = param_is_active,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
+      		param_nacionality_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
+      	
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is deleted
+CREATE OR REPLACE FUNCTION employee_data.nacionality_update_is_deleted(
+	param_id INTEGER,
+	param_user_id BIGINT,
+	param_is_deleted BIT
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.nacionalities SET
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
+      	WHERE
+      		id = param_id;
+
+      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
+      		param_nacionality_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+
+    	RETURN local_is_successful;
+  	END;
 $udf$;

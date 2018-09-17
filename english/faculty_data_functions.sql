@@ -51,15 +51,14 @@ AS $udf$
         CLOCK_TIMESTAMP()
       )
       RETURNING id
-      INTO local_school_id;
+      INTO STRICT local_school_id;
 
-    PERFORM faculty_data.schools_insert_history(
+    SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
       param_school_id := local_school_id,
       param_change_type := 'FIRST INSERT',
       param_change_description := 'FIRST INSERT'
     );
 
-    local_is_successful :='1';
     RETURN local_is_successful;
     END IF;
   END;
@@ -218,13 +217,12 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.schools_insert_history(
+    SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
       param_school_id := param_id,
       param_change_type := 'UPDATE all_columns',
       param_change_description := 'UPDATE value of all columns'
     );
 
-    local_is_successful := '1';
     RETURN local_is_successful;
   END;
 $udf$;
@@ -250,13 +248,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.schools_insert_history(
+    SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
       param_school_id := param_id,
       param_change_type := 'UPDATE is_active',
       param_change_description := 'UPDATE value of is_active'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -282,13 +280,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.schools_insert_history(
+    SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
       param_school_id := param_id,
       param_change_type := 'UPDATE is_deleted',
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -343,15 +341,15 @@ AS $udf$
         param_user_id,
         CLOCK_TIMESTAMP()
       )RETURNING id
-      INTO local_institute_id;
+      INTO STRICT local_institute_id;
 
-    PERFORM faculty_data.institute_insert_history(
+    SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
       param_institute_id := local_institute_id,
       param_change_type := 'FIRST INSERT',
       param_change_description := 'FIRST INSERT'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
     END IF;
   END;
@@ -508,13 +506,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.institute_insert_history(
+    SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
       param_institute_id := param_id,
       param_change_type := 'UPDATE all_columns',
       param_change_description := 'UPDATE value of all columns'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -540,13 +538,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.institute_insert_history(
+    SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
       param_institute_id := param_id,
       param_change_type := 'UPDATE is_active',
       param_change_description := 'UPDATE value of is_active'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -572,13 +570,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.institute_insert_history(
+    SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
       param_institute_id := param_id,
       param_change_type := 'UPDATE is_deleted',
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -635,15 +633,15 @@ AS $udf$
         param_user_id,
         CLOCK_TIMESTAMP()
       )RETURNING id
-      INTO local_departament_id;
+      INTO STRICT local_departament_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := local_departament_id,
       param_change_type := 'FIRST INSERT',
       param_change_description := 'FIRST INSERT'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
     END IF;
   END;
@@ -700,13 +698,13 @@ AS $udf$
       )RETURNING id
       INTO local_departament_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := local_departament_id,
       param_change_type := 'FIRST INSERT',
       param_change_description := 'FIRST INSERT'
     );
 
-    local_is_successful :='1';
+    
     RETURN local_is_successful;
     END IF;
   END;
@@ -939,13 +937,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := param_id,
       param_change_type := 'UPDATE all_columns',
       param_change_description := 'UPDATE value of all columns'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -974,13 +972,13 @@ AS $udf$
     AND 
       school_id = param_school_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := param_id,
       param_change_type := 'UPDATE is_active',
       param_change_description := 'UPDATE value of is_active'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1009,13 +1007,13 @@ AS $udf$
     AND 
       school_id = param_school_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := param_id,
       param_change_type := 'UPDATE is_deleted',
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1049,13 +1047,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := param_id,
       param_change_type := 'UPDATE all_columns',
       param_change_description := 'UPDATE value of all columns'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1084,13 +1082,13 @@ AS $udf$
     AND
       institute_id = param_institute_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := param_id,
       param_change_type := 'UPDATE is_active',
       param_change_description := 'UPDATE value of is_active'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1119,13 +1117,13 @@ AS $udf$
     AND
       institute_id = param_institute_id;
 
-    PERFORM faculty_data.departament_insert_history(
+    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
       param_departament_id := param_id,
       param_change_type := 'UPDATE is_deleted',
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1181,15 +1179,15 @@ AS $udf$
         param_user_id,
         CLOCK_TIMESTAMP()
       )RETURNING id
-      INTO local_coordination_id;
+      INTO STRICT local_coordination_id;
 
-      PERFORM faculty_data.coordination_insert_history(
+      SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
         param_coordination_id := local_coordination_id,
         param_change_type := 'FIRST INSERT',
         param_change_description := 'FIRST INSERT' 
       );
 
-    local_is_successful :='1';
+    
     RETURN local_is_successful;
     END IF;
   END;
@@ -1346,13 +1344,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.coordination_insert_history(
+    SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
       param_coordination_id := param_id,
       param_change_type := 'UPDATE all_columns',
       param_change_description := 'UPDATE value of all columns'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1378,13 +1376,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.coordination_insert_history(
+    SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
       param_coordination_id := param_id,
       param_change_type := 'UPDATE is_active',
       param_change_description := 'UPDATE value of is_active'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1410,13 +1408,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.coordination_insert_history(
+    SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
       param_coordination_id := param_id,
       param_change_type := 'UPDATE is_deleted',
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1472,15 +1470,15 @@ AS $udf$
         CLOCK_TIMESTAMP()
       )
       RETURNING id
-      INTO local_chair_id;
+      INTO STRICT local_chair_id;
 
-      PERFORM faculty_data.chair_insert_history(
+      SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
         param_chair_id := local_chair_id,
         param_change_type := 'FIRST INSERT',
         param_change_description := 'FIRST INSERT'
       );
 
-    local_is_successful :='1';
+    
     RETURN local_is_successful;
     END IF;
   END;
@@ -1637,13 +1635,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.chair_insert_history(
+    SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
       param_chair_id := param_id,
       param_change_type := 'UPDATE all_columns',
       param_change_description := 'UPDATE value of all columns'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1672,13 +1670,13 @@ AS $udf$
     AND
       departament_id = param_departament_id;
 
-    PERFORM faculty_data.chair_insert_history(
+    SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
       param_chair_id := param_id,
       param_change_type := 'UPDATE is_active',
       param_change_description := 'UPDATE value of is_active'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1707,13 +1705,13 @@ AS $udf$
     AND
       departament_id = param_departament_id;
 
-    PERFORM faculty_data.chair_insert_history(
+    SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
       param_chair_id := param_id,
       param_change_type := 'UPDATE is_deleted',
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1766,15 +1764,15 @@ AS $udf$
         CLOCK_TIMESTAMP()
       )
       RETURNING id
-      INTO local_faculty_id;
+      INTO STRICT local_faculty_id;
 
-      PERFORM faculty_data.faculty_insert_history(
+      SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
         param_faculty_id := local_faculty_id,
         param_change_type := 'FIRST INSERT',
         param_change_description := 'FIRST INSERT'  
       );
 
-    local_is_successful :='1';
+    
     RETURN local_is_successful;
     END IF;
   END;
@@ -1905,13 +1903,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.faculty_insert_history(
+    SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
       param_faculty_id := param_id,
       param_change_type := 'UPDATE all_columns',
       param_change_description := 'UPDATE value of all columns'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1937,13 +1935,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.faculty_insert_history(
+    SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
       param_faculty_id := param_id,
       param_change_type := 'UPDATE is_active',
       param_change_description := 'UPDATE value of is_active'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1969,13 +1967,13 @@ AS $udf$
     WHERE 
       id = param_id;
 
-    PERFORM faculty_data.faculty_insert_history(
+    SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
       param_faculty_id := param_id,
       param_change_type := 'UPDATE is_deleted',
       param_change_description := 'UPDATE value of is_deleted'
     );
 
-    local_is_successful := '1';
+    
     RETURN local_is_successful;
   END;
 $udf$;

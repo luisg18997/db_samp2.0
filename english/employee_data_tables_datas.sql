@@ -2172,3 +2172,11 @@ SELECT employee_data.salary_insert(15, 14, 4120, 0);
 SELECT employee_data.salary_insert(15, 15, 4532, 0);
 SELECT employee_data.salary_insert(15, 16, 4944, 0);
 
+SELECT employee_data.documentations_insert('Cedula', 0);
+SELECT employee_data.documentations_insert('Pasaporte', 0);
+
+SELECT employee_data.genders_insert('Femenino', 0);
+SELECT employee_data.genders_insert('Masculino', 0);
+
+SELECT employee_data.nacionalities_insert('VENEZOLANA', 0);
+SELECT employee_data.nacionalities_insert('EXTRANJERO', 0);
