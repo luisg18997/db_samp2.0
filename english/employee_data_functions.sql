@@ -3205,4 +3205,486 @@ $udf$;
 
  -- function get list
 CREATE OR REPLACE FUNCTION employee_data.get_employee_salaries_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
 
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			emsal.id,
+			emsal.employee_id,
+			emp.first_name,
+			emp.second_surname,
+			emsal.salary_id,
+			sal.salary,
+			emsal.insert_date
+		FROM
+			employee_data.employee_salaries emsal
+			INNER JOIN
+				employee_data.employee emp ON
+					emp.id = emsal.employee_id
+				AND
+					emp.is_active = '1'
+				AND
+					emp.is_deleted = '0'
+			INNER JOIN
+				employee_data.salaries sal ON
+					sal.id = emsal.salary_id
+				AND
+					sal.is_active = '1'
+				AND
+					sal.is_deleted = '0'
+		WHERE 
+			emsal.is_active = '1'
+		AND 
+			emsal.is_deleted = '0'
+	)DATA;
+$BODY$;
+
+-- function get list filter 1
+CREATE OR REPLACE FUNCTION employee_data.get_employee_salaries_filter_employe_search(
+	param_employee_id BIGINT
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			emsal.id,
+			emsal.employee_id,
+			emp.first_name,
+			emp.second_surname,
+			emsal.salary_id,
+			sal.salary,
+			emsal.insert_date
+		FROM
+			employee_data.employee_salaries emsal
+			INNER JOIN
+				employee_data.employee emp ON
+					emp.id = emsal.employee_id
+				AND
+					emp.is_active = '1'
+				AND
+					emp.is_deleted = '0'
+			INNER JOIN
+				employee_data.salaries sal ON
+					sal.id = emsal.salary_id
+				AND
+					sal.is_active = '1'
+				AND
+					sal.is_deleted = '0'
+		WHERE 
+			emsal.is_active = '1'
+		AND 
+			emsal.is_deleted = '0'
+		AND
+			emsal.employee_id = param_employee_id
+	)DATA;
+$BODY$;
+
+-- function get list filter 2
+CREATE OR REPLACE FUNCTION employee_data.get_employee_salaries_filter_salay_list(
+	param_salary_id BIGINT
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			emsal.id,
+			emsal.employee_id,
+			emp.first_name,
+			emp.second_surname,
+			emsal.salary_id,
+			sal.salary,
+			emsal.insert_date
+		FROM
+			employee_data.employee_salaries emsal
+			INNER JOIN
+				employee_data.employee emp ON
+					emp.id = emsal.employee_id
+				AND
+					emp.is_active = '1'
+				AND
+					emp.is_deleted = '0'
+			INNER JOIN
+				employee_data.salaries sal ON
+					sal.id = emsal.salary_id
+				AND
+					sal.is_active = '1'
+				AND
+					sal.is_deleted = '0'
+		WHERE 
+			emsal.is_active = '1'
+		AND 
+			emsal.is_deleted = '0'
+		AND
+			emsal.salary_id = param_salary_id
+	)DATA;
+$BODY$;
+
+-- function get one
+CREATE OR REPLACE FUNCTION employee_data.get_employee_salary_search(
+	param_id BIGINT
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			emsal.id,
+			emsal.employee_id,
+			emp.first_name,
+			emp.second_surname,
+			emsal.salary_id,
+			sal.salary,
+			emsal.insert_date
+		FROM
+			employee_data.employee_salaries emsal
+			INNER JOIN
+				employee_data.employee emp ON
+					emp.id = emsal.employee_id
+				AND
+					emp.is_active = '1'
+				AND
+					emp.is_deleted = '0'
+			INNER JOIN
+				employee_data.salaries sal ON
+					sal.id = emsal.salary_id
+				AND
+					sal.is_active = '1'
+				AND
+					sal.is_deleted = '0'
+		WHERE 
+			emsal.is_active = '1'
+		AND 
+			emsal.is_deleted = '0'
+		AND
+			emsal.id = param_id
+	)DATA;
+$BODY$;
+
+--function filter 3
+CREATE OR REPLACE FUNCTION employee_data.get_employee_salaries_filter_salay_employee_search(
+	param_salary_id BIGINT,
+	param_employee_id BIGINT
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			emsal.id,
+			emsal.employee_id,
+			emp.first_name,
+			emp.second_surname,
+			emsal.salary_id,
+			sal.salary,
+			emsal.insert_date
+		FROM
+			employee_data.employee_salaries emsal
+			INNER JOIN
+				employee_data.employee emp ON
+					emp.id = emsal.employee_id
+				AND
+					emp.is_active = '1'
+				AND
+					emp.is_deleted = '0'
+			INNER JOIN
+				employee_data.salaries sal ON
+					sal.id = emsal.salary_id
+				AND
+					sal.is_active = '1'
+				AND
+					sal.is_deleted = '0'
+		WHERE 
+			emsal.is_active = '1'
+		AND 
+			emsal.is_deleted = '0'
+		AND
+			emsal.salary_id = param_salary_id
+		AND
+			emsal.employee_id = param_employee_id
+	)DATA;
+$BODY$;
+
+
+--function update all columns
+CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_all_columns(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	param_salary_id INTEGER, 
+	param_is_active BIT,
+	param_is_deleted BIT,
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.employee_salaries SET
+  			salary_id = param_salary_id,
+  			insert_date = CLOCK_TIMESTAMP(),
+  			is_active = param_is_active,
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+  			last_modified_date = CLOCK_TIMESTAMP()
+  		WHERE
+  			id = param_id
+  		AND
+  			employee_id = param_employee_id;
+
+  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+      		param_employee_salary_id := param_id,
+      		param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+      	);
+
+
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+--function update salary
+CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_salary(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	param_salary_id INTEGER, 
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.employee_salaries SET
+  			salary_id = param_salary_id,
+  			insert_date = CLOCK_TIMESTAMP(),
+  			last_modified_by = param_user_id,
+  			last_modified_date = CLOCK_TIMESTAMP()
+  		WHERE
+  			id = param_id
+  		AND
+  			employee_id = param_employee_id;
+
+  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+      		param_employee_salary_id := param_id,
+      		param_change_type := 'UPDATE salary',
+      		param_change_description := 'UPDATE value of salary'
+      	);
+
+
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is_active
+CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_is_active(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	oaram_is_active BIT, 
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.employee_salaries SET
+  			is_active = param_is_active,
+  			last_modified_by = param_user_id,
+  			last_modified_date = CLOCK_TIMESTAMP()
+  		WHERE
+  			id = param_id
+  		AND
+  			employee_id = param_employee_id;
+
+  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+      		param_employee_salary_id := param_id,
+      		param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_active'
+      	);
+
+
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+-- function update is_deleted
+CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_is_deleted(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	param_is_deleted BIT, 
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+  		UPDATE employee_data.employee_salaries SET
+  			is_deleted = param_is_deleted,
+  			last_modified_by = param_user_id,
+  			last_modified_date = CLOCK_TIMESTAMP()
+  		WHERE
+  			id = param_id
+  		AND
+  			employee_id = param_employee_id;
+
+  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+      		param_employee_salary_id := param_id,
+      		param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+      	);
+
+
+    	RETURN local_is_successful;
+  	END;
+$udf$;
+
+
+-- function of idac
+
+--function of insert
+CREATE OR REPLACE FUNCTION employee_data.idac_codes_insert(
+ param_idac_code INTEGER,
+ param_execunting_unit_id INTEGER,
+ param_vacant_date DATE,
+ param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+    	local_idac_id BIGINT;
+  	BEGIN
+  		IF EXISTS (
+  			SELECT 
+  				idac.code
+  			FROM 
+  				employee_data.idac_codes idac
+  				INNER JOIN 
+  					employee_data.execunting_unit exec ON
+  						exec.id = idac.execunting_unit_id
+  					AND
+  						exec.is_active = '1'
+  					AND
+  						exec.is_deleted = '0'
+  				WHERE
+  					idac.is_active = '1'
+  				AND
+  					idac.is_deleted = '0'
+  				AND
+  					idac.code = param_idac_code
+  				AND 
+  					idac.execunting_unit = param_execunting_unit_id
+  		)
+  		THEN
+  			RETURN local_idac_id;
+  		ELSE
+  			INSERT INTO employee_data.idac_codes(
+	  			code,
+	  			execunting_unit_id,
+	  			vacan_date,
+	  			is_active,
+	  			is_deleted,
+	  			last_modified_by,
+	  			last_modified_date
+	  		)
+	  		VALUES(
+	  			param_idac_code,
+	  			param_execunting_unit_id,
+	  			param_vacant_date,
+	  			'1',
+	  			'0',
+	  			param_user_id,
+	  			CLOCK_TIMESTAMP()
+	  		)
+	  		RETURNING id
+	  		INTO STRICT local_idac_id;
+
+	  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
+	  			param_idac_id := local_idac_id,
+	  			param_change_type := 'FIRST INSERT',
+      			param_change_description := 'FIRST INSERT'
+	  		);
+
+	  		RETURN local_is_successful;
+	  	END IF;
+	END;
+$udf$;
+
+-- function insert log
+CREATE OR REPLACE FUNCTION employee_data.idac_codes_insert_history(
+	param_idac_id BIGINT,
+	param_change_type VARCHAR,
+	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+    BEGIN
+    	INSERT INTO employee_data.idac_codes_history(
+    		id,
+    		code,
+    		execunting_unit_id,
+    		vacan_date,
+    		is_active,
+    		is_deleted,
+    		last_modified_by,
+    		last_modified_date,
+    		change_type,
+    		change_description
+    	)
+    	SELECT 
+    		id,
+    		code,
+    		execunting_unit_id,
+    		vacan_date,
+    		is_active,
+    		is_deleted,
+    		last_modified_by,
+    		last_modified_date,
+    		param_change_type,
+    		param_description
+    	FROM
+    		employee_data.idac_codes idac
+    	WHERE 
+    		idac.id = param_idac_id
+    	ORDER BY
+    		idac.last_modified_date
+    	DESC
+    	LIMIT 1;
+
+    	local_is_successful :='1';
+   		RETURN local_is_successful;
+  	END;
+$udf$;

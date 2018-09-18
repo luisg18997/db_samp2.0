@@ -163,7 +163,7 @@ CREATE TABLE employee_data.idac_codes(
 	id INTEGER DEFAULT nextval('employee_data.idac_codes_id_seq'::regclass) NOT NULL,
 	code INTEGER Not NULL,
 	execunting_unit_id INTEGER NOT NULL,
-	vacante_date  TIMESTAMP WITHOUT TIME ZONE,
+	vacant_date  DATE,
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
 	last_modified_by BIGINT NOT NULL,
