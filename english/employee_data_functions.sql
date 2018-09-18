@@ -3103,3 +3103,105 @@ AS $udf$
     	RETURN local_is_successful;
   	END;
 $udf$;
+
+-- function of employee salares 
+
+-- function of insert 
+
+CREATE OR REPLACE FUNCTION employee_data.employee_salaries_insert(
+	param_employee_id INTEGER,
+	param_salary_id INTEGER,
+	param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_employee_salaries BIGINT;
+	BEGIN
+		INSERT INTO employee_data.employee_salaries(
+			employee_id,
+			salary_id,
+			insert_date,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date
+		)
+		VALUES(
+			param_employee_id,
+			param_salary_id,
+			CLOCK_TIMESTAMP(),
+			'1',
+			'0',
+			param_user_id,
+			CLOCK_TIMESTAMP()
+		)
+		RETURNING  id
+		INTO STRICT local_employee_salaries;
+
+		SELECT employee_salaries_insert_history INTO local_is_successful FROM employee_data.employee_salaries_insert_history(
+			param_employee_salary_id := local_employee_salaries,
+			param_change_type := 'FIRST INSERT',
+      		param_change_description := 'FIRST INSERT'
+      	);
+
+		
+    	RETURN local_is_successful;
+    END;
+$udf$;
+
+
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.employee_salaries_insert_history(
+	param_employee_salary_id BIGINT,
+	param_change_type VARCHAR,
+  	param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+  BEGIN
+  	INSERT INTO employee_data.employee_salaries_history(
+  		id,
+  		employee_id,
+  		salary_id,
+  		insert_date,
+  		is_active,
+  		is_deleted,
+  		last_modified_by,
+  		last_modified_date,
+  		change_type,
+  		change_description
+  	)
+  	SELECT
+  		id,
+  		employee_id,
+  		salary_id,
+  		insert_date,
+  		is_active,
+  		is_deleted,
+  		last_modified_by,
+  		last_modified_date,
+  		param_change_type,
+  		param_change_description
+  	FROM
+  		employee_data.employee_salaries emsal
+  	WHERE
+  		emsal.id = param_employee_salary_id
+  	ORDER BY 
+  		emsal.last_modified_date
+  	DESC
+	LIMIT 1;
+	local_is_successful := '1';
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+ -- function get list
+CREATE OR REPLACE FUNCTION employee_data.get_employee_salaries_list()
