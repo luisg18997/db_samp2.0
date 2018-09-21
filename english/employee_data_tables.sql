@@ -378,7 +378,7 @@ CREATE TABLE employee_data.idac_codes_history(
 	id BIGINT,
 	code INTEGER,
 	execunting_unit_id INTEGER,
-	vacante_date  TIMESTAMP WITHOUT TIME ZONE,
+	vacant_date  TIMESTAMP WITHOUT TIME ZONE,
 	is_active BIT(1),
 	is_deleted BIT(1),
 	last_modified_by BIGINT,
