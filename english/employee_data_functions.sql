@@ -55,7 +55,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.states_history
   	(
-  		id,
+  		state_id,
   		name,
 		is_active,
 		is_deleted,
@@ -288,7 +288,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.municipalitys_history
   	(
-  		id,
+  		municipality_id,
   		state_id,
   		name,
 		is_active,
@@ -556,7 +556,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.parish_history
   	(
-  		id,
+  		parish_id,
   		municipality_id,
   		name,
 		is_active,
@@ -822,7 +822,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.ingress_history
   	(
-  		id,
+  		ingress_id,
   		description,
 		is_active,
 		is_deleted,
@@ -1053,7 +1053,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.income_types_history
   	(
-  		id,
+  		income_type_id,
   		description,
 		is_active,
 		is_deleted,
@@ -1303,7 +1303,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.category_types_history
   	(
-  		id,
+  		category_type_id,
   		code,
 		description,
 		is_active,
@@ -1559,7 +1559,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.dedication_types_history
   	(
-  		id,
+  		dedication_type_id,
   		code,
 		description,
 		is_active,
@@ -1814,7 +1814,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.execunting_unit_history
   	(
-  		id,
+  		execunting_unit_id,
   		code,
 		description,
 		is_active,
@@ -2054,7 +2054,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.salaries_history
   	(
-  		id,
+  		salary_id,
   		category_type_id,
 		dedication_type_id,
 		salary,
@@ -2469,7 +2469,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.documentations_history
   	(
-  		id,
+  		documentation_id,
   		description,
 		is_active,
 		is_deleted,
@@ -2700,7 +2700,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.genders_history
   	(
-  		id,
+  		gender_id,
   		description,
 		is_active,
 		is_deleted,
@@ -2931,7 +2931,7 @@ AS $udf$
   BEGIN
   	INSERT INTO employee_data.nacionalities_history
   	(
-  		id,
+  		nacionality_id,
   		description,
 		is_active,
 		is_deleted,
@@ -3168,7 +3168,7 @@ AS $udf$
     local_is_successful BIT := '0';
   BEGIN
   	INSERT INTO employee_data.employee_salaries_history(
-  		id,
+  		employee_salary_id,
   		employee_id,
   		salary_id,
   		insert_date,
@@ -3653,7 +3653,7 @@ AS $udf$
     	local_is_successful BIT := '0';
     BEGIN
     	INSERT INTO employee_data.idac_codes_history(
-    		id,
+    		idac_code_id,
     		code,
     		execunting_unit_id,
     		vacan_date,
@@ -4179,7 +4179,7 @@ AS $udf$
 			RETURNING id
 			INTO STRICT local_employee_idac_code;
 
-			SELECT employee_salaries_insert_history INTO local_is_successful FROM employee_data.employee_salaries_insert_history(
+			SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
 				param_employee_idac_id := local_employee_idac_code,
 				param_change_type := 'FIRST INSERT',
 				param_change_description := 'FIRST INSERT'
@@ -4192,7 +4192,7 @@ AS $udf$
 $udf$;
 
 -- function of insert of log
-CREATE OR REPLACE FUNCTION employee_data.employee_salaries_insert_history(
+CREATE OR REPLACE FUNCTION employee_data.employee_idac_code_insert_history(
 param_employee_idac_id INTEGER,
 param_change_type VARCHAR,
 param_change_description VARCHAR
@@ -4205,24 +4205,24 @@ AS $udf$
 		local_is_successful BIT := '0';
 	BEGIN
 		INSERT INTO employee_idac_code_history(
-			id
-			employee_id
-			idac_code_id
-			is_active
-			is_deleted
-			last_modified_by
-			last_modified_date
-			change_type
+			employee_idac_code_id,
+			employee_id,
+			idac_code_id,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			change_type,
 			change_description
 		)
 		SELECT
-			id
-			employee_id
-			idac_code_id
-			is_active
-			is_deleted
-			last_modified_by
-			last_modified_date
+			id,
+			employee_id,
+			idac_code_id,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
 			param_change_type,
 			param_change_description
 		FROM

@@ -1,7 +1,7 @@
 -- tables of schema form data
 
 CREATE TABLE form_data.employee_form_personal_movement(
-	id INTEGER DEFAULT nextval('form_data.employee_form_personal_movement_perons_id_seq'::regclass) NOT NULL,
+	id INTEGER DEFAULT nextval('form_data.employee_form_personal_movement_person_id_seq'::regclass) NOT NULL,
 	code_form VARCHAR(15) NOT NULL,
 	accountant_type_id INTEGER,
 	progam_type_id INTEGER,
@@ -112,7 +112,8 @@ CREATE TABLE form_data.employee_annex_forms(
 );
 
 CREATE TABLE form_data.employee_form_personal_movement_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.employee_form_personal_movement_person_history_id_seq'::regclass) NOT NULL,
+	form_person_movement_id INTEGER,
 	code_form VARCHAR(15),
 	accountant_type_id INTEGER,
 	progam_type_id INTEGER,
@@ -128,7 +129,8 @@ CREATE TABLE form_data.employee_form_personal_movement_history(
 );
 
 CREATE TABLE form_data.employee_form_ofices_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.employee_form_ofices_history_id_seq'::regclass) NOT NULL,
+	form_ofice_id INTEGER,
 	code_form VARCHAR(15),
 	registration_date TIMESTAMP WITHOUT TIME ZONE,
 	approval_date TIMESTAMP WITHOUT TIME ZONE,
@@ -141,7 +143,8 @@ CREATE TABLE form_data.employee_form_ofices_history(
 );
 
 CREATE TABLE form_data.movement_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.movement_types_history_id_seq'::regclass) NOT NULL,
+	movement_type_id INTEGER,
 	code INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
@@ -153,7 +156,8 @@ CREATE TABLE form_data.movement_types_history(
 );
 
 CREATE TABLE form_data.accountant_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.accountant_types_history_id_seq'::regclass) NOT NULL,
+	accountant_type_id INTEGER,
 	code BIGINT,
 	description VARCHAR(100),
 	is_active BIT(1),
@@ -165,7 +169,8 @@ CREATE TABLE form_data.accountant_types_history(
 );
 
 CREATE TABLE form_data.program_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.program_types_history_id_seq'::regclass) NOT NULL,
+	progam_type_id INTEGER,
 	code VARCHAR(10),
 	description VARCHAR(100),
 	is_active BIT(1),
@@ -177,7 +182,8 @@ CREATE TABLE form_data.program_types_history(
 );
 
 CREATE TABLE form_data.annex_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.annex_types_history_id_seq'::regclass) NOT NULL,
+	annex_type_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
 	is_deleted BIT(1),
@@ -188,7 +194,8 @@ CREATE TABLE form_data.annex_types_history(
 );
 
 CREATE TABLE form_data.annex_types_for_movement_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.annex_types_for_movement_types_history_id_seq'::regclass) NOT NULL,
+	annex_types_for_movement_type_id INTEGER,
 	annex_type_id INTEGER,
 	movement_type_id INTEGER,
 	is_active BIT(1),
@@ -200,7 +207,8 @@ CREATE TABLE form_data.annex_types_for_movement_types_history(
 );
 
 CREATE TABLE form_data.employee_form_ofice_and_form_person_movement_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.employee_form_ofice_and_form_person_movement_history_id_seq'::regclass) NOT NULL,
+	employee_form_ofice_and_form_person_movement_id INTEGER,
 	form_ofice_id INTEGER,
 	form_person_movement_id INTEGER,
 	employee_id INTEGER,
@@ -219,7 +227,8 @@ CREATE TABLE form_data.employee_form_ofice_and_form_person_movement_history(
 );
 
 CREATE TABLE form_data.employee_annex_forms_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('form_data.employee_annex_forms_history_id_seq'::regclass) NOT NULL,
+	employee_annex_forms_id INTEGER,
 	employee_id INTEGER,
 	annex_type_id INTEGER,
 	route TEXT,
@@ -260,6 +269,36 @@ ALTER TABLE ONLY form_data.employee_form_personal_movement
 
 ALTER TABLE ONLY form_data.employee_annex_forms
   ADD CONSTRAINT employee_annex_forms_id_pk PRIMARY KEY (id);
+
+
+-- ADD pk in the tables history
+
+ALTER TABLE ONLY form_data.employee_form_ofices_history
+  ADD CONSTRAINT employee_form_ofice_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.movement_types_history
+  ADD CONSTRAINT movement_type_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.accountant_types_history
+  ADD CONSTRAINT accountant_type_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.program_types_history
+  ADD CONSTRAINT program_types_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.annex_types_history
+  ADD CONSTRAINT annex_type_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.annex_types_for_movement_types_history
+  ADD CONSTRAINT annex_types_for_movement_type_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.employee_form_ofice_and_form_person_movement_history
+  ADD CONSTRAINT employee_form_ofice_and_form_person_movement_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.employee_form_personal_movement_history
+  ADD CONSTRAINT employee_form_personal_movement_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY form_data.employee_annex_forms_history
+  ADD CONSTRAINT employee_annex_forms_history_id_pk PRIMARY KEY (id);
 
 -- ADD fk in the tables
 

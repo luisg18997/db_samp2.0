@@ -78,7 +78,7 @@ AS $udf$
   BEGIN
     INSERT INTO faculty_data.schools_history
     (
-      id,
+      school_id,
       code,
       name,
       faculty_id,
@@ -369,7 +369,7 @@ AS $udf$
   BEGIN
     INSERT INTO faculty_data.institutes_history
     (
-      id,
+      institute_id,
       code,
       name,
       faculty_id,
@@ -725,7 +725,7 @@ AS $udf$
   BEGIN
     INSERT INTO faculty_data.departaments_history
     (
-      id,
+      departament_id,
       code,
       name,
       school_id,
@@ -1207,7 +1207,7 @@ AS $udf$
   BEGIN
     INSERT INTO faculty_data.coordinations_history
     (
-      id,
+      coordination_id,
       code,
       name,
       is_active,
@@ -1498,7 +1498,7 @@ AS $udf$
   BEGIN
     INSERT INTO faculty_data.chairs_history
     (
-      id,
+      chair_id,
       code,
       name,
       departament_id,
@@ -1792,7 +1792,7 @@ AS $udf$
   BEGIN
     INSERT INTO faculty_data.faculty_history
     (
-      id,
+      faculty_id,
       code,
       name,
       is_active,

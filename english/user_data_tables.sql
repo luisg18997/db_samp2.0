@@ -32,7 +32,7 @@ CREATE TABLE user_data.roles(
 CREATE TABLE user_data.user_roles(
 	id INTEGER DEFAULT nextval('user_data.user_roles_id_seq'::regclass) NOT NULL,
 	user_id INTEGER NOT NULL,
-	role_id INTEGER NOT NULL,
+	role_id INTEGER,
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
 	last_modified_by BIGINT NOT NULL,
@@ -51,8 +51,8 @@ CREATE TABLE user_data.security_questions(
 CREATE TABLE user_data.security_answers(
 	id INTEGER DEFAULT nextval('user_data.security_answers_id_seq'::regclass) NOT NULL,
 	user_id INTEGER NOT NULL,
-	question_id INTEGER NOT NULL,
-	answer text NOT NULL,
+	question_id INTEGER,
+	answer text,
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
 	last_modified_by BIGINT NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE user_data.security_answers(
 );
 
 CREATE TABLE user_data.ubications(
-	id INTEGER DEFAULT nextval('user_data.user_ubications_id_seq'::regclass) NOT NULL,
+	id INTEGER DEFAULT nextval('user_data.ubications_id_seq'::regclass) NOT NULL,
 	name VARCHAR(100) NOT NULL,
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
@@ -71,7 +71,8 @@ CREATE TABLE user_data.ubications(
 --tables of history
 
 CREATE TABLE user_data.users_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('user_data.user_history_id_seq'::regclass) NOT NULL,
+	user_id INTEGER,
 	name VARCHAR(100),
 	surname VARCHAR(100),
 	email VARCHAR(200),
@@ -91,7 +92,8 @@ CREATE TABLE user_data.users_history(
 
 
 CREATE TABLE user_data.roles_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('user_data.role_history_id_seq'::regclass) NOT NULL,
+	role_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
 	is_deleted BIT(1),
@@ -102,7 +104,8 @@ CREATE TABLE user_data.roles_history(
 );
 
 CREATE TABLE user_data.user_roles_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('user_data.user_roles_history_id_seq'::regclass) NOT NULL,
+	user_role_id INTEGER,
 	user_id INTEGER,
 	role_id INTEGER,
 	is_active BIT(1),
@@ -114,7 +117,8 @@ CREATE TABLE user_data.user_roles_history(
 );
 
 CREATE TABLE user_data.security_questions_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('user_data.security_questions_history_id_seq'::regclass) NOT NULL,
+	security_question_id INTEGER,
 	description text,
 	is_active BIT(1),
 	is_deleted BIT(1),
@@ -125,7 +129,8 @@ CREATE TABLE user_data.security_questions_history(
 );
 
 CREATE TABLE user_data.security_answers_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('user_data.security_answers_history_id_seq'::regclass) NOT NULL,
+	security_answer_id INTEGER,
 	user_id INTEGER,
 	question_id INTEGER,
 	answer text,
@@ -138,7 +143,8 @@ CREATE TABLE user_data.security_answers_history(
 );
 
 CREATE TABLE user_data.ubications_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('user_data.ubications_history_id_seq'::regclass) NOT NULL,
+	ubication_id INTEGER,
 	name VARCHAR(100),
 	is_active BIT(1),
 	is_deleted BIT(1),
@@ -167,6 +173,26 @@ ALTER TABLE ONLY user_data.security_answers
 
 ALTER TABLE ONLY user_data.ubications
 	ADD CONSTRAINT ubication_id_pk PRIMARY KEY (id);
+
+-- ADD PK in the tables history
+
+ALTER TABLE ONLY user_data.users_history
+	ADD CONSTRAINT users_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_data.roles_history
+	ADD CONSTRAINT role_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_data.user_roles_history
+	ADD CONSTRAINT user_roles_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_data.security_questions_history
+	ADD CONSTRAINT security_question_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_data.security_answers_history
+	ADD CONSTRAINT security_answer_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_data.ubications_history
+	ADD CONSTRAINT ubication_history_id_pk PRIMARY KEY (id);
 
 -- ADD fk in the tables
 

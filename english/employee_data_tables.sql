@@ -195,7 +195,8 @@ CREATE TABLE employee_data.employee_idac_code(
 -- history of tables
 
 CREATE TABLE employee_data.employees_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.employee_hstory_id_seq'::regclass) NOT NULL,
+	employee_id INTEGER,
 	nacionality_id INTEGER,
 	identification VARCHAR(20),
 	first_name VARCHAR(100),
@@ -235,7 +236,8 @@ CREATE TABLE employee_data.employees_history(
 );
 
 CREATE TABLE employee_data.documentations_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.documentation_history_id_seq'::regclass) NOT NULL,
+	documentation_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
   	is_deleted BIT(1),
@@ -246,7 +248,8 @@ CREATE TABLE employee_data.documentations_history(
 );
 
 CREATE TABLE employee_data.nacionalities_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.nacionality_history_id_seq'::regclass) NOT NULL,
+	nacionality_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
   	is_deleted BIT(1),
@@ -257,7 +260,8 @@ CREATE TABLE employee_data.nacionalities_history(
 );
 
 CREATE TABLE employee_data.genders_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.gender_history_id_seq'::regclass) NOT NULL,
+	gender_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
   	is_deleted BIT(1),
@@ -268,7 +272,8 @@ CREATE TABLE employee_data.genders_history(
 );
 
 CREATE TABLE employee_data.states_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.estates_history_id_seq'::regclass) NOT NULL,
+	state_id INTEGER,
 	name VARCHAR(100),
 	is_active BIT(1),
 	is_deleted BIT(1),
@@ -279,7 +284,8 @@ CREATE TABLE employee_data.states_history(
 );
 
 CREATE TABLE employee_data.municipalitys_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.municipality_history_id_seq'::regclass) NOT NULL,
+	municipality_id INTEGER,
 	state_id  INTEGER,
 	name VARCHAR(100),
 	is_active BIT(1),
@@ -291,7 +297,8 @@ CREATE TABLE employee_data.municipalitys_history(
 );
 
 CREATE TABLE employee_data.parish_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.parish_id_seq'::regclass) NOT NULL,
+	parish_id INTEGER,
 	municipality_id INTEGER,
 	name VARCHAR(100),
 	is_active BIT(1),
@@ -303,7 +310,8 @@ CREATE TABLE employee_data.parish_history(
 );
 
 CREATE TABLE employee_data.ingress_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.insgress_history_id_seq'::regclass) NOT NULL,
+	ingress_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
 	is_deleted BIT(1),
@@ -314,7 +322,8 @@ CREATE TABLE employee_data.ingress_history(
 );
 
 CREATE TABLE employee_data.income_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.income_types_history_id_seq'::regclass) NOT NULL,
+	income_type_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
   	is_deleted BIT(1),
@@ -325,7 +334,8 @@ CREATE TABLE employee_data.income_types_history(
 );
 
 CREATE TABLE employee_data.category_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.category_types_history_id_seq'::regclass) NOT NULL,
+	category_type_id INTEGER,
 	code INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
@@ -337,7 +347,8 @@ CREATE TABLE employee_data.category_types_history(
 );
 
 CREATE TABLE employee_data.dedication_types_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.dedication_types_history_id_seq'::regclass) NOT NULL,
+	dedication_type_id INTEGER,
 	code INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
@@ -349,7 +360,8 @@ CREATE TABLE employee_data.dedication_types_history(
 );
 
 CREATE TABLE employee_data.salaries_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.salaries_history_id_seq'::regclass) NOT NULL,
+	salary_id INTEGER,
 	category_type_id INTEGER,
 	dedication_type_id INTEGER,
 	salary MONEY,
@@ -362,7 +374,8 @@ CREATE TABLE employee_data.salaries_history(
 );
 
 CREATE TABLE employee_data.employee_salaries_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.employee_salaries_history_id_seq'::regclass) NOT NULL,
+	employee_salary_id INTEGER,
 	employee_id INTEGER,
 	salary_id INTEGER,
 	insert_date TIMESTAMP WITHOUT TIME ZONE,
@@ -375,7 +388,8 @@ CREATE TABLE employee_data.employee_salaries_history(
 );
 
 CREATE TABLE employee_data.idac_codes_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.idac_codes_history_id_seq'::regclass) NOT NULL,
+	idac_code_id INTEGER,
 	code INTEGER,
 	execunting_unit_id INTEGER,
 	vacant_date  TIMESTAMP WITHOUT TIME ZONE,
@@ -388,7 +402,8 @@ CREATE TABLE employee_data.idac_codes_history(
 );
 
 CREATE TABLE employee_data.execunting_unit_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.execunting_unit_history_id_seq'::regclass) NOT NULL,
+	execunting_unit_id INTEGER,
 	code INTEGER,
 	description VARCHAR(300),
 	is_active BIT(1),
@@ -400,7 +415,8 @@ CREATE TABLE employee_data.execunting_unit_history(
 );
 
 CREATE TABLE employee_data.employee_idac_code_history(
-	id BIGINT,
+	id BIGINT DEFAULT nextval('employee_data.employee_idac_codes_history_id_seq'::regclass) NOT NULL,
+	employee_idac_code_id INTEGER,
 	employee_id INTEGER,
 	idac_code_id INTEGER,
 	is_active BIT(1),
@@ -460,6 +476,57 @@ ALTER TABLE ONLY employee_data.idac_codes
 
 ALTER TABLE ONLY employee_data.employee_idac_code
 	ADD CONSTRAINT employee_idac_code_id_pk PRIMARY KEY (id);
+
+
+-- ADD PK in the tables history
+
+ALTER TABLE ONLY employee_data.employees_history
+	ADD CONSTRAINT employee_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.documentations_history
+	ADD CONSTRAINT documentation_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.nacionalities_history
+	ADD CONSTRAINT nacionality_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.genders_history
+	ADD CONSTRAINT gender_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.states_history
+	ADD CONSTRAINT states_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.municipalitys_history
+	ADD CONSTRAINT municipality_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.parish_history
+	ADD CONSTRAINT parish_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.ingress_history
+	ADD CONSTRAINT ingres_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.income_types_history
+	ADD CONSTRAINT income_type_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.category_types_history
+	ADD CONSTRAINT category_type_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.dedication_types_history
+	ADD CONSTRAINT dedication_type_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.salaries_history
+	ADD CONSTRAINT salary_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.employee_salaries_history
+	ADD CONSTRAINT employee_salary_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.execunting_unit_history
+	ADD CONSTRAINT execunting_unit_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.idac_codes_history
+	ADD CONSTRAINT idac_code_history_id_pk PRIMARY KEY (id);
+
+ALTER TABLE ONLY employee_data.employee_idac_code_history
+	ADD CONSTRAINT employee_idac_code_history_id_pk PRIMARY KEY (id);
 
 -- ADD fk in the tables
 
