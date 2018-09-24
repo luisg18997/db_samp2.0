@@ -7,7 +7,7 @@ CREATE TABLE form_data.employee_form_personal_movement(
 	progam_type_id INTEGER,
 	reason TEXT NOT NULL,
 	registration_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	approval_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	approval_date TIMESTAMP WITHOUT TIME ZONE,
 	is_active BIT(1) NOT NULL,
   	is_deleted BIT(1) NOT NULL,
 	last_modified_by BIGINT NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE form_data.employee_form_ofices(
 	id INTEGER DEFAULT nextval('form_data.employee_form_ofices_id_seq'::regclass) NOT NULL,
 	code_form VARCHAR(15) NOT NULL,
 	registration_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	approval_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	approval_date TIMESTAMP WITHOUT TIME ZONE,
 	is_active BIT(1) NOT NULL,
   	is_deleted BIT(1) NOT NULL,
   	last_modified_by BIGINT NOT NULL,
@@ -29,19 +29,17 @@ CREATE TABLE form_data.employee_form_ofices(
 
 CREATE TABLE form_data.movement_types(
 	id INTEGER DEFAULT nextval('form_data.movement_types_id_seq'::regclass) NOT NULL,
-	code INTEGER NOT NULL,
 	description VARCHAR(100) NOT NULL,
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
 	last_modified_by BIGINT NOT NULL,
-	last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-	CONSTRAINT movemt_types_code UNIQUE (code)
+	last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
 CREATE TABLE form_data.accountant_types(
 	id INTEGER DEFAULT nextval('form_data.accountant_types_id_seq'::regclass) NOT NULL,
 	code BIGINT NOT NULL,
-	description VARCHAR(100),
+	description VARCHAR(100) NOT NULL,
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
 	last_modified_by BIGINT NOT NULL,
@@ -51,7 +49,7 @@ CREATE TABLE form_data.accountant_types(
 
 CREATE TABLE form_data.program_types(
 	id INTEGER DEFAULT nextval('form_data.program_types_id_seq'::regclass) NOT NULL,
-	code VARCHAR(10) NOT NULL,
+	code VARCHAR(20) NOT NULL,
 	description VARCHAR(100),
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
@@ -145,7 +143,6 @@ CREATE TABLE form_data.employee_form_ofices_history(
 CREATE TABLE form_data.movement_types_history(
 	id BIGINT DEFAULT nextval('form_data.movement_types_history_id_seq'::regclass) NOT NULL,
 	movement_type_id INTEGER,
-	code INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
 	is_deleted BIT(1),
@@ -171,7 +168,7 @@ CREATE TABLE form_data.accountant_types_history(
 CREATE TABLE form_data.program_types_history(
 	id BIGINT DEFAULT nextval('form_data.program_types_history_id_seq'::regclass) NOT NULL,
 	progam_type_id INTEGER,
-	code VARCHAR(10),
+	code VARCHAR(20),
 	description VARCHAR(100),
 	is_active BIT(1),
 	is_deleted BIT(1),

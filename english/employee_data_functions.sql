@@ -3214,10 +3214,8 @@ AS $BODY$
 	FROM (
 		SELECT
 			emsal.id,
-			emsal.employee_id,
 			emp.first_name,
-			emp.second_surname,
-			emsal.salary_id,
+			emp.surname,
 			sal.salary,
 			emsal.insert_date
 		FROM
@@ -3256,10 +3254,8 @@ AS $BODY$
 	FROM (
 		SELECT
 			emsal.id,
-			emsal.employee_id,
 			emp.first_name,
-			emp.second_surname,
-			emsal.salary_id,
+			emp.surname,
 			sal.salary,
 			emsal.insert_date
 		FROM
@@ -3300,10 +3296,8 @@ AS $BODY$
 	FROM (
 		SELECT
 			emsal.id,
-			emsal.employee_id,
 			emp.first_name,
-			emp.second_surname,
-			emsal.salary_id,
+			emp.surname,
 			sal.salary,
 			emsal.insert_date
 		FROM
@@ -3344,10 +3338,8 @@ AS $BODY$
 	FROM (
 		SELECT
 			emsal.id,
-			emsal.employee_id,
 			emp.first_name,
-			emp.second_surname,
-			emsal.salary_id,
+			emp.surname,
 			sal.salary,
 			emsal.insert_date
 		FROM
@@ -3389,10 +3381,8 @@ AS $BODY$
 	FROM (
 		SELECT
 			emsal.id,
-			emsal.employee_id,
 			emp.first_name,
-			emp.second_surname,
-			emsal.salary_id,
+			emp.surname,
 			sal.salary,
 			emsal.insert_date
 		FROM
@@ -4236,4 +4226,298 @@ AS $udf$
 		local_is_successful :='1';
    		RETURN local_is_successful;
   	END;
+$udf$;
+
+-- function get list
+CREATE OR REPLACE FUNCTION employee_data.get_employee_idac_code_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			empidac.id,
+			emp.first_name,
+			emp.surname,
+			idac.code
+		FROM
+			employee_data.employee_idac_code empidac
+			LEFT OUTER JOIN  employee_data.employees  emp ON
+				empidac.employee_id = emp.id
+			AND
+				emp.is_active = '1'
+			AND
+				emp.is_deleted = '0'
+			LEFT OUTER JOIN employee_data.idac_codes idac ON
+				empidac.idac_code_id = idac.id
+			AND
+				idac.is_active = '1'
+			AND 
+				idac.is_deleted = '0'
+		WHERE 
+			empidac.is_active = '1'
+		AND
+			empidac.is_deleted = '0'
+	)DATA;
+$BODY$;
+
+--function get filter by employee
+CREATE OR REPLACE FUNCTION employee_data.get_employee_idac_code_filter_empl_search(
+	param_employee_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			empidac.id,
+			emp.first_name,
+			emp.surname,
+			idac.code
+		FROM
+			employee_data.employee_idac_code empidac
+			LEFT OUTER JOIN  employee_data.employees  emp ON
+				empidac.employee_id = emp.id
+			AND
+				emp.is_active = '1'
+			AND
+				emp.is_deleted = '0'
+			LEFT OUTER JOIN employee_data.idac_codes idac ON
+				empidac.idac_code_id = idac.id
+			AND
+				idac.is_active = '1'
+			AND 
+				idac.is_deleted = '0'
+		WHERE 
+			empidac.is_active = '1'
+		AND
+			empidac.is_deleted = '0'
+		AND
+			empidac.employee_id = param_employee_id
+	)DATA;
+$BODY$;
+
+--function get filter by idac
+CREATE OR REPLACE FUNCTION employee_data.get_employee_idac_code_filter_idac_search(
+	param_idac_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			empidac.id,
+			emp.first_name,
+			emp.surname,
+			idac.code
+		FROM
+			employee_data.employee_idac_code empidac
+			LEFT OUTER JOIN  employee_data.employees  emp ON
+				empidac.employee_id = emp.id
+			AND
+				emp.is_active = '1'
+			AND
+				emp.is_deleted = '0'
+			LEFT OUTER JOIN employee_data.idac_codes idac ON
+				empidac.idac_code_id = idac.id
+			AND
+				idac.is_active = '1'
+			AND 
+				idac.is_deleted = '0'
+		WHERE 
+			empidac.is_active = '1'
+		AND
+			empidac.is_deleted = '0'
+		AND
+			empidac.idac_code_id = param_idac_id
+	)DATA;
+$BODY$;
+
+
+-- function get one
+CREATE OR REPLACE FUNCTION employee_data.get_employee_idac_code_search(
+	param_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			empidac.id,
+			emp.first_name,
+			emp.surname,
+			idac.code
+		FROM
+			employee_data.employee_idac_code empidac
+			LEFT OUTER JOIN  employee_data.employees  emp ON
+				empidac.employee_id = emp.id
+			AND
+				emp.is_active = '1'
+			AND
+				emp.is_deleted = '0'
+			LEFT OUTER JOIN employee_data.idac_codes idac ON
+				empidac.idac_code_id = idac.id
+			AND
+				idac.is_active = '1'
+			AND 
+				idac.is_deleted = '0'
+		WHERE 
+			empidac.is_active = '1'
+		AND
+			empidac.is_deleted = '0'
+		AND
+			empidac.id = param_id
+	)DATA;
+$BODY$;
+
+
+-- function update all columns
+CREATE OR REPLACE FUNCTION employee_data.employee_idac_code_udpate_all_columns(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	param_idac_id INTEGER,
+	param_is_active BIT,
+	param_is_deleted BIT,
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employee_idac_code SET
+			idac_code_id = param_idac_id,
+			is_active = param_is_active,
+			is_deleted = param_is_deleted,
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE
+			id = param_id
+		AND
+			employee_id = param_employee_id;
+
+
+		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+			param_employee_idac_id := param_id,
+			param_change_type := 'UPDATE all_columns',
+      		param_change_description := 'UPDATE value of all columns'
+		);
+
+		RETURN local_is_successful;
+	END;
+$udf$;
+
+-- function update idac_code
+CREATE OR REPLACE FUNCTION employee_data.employee_idac_code_udpate_is_active(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	param_idac_id INTEGER,
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employee_idac_code SET
+			idac_code_id = param_idac_id,
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE
+			id = param_id
+		AND
+			employee_id = param_employee_id;
+
+
+		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+			param_employee_idac_id := param_id,
+			param_change_type := 'UPDATE idac_code',
+      		param_change_description := 'UPDATE value of idac_code'
+		);
+
+		RETURN local_is_successful;
+	END;
+$udf$;
+
+-- function update idac_code
+CREATE OR REPLACE FUNCTION employee_data.employee_idac_code_udpate_idac_code(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	param_is_active BIT,
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employee_idac_code SET
+			is_active = param_is_active,
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE
+			id = param_id
+		AND
+			employee_id = param_employee_id;
+
+
+		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+			param_employee_idac_id := param_id,
+			param_change_type := 'UPDATE is_active',
+      		param_change_description := 'UPDATE value of is_deleted'
+		);
+
+		RETURN local_is_successful;
+	END;
+$udf$;
+
+-- function update idac_code
+CREATE OR REPLACE FUNCTION employee_data.employee_idac_code_udpate_is_deleted(
+	param_id INTEGER,
+	param_employee_id INTEGER,
+	param_is_deleted BIT,
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employee_idac_code SET
+			is_deleted = param_is_deleted,
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE
+			id = param_id
+		AND
+			employee_id = param_employee_id;
+
+
+		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+			param_employee_idac_id := param_id,
+			param_change_type := 'UPDATE is_deleted',
+      		param_change_description := 'UPDATE value of is_deleted'
+		);
+
+		RETURN local_is_successful;
+	END;
 $udf$;

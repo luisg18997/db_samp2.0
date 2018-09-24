@@ -36,19 +36,6 @@ CREATE SEQUENCE user_data.security_answers_id_seq
 	NO MAXVALUE
 	CACHE 1;
 
-CREATE SEQUENCE user_data.action_types_id_seq
-	START WITH 1
-	INCREMENT BY 1
-	NO MINVALUE
-	NO MAXVALUE
-	CACHE 1;
-
-CREATE SEQUENCE user_data.user_action_types_id_seq
-	START WITH 1
-	INCREMENT BY 1
-	NO MINVALUE
-	NO MAXVALUE
-	CACHE 1;
 
 CREATE SEQUENCE user_data.ubications_id_seq
 	START WITH 1
@@ -88,20 +75,6 @@ CREATE SEQUENCE user_data.security_questions_history_id_seq
 	CACHE 1;
 
 CREATE SEQUENCE user_data.security_answers_history_id_seq
-	START WITH 1
-	INCREMENT BY 1
-	NO MINVALUE
-	NO MAXVALUE
-	CACHE 1;
-
-CREATE SEQUENCE user_data.action_types_histroy_id_seq
-	START WITH 1
-	INCREMENT BY 1
-	NO MINVALUE
-	NO MAXVALUE
-	CACHE 1;
-
-CREATE SEQUENCE user_data.user_action_types_history_id_seq
 	START WITH 1
 	INCREMENT BY 1
 	NO MINVALUE
