@@ -995,3 +995,115 @@ AS $udf$
 		RETURN local_is_successful;
 	END;
 $udf$;
+
+-- function of annex_types_for_movement_types
+-- function of insert
+CREATE OR REPLACE FUNCTION form_data.annex_types_for_movement_type_insert(
+	param_annex_type_id INTEGER,
+	param_movement_type_id INTEGER,
+	param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_annex_type_for_movement_type_id BIGINT;
+	BEGIN
+		IF EXISTS(
+			SELECT
+				movannex.annex_type_id,
+				movannex.movement_type_id
+			FROM
+				form_data.annex_types_for_movement_types movannex
+			WHERE
+				movannex.is_active = '1'
+			AND
+				movannex.is_deleted = '0'
+			AND
+				movannex.annex_type_id = param_annex_type_id
+			AND
+				movannex.movement_type_id = param_movement_type_id
+		)
+		THEN
+			RETURN local_is_successful;
+		ELSE
+			INSERT INTO form_data.annex_types_for_movement_types(
+				annex_type_id,
+				movement_type_id,
+				is_active,
+				is_deleted,
+				last_modified_by,
+				last_modified_date
+			)
+			VALUES(
+				param_annex_type_id,
+				param_movement_type_id,
+				'1',
+				'0',
+				param_user_id,
+				CLOCK_TIMESTAMP()
+			)
+			RETURNING id
+			INTO STRICT local_annex_type_for_movement_type_id;
+
+			SELECT annex_types_for_movement_type_insert_hstory INTO local_is_successful FROM form_data.annex_types_for_movement_type_insert_hstory(
+				param_annex_for_movement_type_id := local_annex_type_for_movement_type_id,
+				param_change_type := 'FIRST INSERT',
+      			param_change_description := 'FIRST INSERT'
+			);
+
+			RETURN local_is_successful;
+		END IF;
+	END;
+$udf$;
+
+-- function of insert log
+CREATE OR REPLACE FUNCTION form_data.annex_types_for_movement_type_insert_hstory(
+	param_annex_for_movement_type_id BIGINT,
+	param_change_type VARCHAR,
+	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		INSERT INTO form_data.annex_types_for_movement_types_history(
+			annex_types_for_movement_type_id,
+			annex_type_id,
+			movement_type_id,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			change_type,
+			change_description
+		)
+		SELECT
+			id,
+			annex_type_id,
+			movement_type_id,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			param_change_type,
+			param_change_description
+		FROM
+			form_data.annex_types_for_movement_types movannex
+		WHERE
+			movannex.id  = param_annex_for_movement_type_id
+		ORDER BY
+			movannex.last_modified_date
+		DESC
+		LIMIT 1;
+
+		local_is_successful := '1';
+
+		RETURN local_is_successful;
+	END;
+$udf$;
