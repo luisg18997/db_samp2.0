@@ -103,6 +103,145 @@ AS $udf$
     END;
 $udf$;
 
+-- function of get list
+CREATE OR REPLACE FUNCTION user_data.get_roles_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            rl.id,
+            rl.description
+        FROM
+            user_data.roles rl
+        WHERE
+            rl.is_active = '1'
+        AND 
+            rl.is_deleted = '0'
+    )DATA;
+$BODY$;
+
+-- function of get 
+CREATE OR REPLACE FUNCTION user_data.get_rol_search(
+    param_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            rl.id,
+            rl.description
+        FROM
+            user_data.roles rl
+        WHERE
+            rl.is_active = '1'
+        AND 
+            rl.is_deleted = '0'
+        AND
+            rl.id = param_id
+    )DATA;
+$BODY$;
+
+-- function update all columns
+CREATE OR REPLACE FUNCTION user_data.rol_update_all_columns(
+    param_id INTEGER,
+    param_description VARCHAR,
+    param_is_active BIT,
+    param_is_deleted BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.roles SET
+            description = param_description,
+            is_active = param_is_active,
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
+            param_role_id := param_id,
+            param_change_type := 'UPDATE all_columns',
+            param_change_description := 'UPDATE value of all columns'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function update is_active
+CREATE OR REPLACE FUNCTION user_data.rol_update_is_active(
+    param_id INTEGER,
+    param_is_active BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.roles SET
+            is_active = param_is_active,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
+            param_role_id := param_id,
+            param_change_type := 'UPDATE is_active',
+            param_change_description := 'UPDATE value of is_active'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function update is_active
+CREATE OR REPLACE FUNCTION user_data.rol_update_is_deleted(
+    param_id INTEGER,
+    param_is_deleted BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.roles SET
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
+            param_role_id := param_id,
+            param_change_type := 'UPDATE is_deleted',
+            param_change_description := 'UPDATE value of is_deleted'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
 
 -- function of ubications
 -- function of insert
@@ -114,9 +253,9 @@ RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
-  DECLARE
-      local_is_successful BIT := '0';
-      local_ubication_id BIGINT;
+    DECLARE
+        local_is_successful BIT := '0';
+        local_ubication_id BIGINT;
     BEGIN
         IF EXISTS
         (
@@ -209,7 +348,145 @@ AS $udf$
     END;
 $udf$;
 
+-- function of get list
+CREATE OR REPLACE FUNCTION user_data.get_ubications_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
 
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            ub.id,
+            ub.name
+        FROM
+            user_data.ubications ub
+        WHERE
+            ub.is_active = '1'
+        AND 
+            ub.is_deleted = '0'
+    )DATA;
+$BODY$;
+
+-- function of get 
+CREATE OR REPLACE FUNCTION user_data.get_ubication_search(
+    param_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            ub.id,
+            ub.name
+        FROM
+            user_data.ubications ub
+        WHERE
+            ub.is_active = '1'
+        AND 
+            ub.is_deleted = '0'
+        AND
+            ub.id = param_id
+    )DATA;
+$BODY$;
+
+-- function update all columns
+CREATE OR REPLACE FUNCTION user_data.ubication_update_all_columns(
+    param_id INTEGER,
+    param_name VARCHAR,
+    param_is_active BIT,
+    param_is_deleted BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.ubications SET
+            name = param_name,
+            is_active = param_is_active,
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
+            param_ubication_id := param_id,
+            param_change_type := 'UPDATE all_columns',
+            param_change_description := 'UPDATE value of all columns'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function update is_active
+CREATE OR REPLACE FUNCTION user_data.ubication_update_is_active(
+    param_id INTEGER,
+    param_is_active BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.ubications SET
+            is_active = param_is_active,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
+            param_ubication_id := param_id,
+            param_change_type := 'UPDATE is_active',
+            param_change_description := 'UPDATE value of is_active'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function update is_active
+CREATE OR REPLACE FUNCTION user_data.ubication_update_is_deleted(
+    param_id INTEGER,
+    param_is_deleted BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.ubications SET
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
+            param_ubication_id := param_id,
+            param_change_type := 'UPDATE is_deleted',
+            param_change_description := 'UPDATE value of is_deleted'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
 
 -- function of security_questions
 -- function of insert
@@ -316,6 +593,145 @@ AS $udf$
     END;
 $udf$;
 
+-- function of get list
+CREATE OR REPLACE FUNCTION user_data.get_security_questions_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            qt.id,
+            qt.description
+        FROM
+            user_data.security_questions qt
+        WHERE
+            qt.is_active = '1'
+        AND 
+            qt.is_deleted = '0'
+    )DATA;
+$BODY$;
+
+-- function of get 
+CREATE OR REPLACE FUNCTION user_data.get_security_question_search(
+    param_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            qt.id,
+            qt.description
+        FROM
+            user_data.security_questions qt
+        WHERE
+            qt.is_active = '1'
+        AND 
+            qt.is_deleted = '0'
+        AND
+            qt.id = param_id
+    )DATA;
+$BODY$;
+
+-- function update all columns
+CREATE OR REPLACE FUNCTION user_data.security_question_update_all_columns(
+    param_id INTEGER,
+    param_description VARCHAR,
+    param_is_active BIT,
+    param_is_deleted BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.security_questions SET
+            description = param_description,
+            is_active = param_is_active,
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
+            param_question_id := param_id,
+            param_change_type := 'UPDATE all_columns',
+            param_change_description := 'UPDATE value of all columns'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function update is_active
+CREATE OR REPLACE FUNCTION user_data.security_question_update_is_active(
+    param_id INTEGER,
+    param_is_active BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.security_questions SET
+            is_active = param_is_active,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
+            param_question_id := param_id,
+            param_change_type := 'UPDATE is_active',
+            param_change_description := 'UPDATE value of is_active'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function update is_active
+CREATE OR REPLACE FUNCTION user_data.security_question_update_is_deleted(
+    param_id INTEGER,
+    param_is_deleted BIT,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.security_questions SET
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE 
+            id = param_id;
+
+        SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
+            param_question_id := param_id,
+            param_change_type := 'UPDATE is_deleted',
+            param_change_description := 'UPDATE value of is_deleted'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
 
 
 -- functions of users
