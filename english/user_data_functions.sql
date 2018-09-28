@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION user_data.roles_insert(
     param_description VARCHAR,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -62,7 +62,7 @@ CREATE OR REPLACE FUNCTION user_data.roles_insert_history(
     param_change_type VARCHAR,
     param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -79,7 +79,7 @@ AS $udf$
             change_type,
             change_description
         )
-        SELECT 
+        SELECT
             id,
             description,
             is_active,
@@ -119,12 +119,12 @@ AS $BODY$
             user_data.roles rl
         WHERE
             rl.is_active = '1'
-        AND 
+        AND
             rl.is_deleted = '0'
     )DATA;
 $BODY$;
 
--- function of get 
+-- function of get
 CREATE OR REPLACE FUNCTION user_data.get_rol_search(
     param_id INTEGER
 )
@@ -142,7 +142,7 @@ AS $BODY$
             user_data.roles rl
         WHERE
             rl.is_active = '1'
-        AND 
+        AND
             rl.is_deleted = '0'
         AND
             rl.id = param_id
@@ -157,7 +157,7 @@ CREATE OR REPLACE FUNCTION user_data.rol_update_all_columns(
     param_is_deleted BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -170,7 +170,7 @@ AS $udf$
             is_deleted = param_is_deleted,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
@@ -189,7 +189,7 @@ CREATE OR REPLACE FUNCTION user_data.rol_update_is_active(
     param_is_active BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -200,7 +200,7 @@ AS $udf$
             is_active = param_is_active,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
@@ -219,7 +219,7 @@ CREATE OR REPLACE FUNCTION user_data.rol_update_is_deleted(
     param_is_deleted BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -230,7 +230,7 @@ AS $udf$
             is_deleted = param_is_deleted,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
@@ -249,7 +249,7 @@ CREATE OR REPLACE FUNCTION user_data.ubication_insert(
     param_name VARCHAR,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -307,7 +307,7 @@ CREATE OR REPLACE FUNCTION user_data.ubication_insert_history(
     param_change_type VARCHAR,
     param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -324,7 +324,7 @@ AS $udf$
             change_type,
             change_description
         )
-        SELECT 
+        SELECT
             id,
             name,
             is_active,
@@ -364,12 +364,12 @@ AS $BODY$
             user_data.ubications ub
         WHERE
             ub.is_active = '1'
-        AND 
+        AND
             ub.is_deleted = '0'
     )DATA;
 $BODY$;
 
--- function of get 
+-- function of get
 CREATE OR REPLACE FUNCTION user_data.get_ubication_search(
     param_id INTEGER
 )
@@ -387,7 +387,7 @@ AS $BODY$
             user_data.ubications ub
         WHERE
             ub.is_active = '1'
-        AND 
+        AND
             ub.is_deleted = '0'
         AND
             ub.id = param_id
@@ -402,7 +402,7 @@ CREATE OR REPLACE FUNCTION user_data.ubication_update_all_columns(
     param_is_deleted BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -415,7 +415,7 @@ AS $udf$
             is_deleted = param_is_deleted,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
@@ -434,7 +434,7 @@ CREATE OR REPLACE FUNCTION user_data.ubication_update_is_active(
     param_is_active BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -445,7 +445,7 @@ AS $udf$
             is_active = param_is_active,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
@@ -464,7 +464,7 @@ CREATE OR REPLACE FUNCTION user_data.ubication_update_is_deleted(
     param_is_deleted BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -475,7 +475,7 @@ AS $udf$
             is_deleted = param_is_deleted,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
@@ -494,7 +494,7 @@ CREATE OR REPLACE FUNCTION user_data.security_question_insert(
     param_description VARCHAR,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -552,7 +552,7 @@ CREATE OR REPLACE FUNCTION user_data.security_question_insert_history(
     param_change_type VARCHAR,
     param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -569,7 +569,7 @@ AS $udf$
             change_type,
             change_description
         )
-        SELECT 
+        SELECT
             id,
             description,
             is_active,
@@ -609,12 +609,12 @@ AS $BODY$
             user_data.security_questions qt
         WHERE
             qt.is_active = '1'
-        AND 
+        AND
             qt.is_deleted = '0'
     )DATA;
 $BODY$;
 
--- function of get 
+-- function of get
 CREATE OR REPLACE FUNCTION user_data.get_security_question_search(
     param_id INTEGER
 )
@@ -632,7 +632,7 @@ AS $BODY$
             user_data.security_questions qt
         WHERE
             qt.is_active = '1'
-        AND 
+        AND
             qt.is_deleted = '0'
         AND
             qt.id = param_id
@@ -647,7 +647,7 @@ CREATE OR REPLACE FUNCTION user_data.security_question_update_all_columns(
     param_is_deleted BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -660,7 +660,7 @@ AS $udf$
             is_deleted = param_is_deleted,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
@@ -679,7 +679,7 @@ CREATE OR REPLACE FUNCTION user_data.security_question_update_is_active(
     param_is_active BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -690,7 +690,7 @@ AS $udf$
             is_active = param_is_active,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
@@ -709,7 +709,7 @@ CREATE OR REPLACE FUNCTION user_data.security_question_update_is_deleted(
     param_is_deleted BIT,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -720,7 +720,7 @@ AS $udf$
             is_deleted = param_is_deleted,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE 
+        WHERE
             id = param_id;
 
         SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
@@ -740,7 +740,7 @@ CREATE OR REPLACE FUNCTION user_data.user_roles_with_rol_insert(
     param_role_id INTEGER,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -750,7 +750,7 @@ AS $udf$
     BEGIN
         IF EXISTS
         (
-            SELECT 
+            SELECT
                 usrol.user_id
             FROM
                 user_data.user_roles usrol
@@ -797,7 +797,7 @@ CREATE OR REPLACE FUNCTION user_data.user_roles_without_rol_insert(
     param_user_role_id INTEGER,
     param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -807,7 +807,7 @@ AS $udf$
     BEGIN
         IF EXISTS
         (
-            SELECT 
+            SELECT
                 usrol.user_id
             FROM
                 user_data.user_roles usrol
@@ -851,7 +851,7 @@ CREATE OR REPLACE FUNCTION user_data.user_roles_insert_history(
     param_change_type VARCHAR,
     param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -910,14 +910,14 @@ AS $BODY$
         FROM
             user_data.ubications usrol
             LEFT OUTER JOIN user_data.users usr
-            ON 
+            ON
                 usr.id = usrol.user_id
             AND
                 usr.is_active = '1'
             AND
                 usr.is_deleted = '0'
             LEFT OUTER JOIN user_data.roles rol
-            ON 
+            ON
                 rol.id = usrol.role_id
             AND
                 rol.is_active = '1'
@@ -925,7 +925,7 @@ AS $BODY$
                 rol.is_deleted = '0'
         WHERE
             usrol.is_active = '1'
-        AND 
+        AND
             usrol.is_deleted = '0'
     )DATA;
 $BODY$;
@@ -948,14 +948,14 @@ AS $BODY$
         FROM
             user_data.ubications usrol
             LEFT OUTER JOIN user_data.users usr
-            ON 
+            ON
                 usr.id = usrol.user_id
             AND
                 usr.is_active = '1'
             AND
                 usr.is_deleted = '0'
             LEFT OUTER JOIN user_data.roles rol
-            ON 
+            ON
                 rol.id = usrol.role_id
             AND
                 rol.is_active = '1'
@@ -963,7 +963,7 @@ AS $BODY$
                 rol.is_deleted = '0'
         WHERE
             usrol.is_active = '1'
-        AND 
+        AND
             usrol.is_deleted = '0'
         AND
             usrol.role_id = param_role_id
@@ -988,14 +988,14 @@ AS $BODY$
         FROM
             user_data.ubications usrol
             LEFT OUTER JOIN user_data.users usr
-            ON 
+            ON
                 usr.id = usrol.user_id
             AND
                 usr.is_active = '1'
             AND
                 usr.is_deleted = '0'
             LEFT OUTER JOIN user_data.roles rol
-            ON 
+            ON
                 rol.id = usrol.role_id
             AND
                 rol.is_active = '1'
@@ -1003,7 +1003,7 @@ AS $BODY$
                 rol.is_deleted = '0'
         WHERE
             usrol.is_active = '1'
-        AND 
+        AND
             usrol.is_deleted = '0'
         AND
             usrol.id = param_id
@@ -1028,14 +1028,14 @@ AS $BODY$
         FROM
             user_data.ubications usrol
             LEFT OUTER JOIN user_data.users usr
-            ON 
+            ON
                 usr.id = usrol.user_id
             AND
                 usr.is_active = '1'
             AND
                 usr.is_deleted = '0'
             LEFT OUTER JOIN user_data.roles rol
-            ON 
+            ON
                 rol.id = usrol.role_id
             AND
                 rol.is_active = '1'
@@ -1043,7 +1043,7 @@ AS $BODY$
                 rol.is_deleted = '0'
         WHERE
             usrol.is_active = '1'
-        AND 
+        AND
             usrol.is_deleted = '0'
         AND
             usrol.user_id = param_user_id
@@ -1059,7 +1059,7 @@ param_is_active BIT,
 param_is_deleted BIT,
 param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1073,16 +1073,117 @@ AS $udf$
             is_deleted = param_is_deleted,
             last_modified_by = param_user_id,
             last_modified_date = CLOCK_TIMESTAMP()
-        WHERE   
+        WHERE
             id = param_id;
 
         SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
                 param_user_role_id := param_id,
                 param_change_type := 'UPDATE all_columns',
                 param_change_description := 'UPDATE value of all columns'
-            );
+        );
 
-            RETURN local_is_successful;
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function of update role_id
+CREATE OR REPLACE FUNCTION user_data.user_rol_update_role(
+param_id INTEGER,
+param_user_role_id INTEGER,
+param_role_id INTEGER,
+param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.user_roles SET
+            role_id = param_role_id,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+            id = param_id
+        AND
+            user_id = param_user_role_id;
+
+        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+                param_user_role_id := param_id,
+                param_change_type := 'UPDATE role_id',
+                param_change_description := 'UPDATE value role_id'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function of update is_active
+CREATE OR REPLACE FUNCTION user_data.user_rol_update_role(
+param_id INTEGER,
+param_user_role_id INTEGER,
+param_is_active BIT,
+param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.user_roles SET
+            is_active = param_is_active,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+            id = param_id
+        AND
+            user_id = param_user_role_id;
+
+        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+                param_user_role_id := param_id,
+                param_change_type := 'UPDATE is_active',
+                param_change_description := 'UPDATE value is_active'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function of update is_deleted
+CREATE OR REPLACE FUNCTION user_data.user_rol_update_role(
+param_id INTEGER,
+param_user_role_id INTEGER,
+param_is_deleted BIT,
+param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.user_roles SET
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+            id = param_id
+        AND
+            user_id = param_user_role_id;
+
+        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+                param_user_role_id := param_id,
+                param_change_type := 'UPDATE is_deleted',
+                param_change_description := 'UPDATE value is_deleted'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
 
 -- functions of users
 -- function of insert a me
@@ -1094,7 +1195,7 @@ CREATE OR REPLACE FUNCTION user_data.user_insert(
 	param_ubication_id INTEGER,
     param_ubication_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1104,9 +1205,9 @@ AS $udf$
 	BEGIN
 		IF EXISTS
 		(
-			SELECT usr.email 
+			SELECT usr.email
 			FROM user_data.users usr
-			WHERE 
+			WHERE
 				usr.email = param_email
 			AND
 				(
@@ -1171,7 +1272,7 @@ CREATE OR REPLACE FUNCTION user_data.user_insert_for_a_admin(
     param_role_user_id INTEGER,
 	param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1181,9 +1282,9 @@ AS $udf$
 	BEGIN
 		IF EXISTS
 		(
-			SELECT usr.email 
+			SELECT usr.email
 			FROM user_data.users usr
-			WHERE 
+			WHERE
 				usr.email = param_email
 			AND
 				(
@@ -1242,7 +1343,7 @@ CREATE OR REPLACE FUNCTION user_data.user_insert_history(
     param_change_type VARCHAR,
     param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1285,7 +1386,7 @@ AS $udf$
             param_change_type,
             param_change_description
         FROM
-            user_data.users 
+            user_data.users
         WHERE
             id = param_user_id
         ORDER BY
