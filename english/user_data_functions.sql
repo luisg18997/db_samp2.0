@@ -733,6 +733,356 @@ AS $udf$
     END;
 $udf$;
 
+-- function of user_roles
+-- function of insert with rol
+CREATE OR REPLACE FUNCTION user_data.user_roles_with_rol_insert(
+    param_user_role_id INTEGER,
+    param_role_id INTEGER,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+      local_is_successful BIT := '0';
+      local_user_role_id BIGINT;
+    BEGIN
+        IF EXISTS
+        (
+            SELECT 
+                usrol.user_id
+            FROM
+                user_data.user_roles usrol
+            WHERE
+                usrol.role_id = param_role_id
+            AND
+                usrol.user_id = param_user_role_id
+        )
+        THEN
+            RETURN local_is_successful;
+        ELSE
+            INSERT INTO user_data.user_roles(
+                user_id,
+                role_id,
+                is_active,
+                is_deleted,
+                last_modified_by,
+                last_modified_date
+            )
+            VALUES(
+                param_user_role_id,
+                param_role_id,
+                '1',
+                '0',
+                param_user_id,
+                CLOCK_TIMESTAMP()
+            )
+            RETURNING id
+            INTO STRICT local_user_role_id;
+
+            SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+                param_user_role_id := local_user_role_id,
+                param_change_type := 'FIRST INSERT',
+                param_change_description := 'FIRST INSERT WITH ROLE'
+            );
+
+            RETURN local_is_successful;
+        END IF;
+    END;
+$udf$;
+
+-- function of insert
+CREATE OR REPLACE FUNCTION user_data.user_roles_without_rol_insert(
+    param_user_role_id INTEGER,
+    param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+      local_is_successful BIT := '0';
+      local_user_role_id BIGINT;
+    BEGIN
+        IF EXISTS
+        (
+            SELECT 
+                usrol.user_id
+            FROM
+                user_data.user_roles usrol
+            WHERE
+                usrol.role_id = param_role_id
+        )
+        THEN
+            RETURN local_is_successful;
+        ELSE
+            INSERT INTO user_data.user_roles(
+                user_id,
+                is_active,
+                is_deleted,
+                last_modified_by,
+                last_modified_date
+            )
+            VALUES(
+                param_user_role_id,
+                '0',
+                '0',
+                param_user_id,
+                CLOCK_TIMESTAMP()
+            )
+            RETURNING id
+            INTO STRICT local_user_role_id;
+
+            SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+                param_user_role_id := local_user_role_id,
+                param_change_type := 'FIRST INSERT',
+                param_change_description := 'FIRST INSERT WITHOUT ROLE'
+            );
+
+            RETURN local_is_successful;
+        END IF;
+    END;
+$udf$;
+
+-- function of insert log
+CREATE OR REPLACE FUNCTION user_data.user_roles_insert_history(
+    param_user_role_id BIGINT,
+    param_change_type VARCHAR,
+    param_change_description VARCHAR
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        INSERT INTO user_data.user_roles_history(
+            user_role_id,
+            user_id,
+            role_id,
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            change_type,
+            change_description
+        )
+        SELECT
+            id,
+            user_id,
+            role_id,
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            param_change_type,
+            param_change_description
+        FROM
+            user_data.user_roles usrol
+        WHERE
+            usrol.id = param_user_role_id
+        ORDER BY
+            usrol.last_modified_date
+        DESC
+        LIMIT 1;
+
+        local_is_successful := '1';
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function of get list
+CREATE OR REPLACE FUNCTION user_data.get_user_role_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            usrol.id,
+            usr.name,
+            rol.description
+        FROM
+            user_data.ubications usrol
+            LEFT OUTER JOIN user_data.users usr
+            ON 
+                usr.id = usrol.user_id
+            AND
+                usr.is_active = '1'
+            AND
+                usr.is_deleted = '0'
+            LEFT OUTER JOIN user_data.roles rol
+            ON 
+                rol.id = usrol.role_id
+            AND
+                rol.is_active = '1'
+            AND
+                rol.is_deleted = '0'
+        WHERE
+            usrol.is_active = '1'
+        AND 
+            usrol.is_deleted = '0'
+    )DATA;
+$BODY$;
+
+-- function of get list filter rol
+CREATE OR REPLACE FUNCTION user_data.get_user_role_filter_rol_list(
+param_role_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            usrol.id,
+            usr.name,
+            rol.description
+        FROM
+            user_data.ubications usrol
+            LEFT OUTER JOIN user_data.users usr
+            ON 
+                usr.id = usrol.user_id
+            AND
+                usr.is_active = '1'
+            AND
+                usr.is_deleted = '0'
+            LEFT OUTER JOIN user_data.roles rol
+            ON 
+                rol.id = usrol.role_id
+            AND
+                rol.is_active = '1'
+            AND
+                rol.is_deleted = '0'
+        WHERE
+            usrol.is_active = '1'
+        AND 
+            usrol.is_deleted = '0'
+        AND
+            usrol.role_id = param_role_id
+    )DATA;
+$BODY$;
+
+-- function of get search
+CREATE OR REPLACE FUNCTION user_data.get_user_role_search(
+param_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            usrol.id,
+            usr.name,
+            rol.description
+        FROM
+            user_data.ubications usrol
+            LEFT OUTER JOIN user_data.users usr
+            ON 
+                usr.id = usrol.user_id
+            AND
+                usr.is_active = '1'
+            AND
+                usr.is_deleted = '0'
+            LEFT OUTER JOIN user_data.roles rol
+            ON 
+                rol.id = usrol.role_id
+            AND
+                rol.is_active = '1'
+            AND
+                rol.is_deleted = '0'
+        WHERE
+            usrol.is_active = '1'
+        AND 
+            usrol.is_deleted = '0'
+        AND
+            usrol.id = param_id
+    )DATA;
+$BODY$;
+
+-- function of get search
+CREATE OR REPLACE FUNCTION user_data.get_user_role_user_search(
+param_user_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            usrol.id,
+            usr.name,
+            rol.description
+        FROM
+            user_data.ubications usrol
+            LEFT OUTER JOIN user_data.users usr
+            ON 
+                usr.id = usrol.user_id
+            AND
+                usr.is_active = '1'
+            AND
+                usr.is_deleted = '0'
+            LEFT OUTER JOIN user_data.roles rol
+            ON 
+                rol.id = usrol.role_id
+            AND
+                rol.is_active = '1'
+            AND
+                rol.is_deleted = '0'
+        WHERE
+            usrol.is_active = '1'
+        AND 
+            usrol.is_deleted = '0'
+        AND
+            usrol.user_id = param_user_id
+    )DATA;
+$BODY$;
+
+-- function of update all columns
+CREATE OR REPLACE FUNCTION user_data.user_rol_update_all_columns(
+param_id INTEGER,
+param_user_role_id INTEGER,
+param_role_id INTEGER,
+param_is_active BIT,
+param_is_deleted BIT,
+param_user_id INTEGER
+)
+RETURNS BIT 
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.user_roles SET
+            user_id = param_user_role_id,
+            role_id = param_role_id,
+            is_active = param_is_active,
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE   
+            id = param_id;
+
+        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+                param_user_role_id := param_id,
+                param_change_type := 'UPDATE all_columns',
+                param_change_description := 'UPDATE value of all columns'
+            );
+
+            RETURN local_is_successful;
 
 -- functions of users
 -- function of insert a me
@@ -795,6 +1145,8 @@ AS $udf$
     		)
             RETURNING id
             INTO STRICT local_user_id;
+
+            SELECT user_data.user_roles_without_rol_insert(local_user_id, param_user_id);
 
             SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
                 param_user_id := local_user_id,
@@ -871,9 +1223,11 @@ AS $udf$
             RETURNING id
             INTO STRICT local_user_id;
 
+            SELECT user_data.user_roles_with_rol_insert(local_user_id, param_role_id, param_user_id);
+
             SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
                 param_user_id := local_user_id,
-                param_change_type := 'FIRST INSERT BY ADMIN',
+                param_change_type := 'FIRST INSERT',
                 param_change_description := 'FIRST INSERT BY ADMIN'
             );
 
