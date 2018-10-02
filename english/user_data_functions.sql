@@ -1077,9 +1077,9 @@ AS $udf$
             id = param_id;
 
         SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
-                param_user_role_id := param_id,
-                param_change_type := 'UPDATE all_columns',
-                param_change_description := 'UPDATE value of all columns'
+            param_user_role_id := param_id,
+            param_change_type := 'UPDATE all_columns',
+            param_change_description := 'UPDATE value of all columns'
         );
 
         RETURN local_is_successful;
@@ -1120,7 +1120,7 @@ AS $udf$
 $udf$;
 
 -- function of update is_active
-CREATE OR REPLACE FUNCTION user_data.user_rol_update_role(
+CREATE OR REPLACE FUNCTION user_data.user_rol_update_role_is_active(
 param_id INTEGER,
 param_user_role_id INTEGER,
 param_is_active BIT,
@@ -1153,7 +1153,7 @@ AS $udf$
 $udf$;
 
 -- function of update is_deleted
-CREATE OR REPLACE FUNCTION user_data.user_rol_update_role(
+CREATE OR REPLACE FUNCTION user_data.user_rol_update_is_deleted(
 param_id INTEGER,
 param_user_role_id INTEGER,
 param_is_deleted BIT,
@@ -1184,6 +1184,412 @@ AS $udf$
         RETURN local_is_successful;
     END;
 $udf$;
+
+
+-- functions of  security_answers
+-- function of insert
+CREATE OR REPLACE FUNCTION user_data.security_answer_insert(
+    param_answer_user_id INTEGER,
+    param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+        local_security_answer_id BIGINT;
+        IF EXISTS(
+            SELECT
+                ans.user_id
+            FROM
+                user_data.security_answers ans
+            WHERE
+                ans.user_id = param_answer_user_id
+            AND
+                (   
+                    ans.is_active = '1' 
+                OR
+                    ans.is_active = '0'
+                )
+            AND
+                ans.is_deleted = '0'
+            )
+        THEN
+            RETURN local_is_successful;
+        ELSE
+            INSERT INTO user_data.security_answers(
+                user_id,
+                is_active,
+                is_deleted,
+                last_modified_by,
+                last_modified_date
+            )
+            VALUES(
+                param_answer_user_id,
+                '0',
+                '0',
+                param_user_id,
+                CLOCK_TIMESTAMP()
+            )
+            RETURNING id
+            INTO STRICT local_security_answer_id;
+
+            SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+                param_security_anwer_id := local_security_answer_id,
+                param_change_type := 'FIRST INSERT',
+                param_change_description := 'FIRST INSERT'
+            );
+
+            RETURN local_is_successful;
+
+        END IF;
+    END;
+$udf$;
+
+-- function of insert log
+CREATE OR REPLACE FUNCTION user_data.security_answer_insert_history(
+    param_security_answer_id BIGINT,
+    param_change_type VARCHAR,
+    param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        INSERT INTO user_data.security_answers_history(
+            security_answer_id,
+            user_id,
+            question_id,
+            answer,
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            change_type,
+            change_description
+        )
+        SELECT
+            id,
+            user_id,
+            question_id,
+            answer,
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            param_change_type,
+            param_change_description
+        FROM
+            user_data.security_answers ans
+        WHERE
+            ans.id = param_security_answer_id
+        ORDER BY
+            last_modified_date
+        DESC
+        LIMIT 1;
+
+        local_is_successful := '1';
+
+        RETURN local_is_successful;
+
+    END;
+$udf$;
+
+
+-- function of list
+CREATE OR REPLACE FUNCTION user_data.get_security_answer_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            ans.id,
+            usr.name,
+            qt.description,
+        FROM
+            user_data.security_answers ans
+            LEFT OUTER JOIN
+                user_data.users usr ON
+                    usr.id = ans.user_id
+                AND
+                    usr.is_active = '1'
+                AND
+                    usr.is_deleted = '0'
+            LEFT OUTER JOIN
+                user_data.security_questions qt ON
+                    qt.id = ans.question_id
+                AND
+                    qt.is_active = '1'
+                AND
+                    qt.is_deleted = '0'
+        WHERE
+            ans.is_active = '1'
+        AND
+            ans.is_deleted = '0'
+    )DATA;
+$BODY$;
+
+-- function of list filter question
+CREATE OR REPLACE FUNCTION user_data.get_security_answer_filter_question_list(
+    param_question_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            ans.id,
+            usr.name,
+            qt.description,
+        FROM
+            user_data.security_answers ans
+            LEFT OUTER JOIN
+                user_data.users usr ON
+                    usr.id = ans.user_id
+                AND
+                    usr.is_active = '1'
+                AND
+                    usr.is_deleted = '0'
+            LEFT OUTER JOIN
+                user_data.security_questions qt ON
+                    qt.id = ans.question_id
+                AND
+                    qt.is_active = '1'
+                AND
+                    qt.is_deleted = '0'
+        WHERE
+            ans.is_active = '1'
+        AND
+            ans.is_deleted = '0'
+        AND
+            ans.question_id = param_question_id
+    )DATA;
+$BODY$;
+
+-- function of  search filter user
+CREATE OR REPLACE FUNCTION user_data.get_security_answer_filter_user_search(
+    param_user_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            ans.id,
+            usr.name,
+            qt.description,
+        FROM
+            user_data.security_answers ans
+            LEFT OUTER JOIN
+                user_data.users usr ON
+                    usr.id = ans.user_id
+                AND
+                    usr.is_active = '1'
+                AND
+                    usr.is_deleted = '0'
+            LEFT OUTER JOIN
+                user_data.security_questions qt ON
+                    qt.id = ans.question_id
+                AND
+                    qt.is_active = '1'
+                AND
+                    qt.is_deleted = '0'
+        WHERE
+            ans.is_active = '1'
+        AND
+            ans.is_deleted = '0'
+        AND
+            ans.user_id = param_user_id
+    )DATA;
+$BODY$;
+
+-- function of  search
+CREATE OR REPLACE FUNCTION user_data.get_security_answer_search(
+    param_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+        SELECT
+            ans.id,
+            usr.name,
+            qt.description,
+        FROM
+            user_data.security_answers ans
+            LEFT OUTER JOIN
+                user_data.users usr ON
+                    usr.id = ans.user_id
+                AND
+                    usr.is_active = '1'
+                AND
+                    usr.is_deleted = '0'
+            LEFT OUTER JOIN
+                user_data.security_questions qt ON
+                    qt.id = ans.question_id
+                AND
+                    qt.is_active = '1'
+                AND
+                    qt.is_deleted = '0'
+        WHERE
+            ans.is_active = '1'
+        AND
+            ans.is_deleted = '0'
+        AND
+            ans.id = param_id
+    )DATA;
+$BODY$;
+
+-- function of update all columns
+CREATE OR REPLACE FUNCTION user_data.security_answer_update_all_columns(
+    param_id INTEGER,
+    param_answer_user_id INTEGER,
+    param_question_id  INTEGER,
+    param_answer VARCHAR,
+    param_is_active BIT,
+    param_is_deleted BIT,
+    param_user_id
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.security_answers SET
+            user_id = param_answer_user_id,
+            question_id = param_question_id,
+            answer = param_answer,
+            is_active = param_is_active,
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+            id = param_id;
+
+        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+            param_security_answer_id := param_id,
+            param_change_type := 'UPDATE all_columns',
+            param_change_description := 'UPDATE value of all columns'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function of update all columns
+CREATE OR REPLACE FUNCTION user_data.security_answer_update_answer(
+    param_id INTEGER,
+    param_answer_user_id INTEGER,
+    param_question_id  INTEGER,
+    param_answer VARCHAR,
+    param_user_id
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.security_answers SET
+            question_id = param_question_id,
+            answer = param_answer,
+            is_active = '1',
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+            id = param_id
+        AND
+            user_id = param_answer_user_id;
+
+        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+            param_security_answer_id := param_id,
+            param_change_type := 'UPDATE answer',
+            param_change_description := 'UPDATE value of answer'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function of update all columns
+CREATE OR REPLACE FUNCTION user_data.security_answer_update_is_active(
+    param_id INTEGER,
+    param_is_active BIT,
+    param_user_id
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.security_answers SET
+            is_active = param_is_active,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+            id = param_id;
+
+        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+            param_security_answer_id := param_id,
+            param_change_type := 'UPDATE is_active',
+            param_change_description := 'UPDATE value of is_active'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
+-- function of update all columns
+CREATE OR REPLACE FUNCTION user_data.security_answer_update_is_deleted(
+    param_id INTEGER,
+    param_is_deleted BIT,
+    param_user_id
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+    DECLARE
+        local_is_successful BIT := '0';
+    BEGIN
+        UPDATE user_data.security_answers SET
+            is_deleted = param_is_deleted,
+            last_modified_by = param_user_id,
+            last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+            id = param_id;
+
+        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+            param_security_answer_id := param_id,
+            param_change_type := 'UPDATE is_deleted',
+            param_change_description := 'UPDATE value of is_deleted'
+        );
+
+        RETURN local_is_successful;
+    END;
+$udf$;
+
 
 -- functions of users
 -- function of insert a me
