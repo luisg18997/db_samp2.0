@@ -125,7 +125,7 @@ CREATE TABLE user_data.security_questions_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500) 
+  	change_description character varying(500)
 );
 
 CREATE TABLE user_data.security_answers_history(
@@ -139,7 +139,7 @@ CREATE TABLE user_data.security_answers_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500) 
+  	change_description character varying(500)
 );
 
 CREATE TABLE user_data.ubications_history(
@@ -197,21 +197,47 @@ ALTER TABLE ONLY user_data.ubications_history
 -- ADD fk in the tables
 
 ALTER TABLE ONLY user_data.users
-  ADD CONSTRAINT user_ubication_id_fk FOREIGN KEY (ubication_id) 
+  ADD CONSTRAINT user_ubication_id_fk FOREIGN KEY (ubication_id)
   REFERENCES user_data.ubications(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_data.user_roles
-  ADD CONSTRAINT user_role_user_id_fk FOREIGN KEY (user_id) 
+  ADD CONSTRAINT user_role_user_id_fk FOREIGN KEY (user_id)
   REFERENCES user_data.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_data.user_roles
-  ADD CONSTRAINT user_role_role_id_fk FOREIGN KEY (role_id) 
+  ADD CONSTRAINT user_role_role_id_fk FOREIGN KEY (role_id)
   REFERENCES user_data.roles(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_data.security_answers
-  ADD CONSTRAINT security_answer_user_id_fk FOREIGN KEY (user_id) 
+  ADD CONSTRAINT security_answer_user_id_fk FOREIGN KEY (user_id)
   REFERENCES user_data.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_data.security_answers
-  ADD CONSTRAINT security_answer_question_id_fk FOREIGN KEY (question_id) 
+  ADD CONSTRAINT security_answer_question_id_fk FOREIGN KEY (question_id)
   REFERENCES user_data.security_questions(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+--  ADD fk in tables history
+
+	ALTER TABLE ONLY user_data.users_history
+		ADD CONSTRAINT users_history_user_id_fk FOREIGN KEY (user_id)
+		REFERENCES user_data.users(id);
+
+	ALTER TABLE ONLY user_data.roles_history
+		ADD CONSTRAINT roles_history_role_id_fk FOREIGN KEY (role_id)
+		REFERENCES user_data.roles(id);
+
+	ALTER TABLE ONLY user_data.user_roles_history
+		ADD CONSTRAINT user_roles_history_user_role_id_fk FOREIGN KEY (user_role_id)
+		REFERENCES user_data.user_roles(id);
+
+	ALTER TABLE ONLY user_data.security_questions_history
+		ADD CONSTRAINT security_questions_history_security_question_id_fk FOREIGN KEY(security_question_id)
+		REFERENCES user_data.security_questions(id);
+
+	ALTER TABLE ONLY user_data.security_answers_history
+		ADD CONSTRAINT security_answers_history_security_answer_id_fk FOREIGN KEY(security_answer_id)
+		REFERENCES user_data.security_answers(id);
+
+	ALTER TABLE ONLY user_data.ubications_history
+	 	ADD CONSTRAINT ubications_history_ubication_id_fk FOREIGN KEY(ubication_id)
+		REFERENCES user_data.ubications(id);

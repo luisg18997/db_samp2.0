@@ -252,11 +252,11 @@ CREATE TABLE employee_data.nacionalities_history(
 	nacionality_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
-  	is_deleted BIT(1),
-  	last_modified_by BIGINT,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
-  	change_type character varying(50),
-  	change_description character varying(500)
+  is_deleted BIT(1),
+  last_modified_by BIGINT,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+  change_type character varying(50),
+  change_description character varying(500)
 );
 
 CREATE TABLE employee_data.genders_history(
@@ -264,11 +264,11 @@ CREATE TABLE employee_data.genders_history(
 	gender_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
-  	is_deleted BIT(1),
-  	last_modified_by BIGINT,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
-  	change_type character varying(50),
-  	change_description character varying(500)
+	is_deleted BIT(1),
+	last_modified_by BIGINT,
+	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+	change_type character varying(50),
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.states_history(
@@ -280,7 +280,7 @@ CREATE TABLE employee_data.states_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500)
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.municipalitys_history(
@@ -293,7 +293,7 @@ CREATE TABLE employee_data.municipalitys_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500)
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.parish_history(
@@ -302,11 +302,11 @@ CREATE TABLE employee_data.parish_history(
 	municipality_id INTEGER,
 	name VARCHAR(100),
 	is_active BIT(1),
-  	is_deleted BIT(1),
-  	last_modified_by BIGINT,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
-  	change_type character varying(50),
-  	change_description character varying(500)
+	is_deleted BIT(1),
+	last_modified_by BIGINT,
+	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+	change_type character varying(50),
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.ingress_history(
@@ -318,7 +318,7 @@ CREATE TABLE employee_data.ingress_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500)
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.income_types_history(
@@ -326,11 +326,11 @@ CREATE TABLE employee_data.income_types_history(
 	income_type_id INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
-  	is_deleted BIT(1),
-  	last_modified_by BIGINT,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
-  	change_type character varying(50),
-  	change_description character varying(500)
+	is_deleted BIT(1),
+	last_modified_by BIGINT,
+	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+	change_type character varying(50),
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.category_types_history(
@@ -339,11 +339,11 @@ CREATE TABLE employee_data.category_types_history(
 	code INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
-  	is_deleted BIT(1),
-  	last_modified_by BIGINT,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
-  	change_type character varying(50),
-  	change_description character varying(500)
+	is_deleted BIT(1),
+	last_modified_by BIGINT,
+	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+	change_type character varying(50),
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.dedication_types_history(
@@ -352,11 +352,11 @@ CREATE TABLE employee_data.dedication_types_history(
 	code INTEGER,
 	description VARCHAR(100),
 	is_active BIT(1),
-  	is_deleted BIT(1),
-  	last_modified_by BIGINT,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
-  	change_type character varying(50),
-  	change_description character varying(500)
+	is_deleted BIT(1),
+	last_modified_by BIGINT,
+	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+	change_type character varying(50),
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.salaries_history(
@@ -366,11 +366,11 @@ CREATE TABLE employee_data.salaries_history(
 	dedication_type_id INTEGER,
 	salary MONEY,
 	is_active BIT(1),
-  	is_deleted BIT(1),
-  	last_modified_by BIGINT,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
-  	change_type character varying(50),
-  	change_description character varying(500)
+	is_deleted BIT(1),
+	last_modified_by BIGINT,
+	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
+	change_type character varying(50),
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.employee_salaries_history(
@@ -384,7 +384,7 @@ CREATE TABLE employee_data.employee_salaries_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500)
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.idac_codes_history(
@@ -398,7 +398,7 @@ CREATE TABLE employee_data.idac_codes_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500)
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.execunting_unit_history(
@@ -411,7 +411,7 @@ CREATE TABLE employee_data.execunting_unit_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500)
+	change_description character varying(500)
 );
 
 CREATE TABLE employee_data.employee_idac_code_history(
@@ -424,7 +424,7 @@ CREATE TABLE employee_data.employee_idac_code_history(
 	last_modified_by BIGINT,
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE,
 	change_type character varying(50),
-  	change_description character varying(500)
+	change_description character varying(500)
 );
 
 -- ADD PK in the tables
@@ -531,69 +531,103 @@ ALTER TABLE ONLY employee_data.employee_idac_code_history
 -- ADD fk in the tables
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_state_id_fk FOREIGN KEY (state_id) 
+  ADD CONSTRAINT employee_state_id_fk FOREIGN KEY (state_id)
   REFERENCES employee_data.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_municipality_id_fk FOREIGN KEY (municipality_id) 
+  ADD CONSTRAINT employee_municipality_id_fk FOREIGN KEY (municipality_id)
   REFERENCES employee_data.municipalitys(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_parish_id_fk FOREIGN KEY (parish_id) 
+  ADD CONSTRAINT employee_parish_id_fk FOREIGN KEY (parish_id)
   REFERENCES employee_data.parish(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_documentation_id_fk FOREIGN KEY (documentation_id) 
+  ADD CONSTRAINT employee_documentation_id_fk FOREIGN KEY (documentation_id)
   REFERENCES employee_data.documentations(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_nacionality_id_fk FOREIGN KEY (nacionality_id) 
+  ADD CONSTRAINT employee_nacionality_id_fk FOREIGN KEY (nacionality_id)
   REFERENCES employee_data.nacionalities(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_gender_id_fk FOREIGN KEY (gender_id) 
+  ADD CONSTRAINT employee_gender_id_fk FOREIGN KEY (gender_id)
   REFERENCES employee_data.genders(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.municipalitys
-  ADD CONSTRAINT municipality_state_id_fk FOREIGN KEY (state_id) 
+  ADD CONSTRAINT municipality_state_id_fk FOREIGN KEY (state_id)
   REFERENCES employee_data.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.parish
-  ADD CONSTRAINT parish_municipality_id_fk FOREIGN KEY (municipality_id) 
+  ADD CONSTRAINT parish_municipality_id_fk FOREIGN KEY (municipality_id)
   REFERENCES employee_data.municipalitys(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_ingres_id_fk FOREIGN KEY (ingress_id) 
+  ADD CONSTRAINT employee_ingres_id_fk FOREIGN KEY (ingress_id)
   REFERENCES employee_data.ingress(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
-  ADD CONSTRAINT employee_income_type_id_fk FOREIGN KEY (income_type_id) 
+  ADD CONSTRAINT employee_income_type_id_fk FOREIGN KEY (income_type_id)
   REFERENCES employee_data.income_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.salaries
-  ADD CONSTRAINT salary_dedication_type_id_fk FOREIGN KEY (dedication_type_id) 
+  ADD CONSTRAINT salary_dedication_type_id_fk FOREIGN KEY (dedication_type_id)
   REFERENCES employee_data.dedication_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.salaries
-  ADD CONSTRAINT salary_category_type_id_fk FOREIGN KEY (category_type_id) 
+  ADD CONSTRAINT salary_category_type_id_fk FOREIGN KEY (category_type_id)
   REFERENCES employee_data.category_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employee_salaries
-  ADD CONSTRAINT employee_salary_employee_id_fk FOREIGN KEY (employee_id) 
+  ADD CONSTRAINT employee_salary_employee_id_fk FOREIGN KEY (employee_id)
   REFERENCES employee_data.employees(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employee_salaries
-  ADD CONSTRAINT employee_salary_salary_id_fk FOREIGN KEY (salary_id) 
+  ADD CONSTRAINT employee_salary_salary_id_fk FOREIGN KEY (salary_id)
   REFERENCES employee_data.salaries(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.idac_codes
-  ADD CONSTRAINT idac_code_execunting_unit_id_fk FOREIGN KEY (execunting_unit_id) 
+  ADD CONSTRAINT idac_code_execunting_unit_id_fk FOREIGN KEY (execunting_unit_id)
   REFERENCES employee_data.execunting_unit(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employee_idac_code
-  ADD CONSTRAINT employee_idac_code_employee_id_fk FOREIGN KEY (employee_id) 
+  ADD CONSTRAINT employee_idac_code_employee_id_fk FOREIGN KEY (employee_id)
   REFERENCES employee_data.employees(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employee_idac_code
-  ADD CONSTRAINT employee_idac_code_idac_code_id_fk FOREIGN KEY (idac_code_id) 
+  ADD CONSTRAINT employee_idac_code_idac_code_id_fk FOREIGN KEY (idac_code_id)
   REFERENCES employee_data.idac_codes(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- ADD fk in the table history
+
+ALTER TABLE ONLY employee_data.employees_history
+	ADD CONSTRAINT employees_history_employee_id_fk FOREIGN KEY(employee_id)
+	REFERENCES employee_data.employees(id);
+
+ALTER TABLE ONLY employee_data.documentations_history
+	ADD CONSTRAINT documentations_history_documentation_id_fk FOREIGN KEY(employee_id)
+	REFERENCES employee_data.documentations(id);
+
+ALTER TABLE ONLY employee_data.nacionalities_history
+	ADD CONSTRAINT nacionalities_history_nacionality_id_fk FOREIGN KEY(nacionality_id)
+	REFERENCES employee_data.nacionalities(id);
+
+ALTER TABLE ONLY employee_data.genders_history
+	ADD CONSTRAINT genders_history_gender_id_fk FOREIGN KEY(gender_id)
+	REFERENCES employee_data.genders(id);
+
+ALTER TABLE ONLY employee_data.states_history
+	ADD CONSTRAINT states_history_state_id_fk FOREIGN KEY(state_id)
+	REFERENCES employee_data.states(id);
+
+ALTER TABLE ONLY employee_data.municipalitys_history
+	ADD CONSTRAINT documentations_history_documentation_id_fk FOREIGN KEY(employee_id)
+	REFERENCES employee_data.documentations(id);
+
+ALTER TABLE ONLY employee_data.nacionalities_history
+	ADD CONSTRAINT nacionalities_history_nacionality_id_fk FOREIGN KEY(nacionality_id)
+	REFERENCES employee_data.nacionalities(id);
+
+ALTER TABLE ONLY employee_data.genders_history
+	ADD CONSTRAINT genders_history_documentation_id_fk FOREIGN KEY(gender_id)
+	REFERENCES employee_data.genders(id);
