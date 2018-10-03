@@ -908,10 +908,9 @@ AS $BODY$
             usr.name,
             rol.description
         FROM
-            user_data.ubications usrol
-            LEFT OUTER JOIN user_data.users usr
-            ON
-                usr.id = usrol.user_id
+            user_data.user_roles usrol
+            LEFT OUTER JOIN user_data.users usr ON
+                usrol.user_id = usr.id
             AND
                 usr.is_active = '1'
             AND
@@ -946,7 +945,7 @@ AS $BODY$
             usr.name,
             rol.description
         FROM
-            user_data.ubications usrol
+            user_data.user_roles usrol
             LEFT OUTER JOIN user_data.users usr
             ON
                 usr.id = usrol.user_id
@@ -986,7 +985,7 @@ AS $BODY$
             usr.name,
             rol.description
         FROM
-            user_data.ubications usrol
+            user_data.user_roles usrol
             LEFT OUTER JOIN user_data.users usr
             ON
                 usr.id = usrol.user_id
@@ -1026,7 +1025,7 @@ AS $BODY$
             usr.name,
             rol.description
         FROM
-            user_data.ubications usrol
+            user_data.user_roles usrol
             LEFT OUTER JOIN user_data.users usr
             ON
                 usr.id = usrol.user_id
@@ -1199,6 +1198,7 @@ AS $udf$
     DECLARE
         local_is_successful BIT := '0';
         local_security_answer_id BIGINT;
+    BEGIN
         IF EXISTS(
             SELECT
                 ans.user_id
@@ -1312,7 +1312,7 @@ AS $BODY$
         SELECT
             ans.id,
             usr.name,
-            qt.description,
+            qt.description
         FROM
             user_data.security_answers ans
             LEFT OUTER JOIN
@@ -1350,7 +1350,7 @@ AS $BODY$
         SELECT
             ans.id,
             usr.name,
-            qt.description,
+            qt.description
         FROM
             user_data.security_answers ans
             LEFT OUTER JOIN
@@ -1390,7 +1390,7 @@ AS $BODY$
         SELECT
             ans.id,
             usr.name,
-            qt.description,
+            qt.description
         FROM
             user_data.security_answers ans
             LEFT OUTER JOIN
@@ -1430,7 +1430,7 @@ AS $BODY$
         SELECT
             ans.id,
             usr.name,
-            qt.description,
+            qt.description
         FROM
             user_data.security_answers ans
             LEFT OUTER JOIN
@@ -1464,7 +1464,7 @@ CREATE OR REPLACE FUNCTION user_data.security_answer_update_all_columns(
     param_answer VARCHAR,
     param_is_active BIT,
     param_is_deleted BIT,
-    param_user_id
+    param_user_id INTEGER
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -1500,7 +1500,7 @@ CREATE OR REPLACE FUNCTION user_data.security_answer_update_answer(
     param_answer_user_id INTEGER,
     param_question_id  INTEGER,
     param_answer VARCHAR,
-    param_user_id
+    param_user_id INTEGER
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -1534,7 +1534,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION user_data.security_answer_update_is_active(
     param_id INTEGER,
     param_is_active BIT,
-    param_user_id
+    param_user_id INTEGER
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -1564,7 +1564,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION user_data.security_answer_update_is_deleted(
     param_id INTEGER,
     param_is_deleted BIT,
-    param_user_id
+    param_user_id INTEGER
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
