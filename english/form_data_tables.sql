@@ -109,6 +109,7 @@ CREATE TABLE form_data.employee_annex_forms(
 	CONSTRAINT route_annex_unique UNIQUE (route)
 );
 
+-- table of hitory
 CREATE TABLE form_data.employee_form_personal_movement_history(
 	id BIGINT DEFAULT nextval('form_data.employee_form_personal_movement_person_history_id_seq'::regclass) NOT NULL,
 	form_person_movement_id INTEGER,
@@ -205,7 +206,7 @@ CREATE TABLE form_data.annex_types_for_movement_types_history(
 
 CREATE TABLE form_data.employee_form_ofice_and_form_person_movement_history(
 	id BIGINT DEFAULT nextval('form_data.employee_form_ofice_and_form_person_movement_history_id_seq'::regclass) NOT NULL,
-	employee_form_ofice_and_form_person_movement_id INTEGER,
+	employee_form_ofice_form_person_movement_id INTEGER,
 	form_ofice_id INTEGER,
 	form_person_movement_id INTEGER,
 	employee_id INTEGER,
@@ -330,3 +331,41 @@ ALTER TABLE ONLY form_data.annex_types_for_movement_types
 ALTER TABLE ONLY form_data.employee_annex_forms
   ADD CONSTRAINT employee_annex_forms_annex_type_id_fk FOREIGN KEY (annex_type_id) 
   REFERENCES form_data.annex_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+  -- ADD FK of table history
+
+ ALTER TABLE ONLY form_data.employee_form_ofices_history
+ 	ADD CONSTRAINT employee_form_ofices_history_form_ofice_id_fk FOREIGN KEY (form_ofice_id)
+ 	REFERENCES form_data.employee_form_ofices(id);
+
+ALTER TABLE ONLY form_data.movement_types_history
+ 	ADD CONSTRAINT movement_types_history_movement_type_id_fk FOREIGN KEY (movement_type_id)
+ 	REFERENCES form_data.movement_types (id);
+
+ALTER TABLE ONLY form_data.accountant_types_history
+ 	ADD CONSTRAINT accountant_types_history_accountant_type_id_fk FOREIGN KEY (accountant_type_id)
+ 	REFERENCES form_data.accountant_types (id);
+
+ALTER TABLE ONLY form_data.program_types_history
+ 	ADD CONSTRAINT program_types_history_progam_type_id_fk FOREIGN KEY (progam_type_id)
+ 	REFERENCES form_data.program_types (id);
+
+ALTER TABLE ONLY form_data.annex_types_history
+ 	ADD CONSTRAINT annex_types_history_annex_type_id_fk FOREIGN KEY (annex_type_id)
+ 	REFERENCES form_data.annex_types (id);
+
+ALTER TABLE ONLY form_data.annex_types_for_movement_types_history
+ 	ADD CONSTRAINT annex_type_movement_type_history_annex_type_movement_type_id_fk FOREIGN KEY (annex_types_for_movement_type_id)
+ 	REFERENCES form_data.annex_types_for_movement_types (id);
+
+ALTER TABLE ONLY form_data.employee_form_ofice_and_form_person_movement_history
+ 	ADD CONSTRAINT empl_form_ofice_person_mov_hist_empl_form_ofc_person_mov_id_fk FOREIGN KEY (employee_form_ofice_form_person_movement_id)
+ 	REFERENCES form_data.employee_form_ofice_and_form_person_movement (id);
+
+ALTER TABLE ONLY form_data.employee_form_personal_movement_history
+ 	ADD CONSTRAINT employee_form_personal_movement_history_form_person_mov_id_fk FOREIGN KEY (form_person_movement_id)
+ 	REFERENCES form_data.employee_form_personal_movement (id);
+
+ALTER TABLE ONLY form_data.employee_annex_forms_history
+ 	ADD CONSTRAINT employee_annex_forms_history_employee_annex_forms_id_fk FOREIGN KEY (employee_annex_forms_id)
+ 	REFERENCES form_data.employee_annex_forms (id);

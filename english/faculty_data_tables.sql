@@ -240,6 +240,32 @@ ALTER TABLE ONLY faculty_data.departaments
   ADD CONSTRAINT departaments_institute_id_fk FOREIGN KEY (institute_id) 
   REFERENCES faculty_data.institutes(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
-  ALTER TABLE ONLY faculty_data.chairs
+ALTER TABLE ONLY faculty_data.chairs
   ADD CONSTRAINT chairs_departament_id_fk FOREIGN KEY (departament_id) 
   REFERENCES faculty_data.departaments(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+  -- ADD FK of table history
+
+ALTER TABLE ONLY faculty_data.faculty_history
+  ADD CONSTRAINT faculty_history_faculty_id_fk FOREIGN KEY (faculty_id) 
+  REFERENCES faculty_data.faculty(id);
+
+ALTER TABLE ONLY faculty_data.schools_history
+  ADD CONSTRAINT school_history_school_id_fk FOREIGN KEY (school_id)
+  REFERENCES faculty_data.schools(id);
+
+ALTER TABLE ONLY faculty_data.institutes_history
+  ADD CONSTRAINT institute_history_institute_id_fk FOREIGN KEY(institute_id)
+REFERENCES faculty_data.institutes(id);
+
+ALTER TABLE ONLY faculty_data.departaments_history
+  ADD CONSTRAINT departament_history_departament_id_fk FOREIGN KEY(departament_id)
+REFERENCES faculty_data.departaments(id);
+
+ALTER TABLE ONLY faculty_data.chairs_history
+  ADD CONSTRAINT chair_history_chair_id_fk FOREIGN KEY (chair_id)
+  REFERENCES faculty_data.chairs(id);
+
+ALTER TABLE ONLY faculty_data.coordinations_history
+  ADD CONSTRAINT coordination_history_coordination_id_fk FOREIGN KEY(coordination_id)
+  REFERENCES faculty_data.coordinations(id);

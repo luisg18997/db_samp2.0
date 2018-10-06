@@ -227,7 +227,7 @@ AS $udf$
   	END;
 $udf$;
 
--- functions of municipalitys
+-- functions of municipalities
 
 --function of insert
 CREATE OR REPLACE FUNCTION employee_data.municipality_insert(
@@ -243,7 +243,7 @@ AS $udf$
 		local_is_successful BIT := '0';
 		local_municipality_id BIGINT;
 	BEGIN
-		INSERT INTO employee_data.municipalitys(
+		INSERT INTO employee_data.municipalities(
 			state_id,
 			name,
 			is_active,
@@ -286,7 +286,7 @@ AS $udf$
   DECLARE
     local_is_successful BIT := '0';
   BEGIN
-  	INSERT INTO employee_data.municipalitys_history
+  	INSERT INTO employee_data.municipalities_history
   	(
   		municipality_id,
   		state_id,
@@ -309,7 +309,7 @@ AS $udf$
 		param_change_type,
 		param_change_description
 	FROM
-		employee_data.municipalitys mun
+		employee_data.municipalities mun
 	WHERE
 		mun.id = param_municipality_id
 	ORDER BY
@@ -322,7 +322,7 @@ AS $udf$
 $udf$;
 
 -- funciton of list
-CREATE OR REPLACE FUNCTION employee_data.get_municipalitys_list(
+CREATE OR REPLACE FUNCTION employee_data.get_municipalities_list(
 	param_state_id INTEGER
 )
 RETURNS json
@@ -336,7 +336,7 @@ AS $BODY$
 			mun.id,
 			mun.name as municipality
 		FROM
-			employee_data.municipalitys mun
+			employee_data.municipalities mun
 		INNER JOIN
 			employee_data.states st
 		ON
@@ -370,7 +370,7 @@ AS $BODY$
 			mun.id,
 			mun.name as municipality
 		FROM
-			employee_data.municipalitys mun
+			employee_data.municipalities mun
 		INNER JOIN
 			employee_data.states st
 		ON
@@ -441,7 +441,7 @@ AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
   	BEGIN
-  		UPDATE employee_data.municipalitys SET
+  		UPDATE employee_data.municipalities SET
   			is_active = param_is_active,
   			last_modified_by = param_user_id,
       		last_modified_date = CLOCK_TIMESTAMP()
@@ -475,7 +475,7 @@ AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
   	BEGIN
-  		UPDATE employee_data.municipalitys SET
+  		UPDATE employee_data.municipalities SET
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
       		last_modified_date = CLOCK_TIMESTAMP()
@@ -606,7 +606,7 @@ AS $BODY$
 		FROM
 			employee_data.parish par
 		INNER JOIN
-			employee_data.municipalitys mun
+			employee_data.municipalities mun
 		ON
 			mun.id = par.municipality_id
 		AND
@@ -640,7 +640,7 @@ AS $BODY$
 		FROM
 			employee_data.parish par
 		INNER JOIN
-			employee_data.municipalitys mun
+			employee_data.municipalities mun
 		ON
 			mun.id = par.municipality_id
 		AND

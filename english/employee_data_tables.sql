@@ -76,7 +76,7 @@ CREATE TABLE employee_data.states(
 	last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
-CREATE TABLE employee_data.municipalitys(
+CREATE TABLE employee_data.municipalities(
 	id INTEGER DEFAULT nextval('employee_data.municipality_id_seq'::regclass) NOT NULL,
 	state_id  INTEGER NOT NULL,
 	name VARCHAR(100) NOT NULL,
@@ -283,7 +283,7 @@ CREATE TABLE employee_data.states_history(
 	change_description character varying(500)
 );
 
-CREATE TABLE employee_data.municipalitys_history(
+CREATE TABLE employee_data.municipalities_history(
 	id BIGINT DEFAULT nextval('employee_data.municipality_history_id_seq'::regclass) NOT NULL,
 	municipality_id INTEGER,
 	state_id  INTEGER,
@@ -444,7 +444,7 @@ ALTER TABLE ONLY employee_data.genders
 ALTER TABLE ONLY employee_data.states
 	ADD CONSTRAINT states_id_pk PRIMARY KEY (id);
 
-ALTER TABLE ONLY employee_data.municipalitys
+ALTER TABLE ONLY employee_data.municipalities
 	ADD CONSTRAINT municipality_id_pk PRIMARY KEY (id);
 
 ALTER TABLE ONLY employee_data.parish
@@ -495,7 +495,7 @@ ALTER TABLE ONLY employee_data.genders_history
 ALTER TABLE ONLY employee_data.states_history
 	ADD CONSTRAINT states_history_id_pk PRIMARY KEY (id);
 
-ALTER TABLE ONLY employee_data.municipalitys_history
+ALTER TABLE ONLY employee_data.municipalities_history
 	ADD CONSTRAINT municipality_history_id_pk PRIMARY KEY (id);
 
 ALTER TABLE ONLY employee_data.parish_history
@@ -536,7 +536,7 @@ ALTER TABLE ONLY employee_data.employees
 
 ALTER TABLE ONLY employee_data.employees
   ADD CONSTRAINT employee_municipality_id_fk FOREIGN KEY (municipality_id)
-  REFERENCES employee_data.municipalitys(id) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES employee_data.municipalities(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
   ADD CONSTRAINT employee_parish_id_fk FOREIGN KEY (parish_id)
@@ -554,13 +554,13 @@ ALTER TABLE ONLY employee_data.employees
   ADD CONSTRAINT employee_gender_id_fk FOREIGN KEY (gender_id)
   REFERENCES employee_data.genders(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY employee_data.municipalitys
+ALTER TABLE ONLY employee_data.municipalities
   ADD CONSTRAINT municipality_state_id_fk FOREIGN KEY (state_id)
   REFERENCES employee_data.states(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.parish
   ADD CONSTRAINT parish_municipality_id_fk FOREIGN KEY (municipality_id)
-  REFERENCES employee_data.municipalitys(id) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES employee_data.municipalities(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY employee_data.employees
   ADD CONSTRAINT employee_ingres_id_fk FOREIGN KEY (ingress_id)
@@ -605,7 +605,7 @@ ALTER TABLE ONLY employee_data.employees_history
 	REFERENCES employee_data.employees(id);
 
 ALTER TABLE ONLY employee_data.documentations_history
-	ADD CONSTRAINT documentations_history_documentation_id_fk FOREIGN KEY(employee_id)
+	ADD CONSTRAINT documentations_history_documentation_id_fk FOREIGN KEY(documentation_id)
 	REFERENCES employee_data.documentations(id);
 
 ALTER TABLE ONLY employee_data.nacionalities_history
@@ -620,14 +620,46 @@ ALTER TABLE ONLY employee_data.states_history
 	ADD CONSTRAINT states_history_state_id_fk FOREIGN KEY(state_id)
 	REFERENCES employee_data.states(id);
 
-ALTER TABLE ONLY employee_data.municipalitys_history
-	ADD CONSTRAINT documentations_history_documentation_id_fk FOREIGN KEY(employee_id)
-	REFERENCES employee_data.documentations(id);
+ALTER TABLE ONLY employee_data.municipalities_history
+	ADD CONSTRAINT municipalities_history_municipality_id_fk FOREIGN KEY(municipality_id)
+	REFERENCES employee_data.municipalities(id);
 
-ALTER TABLE ONLY employee_data.nacionalities_history
-	ADD CONSTRAINT nacionalities_history_nacionality_id_fk FOREIGN KEY(nacionality_id)
-	REFERENCES employee_data.nacionalities(id);
+ALTER TABLE ONLY employee_data.parish_history
+	ADD CONSTRAINT parish_history_parish_id_fk FOREIGN KEY(parish_id)
+	REFERENCES employee_data.parish(id);
 
-ALTER TABLE ONLY employee_data.genders_history
-	ADD CONSTRAINT genders_history_documentation_id_fk FOREIGN KEY(gender_id)
-	REFERENCES employee_data.genders(id);
+ALTER TABLE ONLY employee_data.ingress_history
+	ADD CONSTRAINT ingress_history_ingress_id_fk FOREIGN KEY(ingress_id)
+	REFERENCES employee_data.ingress(id);
+
+ALTER TABLE ONLY employee_data.income_types_history
+	ADD CONSTRAINT income_types_history_income_type_id_fk FOREIGN KEY(income_type_id)
+	REFERENCES employee_data.income_types(id);
+
+ALTER TABLE ONLY employee_data.category_types_history
+	ADD CONSTRAINT documentations_history_category_type_id_fk FOREIGN KEY(category_type_id)
+	REFERENCES employee_data.category_types(id);
+
+ALTER TABLE ONLY employee_data.dedication_types_history
+	ADD CONSTRAINT dedication_types_history_dedication_type_id_fk FOREIGN KEY(dedication_type_id)
+	REFERENCES employee_data.dedication_types(id);
+
+ALTER TABLE ONLY employee_data.salaries_history
+	ADD CONSTRAINT salaries_history_salary_id_fk FOREIGN KEY(salary_id)
+	REFERENCES employee_data.salaries(id);
+
+ALTER TABLE ONLY employee_data.employee_salaries_history
+	ADD CONSTRAINT employee_salaries_history_employee_salary_id_fk FOREIGN KEY(employee_salary_id)
+	REFERENCES employee_data.employee_salaries(id);
+
+ALTER TABLE ONLY employee_data.execunting_unit_history
+	ADD CONSTRAINT execunting_unit_history_execunting_unit_id_fk FOREIGN KEY(execunting_unit_id)
+	REFERENCES employee_data.execunting_unit(id);
+
+ALTER TABLE ONLY employee_data.idac_codes_history
+	ADD CONSTRAINT idac_codes_history_idac_code_id_fk FOREIGN KEY(idac_code_id)
+	REFERENCES employee_data.idac_codes(id);
+
+ALTER TABLE ONLY employee_data.employee_idac_code_history
+	ADD CONSTRAINT employee_idac_code_history_employee_idac_code_id_fk FOREIGN KEY(employee_idac_code_id)
+	REFERENCES employee_data.employee_idac_code(id);
