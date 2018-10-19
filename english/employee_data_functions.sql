@@ -2182,41 +2182,6 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
---function get list for dedication_type
-CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_and_category_type_list(
-	param_dedication_id INTEGER
-)
-RETURNS json
-LANGUAGE 'sql'
-COST 100.0
-
-AS $BODY$
-	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
-	FROM (
-		SELECT
-			sal.id,
-			sal.category_type_id,
-			sal.dedication_type_id,
-			sal.salary
-		FROM
-			employee_data.salaries sal
-			INNER JOIN
-				employee_data.dedication_types ded
-			ON
-				ded.id = sal.category_type_id
-			AND
-				ded.is_deleted = '0'
-			AND
-				ded.is_active = '1'
-		WHERE
-			sal.is_active = '1'
-		AND
-			sal.is_deleted = '0'
-		AND
-			sal.dedication_type_id = param_dedication_id
-	)DATA;
-$BODY$;
-
 --function get list for dedication_type and category_type
 CREATE OR REPLACE FUNCTION employee_data.get_salary_for_dedication_type_category_type_list(
 	param_dedication_id INTEGER,
@@ -3104,16 +3069,16 @@ AS $udf$
   	END;
 $udf$;
 
--- function of employee salares 
+-- function of employee salares
 
--- function of insert 
+-- function of insert
 
 CREATE OR REPLACE FUNCTION employee_data.employee_salaries_insert(
 	param_employee_id INTEGER,
 	param_salary_id INTEGER,
 	param_user_id INTEGER
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -3148,7 +3113,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-		
+
     	RETURN local_is_successful;
     END;
 $udf$;
@@ -3160,7 +3125,7 @@ CREATE OR REPLACE FUNCTION employee_data.employee_salaries_insert_history(
 	param_change_type VARCHAR,
   	param_change_description VARCHAR
 )
-RETURNS BIT 
+RETURNS BIT
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -3194,7 +3159,7 @@ AS $udf$
   		employee_data.employee_salaries emsal
   	WHERE
   		emsal.id = param_employee_salary_id
-  	ORDER BY 
+  	ORDER BY
   		emsal.last_modified_date
   	DESC
 	LIMIT 1;
@@ -3234,9 +3199,9 @@ AS $BODY$
 					sal.is_active = '1'
 				AND
 					sal.is_deleted = '0'
-		WHERE 
+		WHERE
 			emsal.is_active = '1'
-		AND 
+		AND
 			emsal.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -3274,9 +3239,9 @@ AS $BODY$
 					sal.is_active = '1'
 				AND
 					sal.is_deleted = '0'
-		WHERE 
+		WHERE
 			emsal.is_active = '1'
-		AND 
+		AND
 			emsal.is_deleted = '0'
 		AND
 			emsal.employee_id = param_employee_id
@@ -3316,9 +3281,9 @@ AS $BODY$
 					sal.is_active = '1'
 				AND
 					sal.is_deleted = '0'
-		WHERE 
+		WHERE
 			emsal.is_active = '1'
-		AND 
+		AND
 			emsal.is_deleted = '0'
 		AND
 			emsal.salary_id = param_salary_id
@@ -3358,9 +3323,9 @@ AS $BODY$
 					sal.is_active = '1'
 				AND
 					sal.is_deleted = '0'
-		WHERE 
+		WHERE
 			emsal.is_active = '1'
-		AND 
+		AND
 			emsal.is_deleted = '0'
 		AND
 			emsal.id = param_id
@@ -3401,9 +3366,9 @@ AS $BODY$
 					sal.is_active = '1'
 				AND
 					sal.is_deleted = '0'
-		WHERE 
+		WHERE
 			emsal.is_active = '1'
-		AND 
+		AND
 			emsal.is_deleted = '0'
 		AND
 			emsal.salary_id = param_salary_id
@@ -3417,7 +3382,7 @@ $BODY$;
 CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_all_columns(
 	param_id INTEGER,
 	param_employee_id INTEGER,
-	param_salary_id INTEGER, 
+	param_salary_id INTEGER,
 	param_is_active BIT,
 	param_is_deleted BIT,
 	param_user_id INTEGER
@@ -3456,7 +3421,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_salary(
 	param_id INTEGER,
 	param_employee_id INTEGER,
-	param_salary_id INTEGER, 
+	param_salary_id INTEGER,
 	param_user_id INTEGER
 )
 RETURNS BIT
@@ -3491,7 +3456,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_is_active(
 	param_id INTEGER,
 	param_employee_id INTEGER,
-	oaram_is_active BIT, 
+	oaram_is_active BIT,
 	param_user_id INTEGER
 )
 RETURNS BIT
@@ -3525,7 +3490,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_is_deleted(
 	param_id INTEGER,
 	param_employee_id INTEGER,
-	param_is_deleted BIT, 
+	param_is_deleted BIT,
 	param_user_id INTEGER
 )
 RETURNS BIT
@@ -3574,11 +3539,11 @@ AS $udf$
     	local_idac_id BIGINT;
   	BEGIN
   		IF EXISTS (
-  			SELECT 
+  			SELECT
   				idac.code
-  			FROM 
+  			FROM
   				employee_data.idac_codes idac
-  				INNER JOIN 
+  				INNER JOIN
   					employee_data.execunting_unit exec ON
   						exec.id = idac.execunting_unit_id
   					AND
@@ -3591,7 +3556,7 @@ AS $udf$
   					idac.is_deleted = '0'
   				AND
   					idac.code = param_idac_code
-  				AND 
+  				AND
   					idac.execunting_unit = param_execunting_unit_id
   		)
   		THEN
@@ -3654,7 +3619,7 @@ AS $udf$
     		change_type,
     		change_description
     	)
-    	SELECT 
+    	SELECT
     		id,
     		code,
     		execunting_unit_id,
@@ -3667,7 +3632,7 @@ AS $udf$
     		param_description
     	FROM
     		employee_data.idac_codes idac
-    	WHERE 
+    	WHERE
     		idac.id = param_idac_id
     	ORDER BY
     		idac.last_modified_date
@@ -3704,7 +3669,7 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -3733,7 +3698,7 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
 		AND
 			idac.vacant_date = null
@@ -3765,13 +3730,13 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
 		AND
 			idac.vacant_date != null
 	)DATA;
 $BODY$;
- 
+
 --function get list filter vacant not is null and execunting_unit
 CREATE OR REPLACE FUNCTION employee_data.get_idac_codes_filter_vacant_date_not_null_exec_unit_list(
 	param_execunting_unit_id INTEGER
@@ -3798,11 +3763,11 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
 		AND
 			idac.vacant_date != null
-		AND 
+		AND
 			idac.execunting_unit_id = param_execunting_unit_id
 	)DATA;
 $BODY$;
@@ -3833,11 +3798,11 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
 		AND
 			idac.vacant_date = null
-		AND 
+		AND
 			idac.execunting_unit_id = param_execunting_unit_id
 	)DATA;
 $BODY$;
@@ -3868,11 +3833,11 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
 		AND
 			idac.vacant_date != null
-		AND 
+		AND
 			idac.execunting_unit_id = param_execunting_unit_id
 	)DATA;
 $BODY$;
@@ -3903,14 +3868,14 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
-		AND 
+		AND
 			idac.execunting_unit_id = param_execunting_unit_id
 	)DATA;
 $BODY$;
 
---function get 
+--function get
 CREATE OR REPLACE FUNCTION employee_data.get_idac_code(
 	param_id INTEGER,
 	param_execunting_unit_id INTEGER
@@ -3937,11 +3902,11 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
-		AND 
+		AND
 			idac.execunting_unit_id = param_execunting_unit_id
-		AND 
+		AND
 			idac.id = param_id
 	)DATA;
 $BODY$;
@@ -3973,11 +3938,11 @@ AS $BODY$
 					exec.is_deleted = '0'
 		WHERE
 			idac.is_active = '1'
-		AND 
+		AND
 			idac.is_deleted = '0'
-		AND 
+		AND
 			idac.execunting_unit_id = param_execunting_unit_id
-		AND 
+		AND
 			idac.code = param_idac_code
 	)DATA;
 $BODY$;
@@ -4254,9 +4219,9 @@ AS $BODY$
 				empidac.idac_code_id = idac.id
 			AND
 				idac.is_active = '1'
-			AND 
+			AND
 				idac.is_deleted = '0'
-		WHERE 
+		WHERE
 			empidac.is_active = '1'
 		AND
 			empidac.is_deleted = '0'
@@ -4291,9 +4256,9 @@ AS $BODY$
 				empidac.idac_code_id = idac.id
 			AND
 				idac.is_active = '1'
-			AND 
+			AND
 				idac.is_deleted = '0'
-		WHERE 
+		WHERE
 			empidac.is_active = '1'
 		AND
 			empidac.is_deleted = '0'
@@ -4330,9 +4295,9 @@ AS $BODY$
 				empidac.idac_code_id = idac.id
 			AND
 				idac.is_active = '1'
-			AND 
+			AND
 				idac.is_deleted = '0'
-		WHERE 
+		WHERE
 			empidac.is_active = '1'
 		AND
 			empidac.is_deleted = '0'
@@ -4370,9 +4335,9 @@ AS $BODY$
 				empidac.idac_code_id = idac.id
 			AND
 				idac.is_active = '1'
-			AND 
+			AND
 				idac.is_deleted = '0'
-		WHERE 
+		WHERE
 			empidac.is_active = '1'
 		AND
 			empidac.is_deleted = '0'
