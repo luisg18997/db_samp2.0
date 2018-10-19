@@ -17,3 +17,5 @@ psql -U postgres db_ucv_fhe_sist -f ./user_data_sequence.sql
 psql -U postgres db_ucv_fhe_sist -f ./user_data_tables.sql
 psql -U postgres db_ucv_fhe_sist -f ./user_data_functions.sql
 psql -U postgres db_ucv_fhe_sist -f ./user_data_tables_datas.sql
+psql -U postgres db_ucv_fhe_sist -f ./process_form_sequence.sql
+psql -U postgres db_ucv_fhe_sist -f ./process_form_tables.sql
