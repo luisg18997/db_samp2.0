@@ -401,7 +401,7 @@ $udf$;
 
 
 -- funciton of list form_ofice
-CREATE OR REPLACE FUNCTION process_form.get_ process_form_ofice_list()
+CREATE OR REPLACE FUNCTION process_form.get_process_form_ofice_list()
 RETURNS json
 LANGUAGE 'sql'
 COST 100.0
