@@ -355,7 +355,7 @@ AS $BODY$
 $BODY$;
 
 --function get one data
-CREATE OR REPLACE FUNCTION employee_data.get_state(
+CREATE OR REPLACE FUNCTION employee_data.get_municipality(
 	param_id INTEGER,
 	param_state_id INTEGER
 )
