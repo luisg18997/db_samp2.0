@@ -812,7 +812,7 @@ AS $udf$
             FROM
                 user_data.user_roles usrol
             WHERE
-                usrol.role_id = param_role_id
+                usrol.user_id = param_user_role_id
         )
         THEN
             RETURN local_is_successful;
@@ -1607,7 +1607,8 @@ COST 100.0
 AS $udf$
   DECLARE
 	  local_is_successful BIT := '0';
-      local_user_id BIGINT;
+      local_user_id INTEGER;
+      param_user_id INTEGER := 0;
 	BEGIN
 		IF EXISTS
 		(
@@ -1644,18 +1645,19 @@ AS $udf$
     			param_surname,
     			param_email,
     			param_password,
+                param_ubication_id,
     			'0',
     			'0',
-    			0,
+    			param_user_id,
     			CLOCK_TIMESTAMP(),
     			CLOCK_TIMESTAMP()
     		)
             RETURNING id
             INTO STRICT local_user_id;
 
-            SELECT user_data.user_roles_without_rol_insert(local_user_id, param_user_id);
+            PERFORM user_data.user_roles_without_rol_insert(local_user_id, param_user_id);
             
-            SELECT user_data.security_answer_insert(local_user_id, param_user_id);
+            PERFORM user_data.security_answer_insert(local_user_id, param_user_id);
 
             SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
                 param_user_id := local_user_id,
