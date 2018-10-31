@@ -1811,3 +1811,26 @@ AS $udf$
         RETURN local_is_successful;
     END;
 $udf$;
+
+CREATE OR REPLACE FUNCTION user_data.login_user(
+  param_email VARCHAR
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    FROM (
+    SELECT
+      name,
+      surname,
+      email,
+      ubication_id,
+      password
+    FROM
+      user_data.users
+    WHERE
+      email = param_email
+    )DATA;
+$BODY$;
