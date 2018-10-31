@@ -1236,7 +1236,7 @@ AS $udf$
             INTO STRICT local_security_answer_id;
 
             SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
-                param_security_anwer_id := local_security_answer_id,
+                param_security_answer_id := local_security_answer_id,
                 param_change_type := 'FIRST INSERT',
                 param_change_description := 'FIRST INSERT'
             );
@@ -1653,9 +1653,9 @@ AS $udf$
             RETURNING id
             INTO STRICT local_user_id;
 
-            SELECT user_data.user_roles_without_rol_insert(local_user_id, param_user_id);
-            
-            SELECT user_data.security_answer_insert(local_user_id, param_user_id);
+            SELECT user_data.user_roles_without_rol_insert(local_user_id, local_user_id);
+
+            SELECT user_data.security_answer_insert(local_user_id, local_user_id);
 
             SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
                 param_user_id := local_user_id,
