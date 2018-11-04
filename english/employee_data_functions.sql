@@ -4490,46 +4490,28 @@ AS $udf$
 $udf$;
 
 
-
+-- funtion of employee 
 --function of insert employee
-
-
 CREATE OR REPLACE FUNCTION employee_data.employee_insert(
- 
-param_nacionality_id integer ,
-  param_documentation_id integer ,
- param_identification character varying,
-  param_first_name character varying ,
-  param_second_name character varying,
-  param_surname character varying ,
- param_second_surname character varying,
-  param_birth_date date ,
-  param_gender_id integer ,
-  param_email character varying,
-  param_state_id integer ,
-  param_municipality_id integer ,
-  param_parish_id integer ,
-  param_ubication text ,
-  param_address text ,
-  param_housing_type text ,
-  param_housing_identifier text ,
-  param_apartament text ,
-  param_school_id integer,
-  param_institute_id integer,
-  param_cordination_id integer,
-  param_departament_id integer,
-  param_chair_id integer,
-  param_first_mobile_phone_number character varying,
-  param_second_mobile_phone_number character varying,
-  param_local_phone_number character varying,
-  param_ingress_id integer ,
-  param_income_type_id integer ,
-  param_admission_date date ,
-  param_last_updated_date date,
-  param_retirement_date date,
-  param_user_id bigint
-
-  )
+	param_nacionality_id integer ,
+ 	param_documentation_id integer ,
+ 	param_identification VARCHAR,
+  	param_first_name VARCHAR,
+  	param_second_name VARCHAR,
+  	param_surname VARCHAR,
+ 	param_second_surname VARCHAR,
+	param_birth_date date ,
+	param_gender_id integer ,
+	param_email VARCHAR,
+	param_school_id integer,
+	param_institute_id integer,
+	param_cordination_id integer,
+	param_departament_id integer,
+	param_chair_id integer,
+	param_mobile_phone_number VARCHAR,
+	param_local_phone_number VARCHAR,
+	param_user_id bigint
+ )
 
  RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -4540,88 +4522,64 @@ AS $udf$
 		local_is_successful BIT := '0';
 		local_employee_id BIGINT;
 	BEGIN
+	if EXISTS
+	(
+		SELECT *
+		FROM
+			employee_data.employees emp
+		WHERE
+			nacionality_id = param_nacionality_id
+		AND
+			identification = param_identification
+	)
+	THEN
+		RETURN local_is_successful;
+	ELSE 
 		INSERT INTO employee_data.employees(
-
-	   nacionality_id, 
-     documentation_id,
-      identification,
-       first_name, 
-       second_name,
-        surname, 
-        second_surname,
-         birth_date, 
-         gender_id, 
+	   		nacionality_id, 
+     		documentation_id,
+      		identification,
+       		first_name, 
+	       	second_name,
+	        surname, 
+	        second_surname,
+	        birth_date, 
+	        gender_id, 
             email,
-             state_id,
-              municipality_id,
-               parish_id,
-                ubication, 
-                address, 
-            housing_type,
-             housing_identifier,
-              apartament, 
-              school_id,
-               institute_id,
-
+            school_id,
+            institute_id,
             cordination_id,
-             departament_id,
-              chair_id, 
-              first_mobile_phone_number, 
-
-            second_mobile_phone_number,
-             local_phone_number,
-              ingress_id, 
-              income_type_id, 
-            admission_date,
-             last_updated_date,
-              retirement_date,
-               is_active, 
-
+            departament_id,
+            chair_id, 
+            mobile_phone_number, 
+            local_phone_number,
+            is_active, 
             is_deleted,
-             last_modified_by,
-              last_modified_date
+            last_modified_by,
+            last_modified_date
 		)
 		VALUES(
-			param_state_id ,
-     param_name  ,
-param_nacionality_id  ,
-  param_documentation_id  ,
- param_identification  ,
-  param_first_name   ,
-  param_second_name  ,
-  param_surname   ,
- param_second_surname  ,
-  param_birth_date,
-  param_gender_id  ,
-  param_email  ,
-  param_state_id  ,
-  param_municipality_id  ,
-  param_parish_id  ,
-  param_ubication   ,
-  param_address   ,
-  param_housing_type   ,
-  param_housing_identifier   ,
-  param_apartament   ,
-  param_school_id ,
-  param_institute_id ,
-  param_cordination_id ,
-  param_departament_id ,
-  param_chair_id ,
-  param_first_mobile_phone_number  ,
-  param_second_mobile_phone_number,  
-  param_local_phone_number  ,
-  param_ingress_id  ,
-  param_income_type_id  ,
-  param_admission_date ,
-  param_last_updated_date,
-  param_retirement_date  ,
-
-			'1',
+			param_nacionality_id,
+  			param_documentation_id,
+	 		param_identification,
+		  	param_first_name,
+		  	param_second_name,
+		  	param_surname,
+		   	param_second_surname,
+		    param_birth_date,
+		    param_gender_id,
+		    param_email,
+  			param_school_id,
+  			param_institute_id,
+			param_cordination_id,
+			param_departament_id,
+			param_chair_id,
+			param_mobile_phone_number, 
+			param_local_phone_number,
+			'0',
 			'0',
 			param_user_id,
 			CLOCK_TIMESTAMP()
-
-			
 		)
 		RETURNING id
 		INTO STRICT local_employee_id;
@@ -4633,103 +4591,103 @@ param_nacionality_id  ,
       	);
 
     	RETURN local_is_successful;
+    	END IF;
     END;
 $udf$;
 
-
-
-	--function of insert log
-	CREATE OR REPLACE FUNCTION employee_data.employees_insert_history(
-	  param_employee_id BIGINT,
-	  param_change_type VARCHAR,
-	  param_change_description VARCHAR
-	)
-	RETURNS BIT
-	LANGUAGE plpgsql VOLATILE
-	COST 100.0
-	AS $udf$
-	  DECLARE
-	    local_is_successful BIT := '0';
-	  BEGIN
+--function of insert log
+CREATE OR REPLACE FUNCTION employee_data.employees_insert_history(
+	param_employee_id BIGINT,
+	param_change_type VARCHAR,
+	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
 	  	INSERT INTO employee_data.employees_history
 	  	(
 	  		employee_id,
-	    nacionality_id, 
-	    documentation_id,
-	    identification,
-	    first_name, 
-	    second_name,
-	    surname, 
+		    nacionality_id, 
+		    documentation_id,
+		    identification,
+		    first_name, 
+		    second_name,
+		    surname, 
 	        second_surname,
-	         birth_date, 
-	         gender_id, 
-	            email,
-	             state_id,
-	              municipality_id,
-	               parish_id,
-	                ubication, 
-	                address, 
-	            housing_type,
-	             housing_identifier,
-	              apartament, 
-	              school_id,
-	               institute_id,
-
-	            cordination_id,
-	             departament_id,
-	              chair_id, 
-	              first_mobile_phone_number, 
-
-	            second_mobile_phone_number,
-	             local_phone_number,
-	              ingress_id, 
-	              income_type_id, 
-	            admission_date,
-	             last_updated_date,
-	              retirement_date,
-	               is_active, 
-	            is_deleted,
-	             last_modified_by,
-	              last_modified_date
+	        birth_date, 
+	        gender_id, 
+	        email,
+	        state_id,
+	        municipality_id,
+	        parish_id,
+            ubication, 
+            address, 
+            housing_type,
+	        housing_identifier,
+	        apartament, 
+	        school_id,
+	        institute_id,
+            cordination_id,
+	        departament_id,
+            chair_id, 
+	        first_mobile_phone_number, 
+	        second_mobile_phone_number,
+	        local_phone_number,
+	        ingress_id, 
+	        income_type_id, 
+	        admission_date,
+	        last_updated_date,
+	        retirement_date,
+	        is_active, 
+	        is_deleted,
+	        last_modified_by,
+	        last_modified_date,
+	        change_type,
+			change_description
 	  	)
 	  	SELECT
-		id,
-	  nacionality_id, 
-	     documentation_id,
-	      identification,
-	       first_name, 
-	       second_name,
+			id,
+	        nacionality_id, 
+	    	documentation_id,
+	    	identification,
+	        first_name, 
+	        second_name,
 	        surname, 
 	        second_surname,
-	         birth_date, 
-	         gender_id, 
-	            email,
-	             state_id,
-	              municipality_id,
-	               parish_id,
-	                ubication, 
-	                address, 
-	            housing_type,
-	             housing_identifier,
-	              apartament, 
-	              school_id,
-	               institute_id,
-	            cordination_id,
-	             departament_id,
-	              chair_id, 
-	              first_mobile_phone_number, 
-	            second_mobile_phone_number,
-	             local_phone_number,
-	              ingress_id, 
-	              income_type_id, 
-	            admission_date,
-	             last_updated_date,
-	              retirement_date,
-	               is_active, 
-	            is_deleted,
-	             last_modified_by,
-	              last_modified_date
-
+	        birth_date, 
+	        gender_id, 
+	        email,
+            state_id,
+            municipality_id,
+            parish_id,
+            ubication, 
+            address, 
+            housing_type,
+	        housing_identifier,
+            apartament, 
+            school_id,
+            institute_id,
+            cordination_id,
+            departament_id,
+            chair_id, 
+            first_mobile_phone_number, 
+            second_mobile_phone_number,
+            local_phone_number,
+            ingress_id, 
+            income_type_id, 
+            admission_date,
+            last_updated_date,
+            retirement_date,
+            is_active, 
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            param_change_type,
+            param_change_description
 		FROM
 			employee_data.employees ep
 		WHERE
