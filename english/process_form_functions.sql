@@ -17,7 +17,7 @@ AS $udf$
             form_movement_personal_id,
             date_made,
             ubication_id,
-            status_process_form_id, 
+            status_process_form_id,
             is_active,
             is_deleted,
             last_modified_by,
@@ -27,7 +27,7 @@ AS $udf$
     	   	param_form_movement_personal_id,
 	   		CLOCK_TIMESTAMP(),
 	   		5,
-	   	    1,            
+	   	    1,
             '1',
 			'0',
 			param_user_id,
@@ -36,7 +36,7 @@ AS $udf$
 		RETURNING id
       	INTO STRICT local_process_form_movement_personal_id;
 
-      	SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_history(
+      	SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_insert_history(
       		param_form_movement_personal_id := local_process_form_movement_personal_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
@@ -61,14 +61,14 @@ AS $udf$
     BEGIN
 		INSERT INTO process_form.process_form_movement_personal_history(
 	        process_form_movement_personal_id,
-	        form_movement_personal_id, 
+	        form_movement_personal_id,
 	        date_made,
 	        ubication_id,
-	        status_process_form_id, 
+	        status_process_form_id,
 	        is_active,
-	        is_deleted, 
+	        is_deleted,
 	        last_modified_by,
-	        last_modified_date, 
+	        last_modified_date,
 	        change_type,
 	        change_description
 	  	)
@@ -77,7 +77,7 @@ AS $udf$
             form_movement_personal_id,
             date_made,
             ubication_id,
-            status_process_form_id, 
+            status_process_form_id,
             is_active,
             is_deleted,
             last_modified_by,
@@ -141,7 +141,7 @@ AS $BODY$
 	         pf.date_made,
 	         pf.ubication_id,
 	         pf.status_process_form_id
-		
+
 		FROM
 			process_form.process_form_movement_personal pf
 		WHERE
@@ -183,7 +183,7 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-    SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_history(
+    SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_insert_history(
       		param_form_movement_personal_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
@@ -193,7 +193,7 @@ AS $udf$
   	END;
 $udf$;
 
-	
+
 
 -- function update is active process_form_movement_personal
 CREATE OR REPLACE FUNCTION process_form.process_form_movement_personal_update_is_active(
@@ -216,7 +216,7 @@ AS $udf$
       		id = param_id;
 
 
-    SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_history(
+    SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_insert_history(
       		param_form_movement_personal_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
@@ -248,7 +248,7 @@ AS $udf$
       		id = param_id;
 
 
-    SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_history(
+    SELECT process_form_movement_personal_insert_history into local_is_successful FROM process_form.process_form_movement_personal_insert_history(
       		param_form_movement_personal_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
@@ -281,7 +281,7 @@ INSERT INTO process_form.process_form_ofice(
              form_ofice_id,
              date_made,
              ubication_id,
-             status_process_form_id, 
+             status_process_form_id,
              is_active,
              is_deleted,
              last_modified_by,
@@ -291,7 +291,7 @@ INSERT INTO process_form.process_form_ofice(
     	     param_form_ofice_id,
 	   		 CLOCK_TIMESTAMP(),
 	   		 5,
-	   	     1,            
+	   	     1,
             '1',
 			'0',
 			param_user_id,
@@ -300,7 +300,7 @@ INSERT INTO process_form.process_form_ofice(
 		RETURNING id
       	INTO STRICT local_process_form_ofice_id;
 
-      	SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_history(
+      	SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_insert_history(
       		param_form_ofice_id := local_process_form_ofice_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
@@ -325,14 +325,14 @@ $udf$;
 	BEGIN
 		INSERT INTO process_form.process_form_ofice_history(
             process_form_ofice_id,
-            form_movement_personal_id, 
+            form_movement_personal_id,
             date_made,
             ubication_id,
-            status_process_form_id, 
+            status_process_form_id,
             is_active,
-            is_deleted, 
+            is_deleted,
             last_modified_by,
-            last_modified_date, 
+            last_modified_date,
             change_type,
             change_description
 	  	)
@@ -341,7 +341,7 @@ $udf$;
             form_movement_personal_id,
             date_made,
             ubication_id,
-            status_process_form_id, 
+            status_process_form_id,
             is_active,
             is_deleted,
             last_modified_by,
@@ -405,11 +405,11 @@ AS $BODY$
 	        pf.date_made,
 	        pf.ubication_id,
 	        pf.status_process_form_id
-		
+
 		FROM
 			process_form.process_form_ofice pf
 		WHERE
-			pf.iform_ofice_idd = param_form_ofice_id
+			pf.form_ofice_id = param_form_ofice_id
 		AND
 			pf.is_active = '1'
 		AND
@@ -417,7 +417,7 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
--- function update all columns process_form_ofice 
+-- function update all columns process_form_ofice
 CREATE OR REPLACE FUNCTION process_form.process_form_ofice_update_all_columns(
 	param_id INTEGER,
 	param_user_id BIGINT,
@@ -435,7 +435,7 @@ AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
   	BEGIN
-  		UPDATE process_form.process_form_ofice SET	  		    
+  		UPDATE process_form.process_form_ofice SET
          	form_ofice_id = param_form_ofice_id,
 		    date_made = param_date_made,
 		    ubication_id = param_ubication_id,
@@ -443,11 +443,11 @@ AS $udf$
 		    is_active = param_is_active,
 	    	is_deleted = param_is_deleted,
 	    	last_modified_by = param_user_id,
-		    last_modified_date = CLOCK_TIMESTAMP()  		
+		    last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
 
-    	SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_history(
+    	SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_insert_history(
       		param_form_ofice_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
@@ -477,7 +477,7 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-    SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_history(
+    SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_insert_history(
       		param_form_ofice_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
@@ -507,8 +507,7 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-
-    SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_history(
+    SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_insert_history(
       		param_form_ofice_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
@@ -518,9 +517,7 @@ AS $udf$
   	END;
 $udf$;
 
-
 --function of status_process_form
-
 --function of insert status_process_form
 CREATE OR REPLACE FUNCTION process_form.status_process_form_insert(
 	param_description VARCHAR,
@@ -543,7 +540,7 @@ AS $udf$
 	        last_modified_date
 	    )
     	VALUES (
-    	    param_description,	          
+    	    param_description,
             '1',
 			'0',
 			param_user_id,
@@ -552,7 +549,7 @@ AS $udf$
 		RETURNING id
       	INTO STRICT local_status_process_form_id;
 
-      	SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_history(
+      	SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
       		param_status_process_form_id := local_status_process_form_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
@@ -575,13 +572,13 @@ AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
 	BEGIN
-		INSERT INTO process_form.status_process_form_history(		
+		INSERT INTO process_form.status_process_form_history(
 			status_process_form_id,
 			description,
             is_active,
-            is_deleted, 
+            is_deleted,
             last_modified_by,
-            last_modified_date, 
+            last_modified_date,
             change_type,
             change_description
 	  	)
@@ -644,7 +641,7 @@ AS $BODY$
 		SELECT
  			 pf.id,
 	         pf.description
-		
+
 		FROM
 			process_form.status_process_form pf
 		WHERE
@@ -671,7 +668,7 @@ AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
   	BEGIN
-  		UPDATE process_form.status_process_form SET  
+  		UPDATE process_form.status_process_form SET
   			description = param_description,
   			is_active = param_is_active,
   			is_deleted = param_is_deleted,
@@ -680,7 +677,7 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-    	SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_history(
+    	SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
       		param_status_process_form_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
@@ -690,7 +687,7 @@ AS $udf$
   	END;
 $udf$;
 
-	
+
 -- function update is active status_process_form
 CREATE OR REPLACE FUNCTION process_form.status_process_form_update_is_active(
 	param_id INTEGER,
@@ -712,7 +709,7 @@ AS $udf$
       		id = param_id;
 
 
-    SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_history(
+    SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
       		param_status_process_form_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
@@ -742,7 +739,7 @@ AS $udf$
       	WHERE
       		id = param_id;
 
- SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_history(
+ SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
       		param_status_process_form_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'

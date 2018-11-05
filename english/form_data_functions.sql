@@ -1,4 +1,4 @@
--- functions movement_types 
+-- functions movement_types
 -- function of insert
 CREATE OR REPLACE FUNCTION form_data.movement_type_insert(
 	param_description VARCHAR,
@@ -17,7 +17,7 @@ AS $udf$
 				description
 			FROM
 				form_data.movement_types mov
-			WHERE 
+			WHERE
 				mov.description = param_description
 
 			AND
@@ -79,7 +79,7 @@ AS $udf$
 			change_type,
 			change_description
 		)
-		SELECT 
+		SELECT
 			id,
 			description,
 			is_active,
@@ -88,7 +88,7 @@ AS $udf$
 			last_modified_date,
 			param_change_type,
 			param_change_description
-		FROM 
+		FROM
 			form_data.movement_types mov
 		WHERE
 			mov.id = param_movement_type_id
@@ -119,7 +119,7 @@ AS $BODY$
 			form_data.movement_types  mov
 		WHERE
 			mov.is_active = '1'
-		AND 
+		AND
 			mov.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -142,7 +142,7 @@ AS $BODY$
 			form_data.movement_types  mov
 		WHERE
 			mov.is_active = '1'
-		AND 
+		AND
 			mov.is_deleted = '0'
 		AND
 			mov.id = param_id
@@ -170,7 +170,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
@@ -200,7 +200,7 @@ AS $udf$
 			is_active = param_is_active,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
@@ -231,7 +231,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
@@ -264,7 +264,7 @@ AS $udf$
 				code
 			FROM
 				form_data.accountant_types account
-			WHERE 
+			WHERE
 				account.code = param_code
 
 			AND
@@ -328,7 +328,7 @@ AS $udf$
 			change_type,
 			change_description
 		)
-		SELECT 
+		SELECT
 			id,
 			code,
 			description,
@@ -338,7 +338,7 @@ AS $udf$
 			last_modified_date,
 			param_change_type,
 			param_change_description
-		FROM 
+		FROM
 			form_data.accountant_types account
 		WHERE
 			account.id = param_accountant_type_id
@@ -368,7 +368,7 @@ AS $BODY$
 			account.description
 		FROM
 			form_data.accountant_types account
-		WHERE 
+		WHERE
 			account.is_active = '1'
 		AND
 			account.is_deleted = '0'
@@ -392,11 +392,11 @@ AS $BODY$
 			account.description
 		FROM
 			form_data.accountant_types account
-		WHERE 
+		WHERE
 			account.is_active = '1'
 		AND
 			account.is_deleted = '0'
-		AND 
+		AND
 			account.id = param_id
 	)DATA;
 $BODY$;
@@ -424,7 +424,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 
@@ -455,7 +455,7 @@ AS $udf$
 			is_active = param_is_active,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 
@@ -486,7 +486,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 
@@ -519,14 +519,14 @@ AS $udf$
 				prog.code
 			FROM
 				form_data.program_types prog
-			WHERE 
+			WHERE
 				prog.code = param_code
 			AND
 				prog.is_deleted = '0'
 			AND
 				prog.is_active = '1'
 		)
-		THEN 
+		THEN
 		RETURN local_is_successful;
 		ELSE
 			INSERT INTO form_data.program_types(
@@ -596,7 +596,7 @@ AS $udf$
 			param_change_description
 		FROM
 			form_data.program_types prog
-		WHERE 
+		WHERE
 			prog.id = param_program_type_id
 		ORDER BY
 			last_modified_date
@@ -623,7 +623,7 @@ AS $BODY$
 			form_data.program_types  prog
 		WHERE
 			prog.is_active = '1'
-		AND 
+		AND
 			prog.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -646,7 +646,7 @@ AS $BODY$
 			form_data.program_types  prog
 		WHERE
 			prog.is_active = '1'
-		AND 
+		AND
 			prog.is_deleted = '0'
 		AND
 			prog.id = param_id
@@ -676,7 +676,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
@@ -706,7 +706,7 @@ AS $udf$
 			is_active = param_is_active,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
@@ -737,7 +737,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
@@ -769,7 +769,7 @@ AS $udf$
 				annex.description
 			FROM
 				form_data.annex_types annex
-			WHERE 
+			WHERE
 				annex.description = param_description
 
 			AND
@@ -831,7 +831,7 @@ AS $udf$
 			change_type,
 			change_description
 		)
-		SELECT 
+		SELECT
 			id,
 			description,
 			is_active,
@@ -840,7 +840,7 @@ AS $udf$
 			last_modified_date,
 			param_change_type,
 			param_change_description
-		FROM 
+		FROM
 			form_data.annex_types annex
 		WHERE
 			annex.id = param_annex_type_id
@@ -871,7 +871,7 @@ AS $BODY$
 			form_data.annex_types  annex
 		WHERE
 			annex.is_active = '1'
-		AND 
+		AND
 			annex.is_deleted = '0'
 	)DATA;
 $BODY$;
@@ -894,7 +894,7 @@ AS $BODY$
 			form_data.annex_types  annex
 		WHERE
 			annex.is_active = '1'
-		AND 
+		AND
 			annex.is_deleted = '0'
 		AND
 			annex.id = param_id
@@ -922,7 +922,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
@@ -952,7 +952,7 @@ AS $udf$
 			is_active = param_is_active,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
@@ -983,7 +983,7 @@ AS $udf$
 			is_deleted = param_is_deleted,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_id;
 
 		SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
@@ -1339,11 +1339,11 @@ AS $udf$
 
 		RETURN local_is_successful;
 	END;
-$udf$; 
+$udf$;
 
 -- function of employee_form_ofice_and_form_person_movement
 -- function of insert
-CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_and_form_person_movement_insert(
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_person_movement_insert(
 	param_ofice_id BIGINT,
 	param_employee_id BIGINT,
 	param_dedication_id INTEGER,
@@ -1386,7 +1386,7 @@ AS $udf$
 		THEN
 			RETURN local_is_successful;
 		ELSE
-			INSERT INTO employee_form_ofice_and_form_person_movement(
+			INSERT INTO form_data.employee_form_ofice_and_form_person_movement(
 				form_ofice_id,
 				employee_id,
 				dedication_id,
@@ -1419,8 +1419,77 @@ AS $udf$
 			RETURNING id
 			INTO local_emp_form_of_per_mov_id;
 
-			SELECT FROM form_data
+			SELECT employee_form_ofice_person_movement_insert_history INTO local_is_successful FROM form_data.employee_form_ofice_person_movement_insert_history(
+				param_emp_form_of_per_mov_id := local_emp_form_of_per_mov_id,
+				param_change_type := 'FIRST INSERT',
+				param_change_description := 'FIRST INSERT'
+			);
+
+			RETURN local_is_successful;
 
 		END IF;
 	ENd;
+$udf$;
+
+--function of insert log
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_person_movement_insert_history(
+	param_emp_form_of_per_mov_id BIGINT,
+	param_change_type VARCHAR,
+	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		INSERT INTO form_data.employee_form_ofice_and_form_person_movement_history(
+			employee_form_ofice_form_person_movement_id,
+			form_ofice_id,
+			form_person_movement_id,
+			employee_id,
+			dedication_id,
+			movement_type_id,
+			start_date,
+			finish_date,
+			school_id,
+			institute_id,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			change_type,
+			change_description
+		)
+		SELECT
+			id,
+			form_ofice_id,
+			form_person_movement_id,
+			employee_id,
+			dedication_id,
+			movement_type_id,
+			start_date,
+			finish_date,
+			school_id,
+			institute_id,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			param_change_type,
+			param_change_description
+			FROM
+				form_data.employee_form_ofice_and_form_person_movement fomp
+			WHERE
+				fomp.id = param_emp_form_of_per_mov_id
+			ORDER BY
+				fomp.last_modified_date
+			DESC
+			LIMIT 1;
+
+			local_is_successful := '1';
+
+			RETURN local_is_successful;
+	END;
 $udf$;

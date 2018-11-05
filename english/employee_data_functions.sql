@@ -4490,7 +4490,7 @@ AS $udf$
 $udf$;
 
 
--- funtion of employee 
+-- funtion of employee
 --function of insert employee
 CREATE OR REPLACE FUNCTION employee_data.employee_insert(
 	param_nacionality_id integer ,
@@ -4534,26 +4534,26 @@ AS $udf$
 	)
 	THEN
 		RETURN local_is_successful;
-	ELSE 
+	ELSE
 		INSERT INTO employee_data.employees(
-	   		nacionality_id, 
+	   		nacionality_id,
      		documentation_id,
       		identification,
-       		first_name, 
+       		first_name,
 	       	second_name,
-	        surname, 
+	        surname,
 	        second_surname,
-	        birth_date, 
-	        gender_id, 
+	        birth_date,
+	        gender_id,
             email,
             school_id,
             institute_id,
             cordination_id,
             departament_id,
-            chair_id, 
-            mobile_phone_number, 
+            chair_id,
+            mobile_phone_number,
             local_phone_number,
-            is_active, 
+            is_active,
             is_deleted,
             last_modified_by,
             last_modified_date
@@ -4574,7 +4574,7 @@ AS $udf$
 			param_cordination_id,
 			param_departament_id,
 			param_chair_id,
-			param_mobile_phone_number, 
+			param_mobile_phone_number,
 			param_local_phone_number,
 			'0',
 			'0',
@@ -4611,38 +4611,38 @@ AS $udf$
 	  	INSERT INTO employee_data.employees_history
 	  	(
 	  		employee_id,
-		    nacionality_id, 
+		    nacionality_id,
 		    documentation_id,
 		    identification,
-		    first_name, 
+		    first_name,
 		    second_name,
-		    surname, 
+		    surname,
 	        second_surname,
-	        birth_date, 
-	        gender_id, 
+	        birth_date,
+	        gender_id,
 	        email,
 	        state_id,
 	        municipality_id,
 	        parish_id,
-            ubication, 
-            address, 
+            ubication,
+            address,
             housing_type,
 	        housing_identifier,
-	        apartament, 
+	        apartament,
 	        school_id,
 	        institute_id,
             cordination_id,
 	        departament_id,
-            chair_id, 
-	        first_mobile_phone_number, 
+            chair_id,
+	        first_mobile_phone_number,
 	        second_mobile_phone_number,
 	        local_phone_number,
-	        ingress_id, 
-	        income_type_id, 
+	        ingress_id,
+	        income_type_id,
 	        admission_date,
 	        last_updated_date,
 	        retirement_date,
-	        is_active, 
+	        is_active,
 	        is_deleted,
 	        last_modified_by,
 	        last_modified_date,
@@ -4651,38 +4651,38 @@ AS $udf$
 	  	)
 	  	SELECT
 			id,
-	        nacionality_id, 
+	        nacionality_id,
 	    	documentation_id,
 	    	identification,
-	        first_name, 
+	        first_name,
 	        second_name,
-	        surname, 
+	        surname,
 	        second_surname,
-	        birth_date, 
-	        gender_id, 
+	        birth_date,
+	        gender_id,
 	        email,
             state_id,
             municipality_id,
             parish_id,
-            ubication, 
-            address, 
+            ubication,
+            address,
             housing_type,
 	        housing_identifier,
-            apartament, 
+            apartament,
             school_id,
             institute_id,
             cordination_id,
             departament_id,
-            chair_id, 
-            first_mobile_phone_number, 
+            chair_id,
+            first_mobile_phone_number,
             second_mobile_phone_number,
             local_phone_number,
-            ingress_id, 
-            income_type_id, 
+            ingress_id,
+            income_type_id,
             admission_date,
             last_updated_date,
             retirement_date,
-            is_active, 
+            is_active,
             is_deleted,
             last_modified_by,
             last_modified_date,
@@ -4736,14 +4736,15 @@ AS $udf$
 			income_types = param_income_type_id,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_employee_id;
 
 		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
 			param_employee_id := param_user_id,
 			param_change_type := 'Update for form movement personal',
 			param_change_description := 'Update value for form movement personal'
-		)
-
+		);
+		local_is_successful := '1';
+		RETURN local_is_successful;
 	END;
 $udf$;
