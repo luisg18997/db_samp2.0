@@ -2,11 +2,7 @@
 
 --function of insert process_form_movement_personal
 CREATE OR REPLACE FUNCTION employee_data.process_form_movement_personal_insert(
-	
 	param_form_movement_personal_id INTEGER,
-	param_date_made DATE,
-	param_ubication_id INTEGER,
-	param_status_process_form_id INTEGER,
 	param_user_id BIGINT
 )
 RETURNS BIT
@@ -17,30 +13,25 @@ AS $udf$
 		local_is_successful BIT := '0';
 		local_process_form_movement_personal_id BIGINT;
 	BEGIN
-
-
-INSERT INTO process_form.process_form_movement_personal(
-             form_movement_personal_id,
-             date_made,
-             ubication_id,
-             status_process_form_id, 
-             is_active,
-             is_deleted,
-             last_modified_by,
-             last_modified_date
-                )
-    VALUES (
+		INSERT INTO process_form.process_form_movement_personal(
+            form_movement_personal_id,
+            date_made,
+            ubication_id,
+            status_process_form_id, 
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date
+        )
+    	VALUES (
     	   	param_form_movement_personal_id,
-	   		 param_date_made,
-	   		 param_ubication_id,
-	   	     param_status_process_form_id,            
+	   		CLOCK_TIMESTAMP(),
+	   		5,
+	   	    1,            
             '1',
 			'0',
 			param_user_id,
 			CLOCK_TIMESTAMP()
-
-
-
 		)
 		RETURNING id
       	INTO STRICT local_process_form_movement_personal_id;
@@ -55,50 +46,44 @@ INSERT INTO process_form.process_form_movement_personal(
     END;
 $udf$;
 
-
-
-
-	--function of insert log process_form_movement_personal
-	CREATE OR REPLACE FUNCTION process_form.process_form_movement_personal_insert_history(
-	  param_process_form_movement_personal_id BIGINT,
-	  param_change_type VARCHAR,
-	  param_change_description VARCHAR
-	)
-	RETURNS BIT
-	LANGUAGE plpgsql VOLATILE
-	COST 100.0
-	AS $udf$
-	  DECLARE
+--function of insert log process_form_movement_personal
+CREATE OR REPLACE FUNCTION process_form.process_form_movement_personal_insert_history(
+	param_process_form_movement_personal_id BIGINT,
+	param_change_type VARCHAR,
+	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
 	    local_is_successful BIT := '0';
-	  BEGIN
-	 
-
-	INSERT INTO process_form.process_form_movement_personal_history(
-	            process_form_movement_personal_id,
-	             form_movement_personal_id, 
-	            date_made,
-	             ubication_id,
-	             status_process_form_id, 
-	             is_active,
-	              is_deleted, 
-	            last_modified_by,
-	             last_modified_date, 
-	             change_type,
-	              change_description
-
+    BEGIN
+		INSERT INTO process_form.process_form_movement_personal_history(
+	        process_form_movement_personal_id,
+	        form_movement_personal_id, 
+	        date_made,
+	        ubication_id,
+	        status_process_form_id, 
+	        is_active,
+	        is_deleted, 
+	        last_modified_by,
+	        last_modified_date, 
+	        change_type,
+	        change_description
 	  	)
 	  	SELECT
-	  		 	id,
-	             form_movement_personal_id,
-	             date_made,
-	             ubication_id,
-	             status_process_form_id, 
-	             is_active,
-	             is_deleted,
-	             last_modified_by,
-	             last_modified_date,
-	             param_change_type,
-				 param_change_description
+  		 	id,
+            form_movement_personal_id,
+            date_made,
+            ubication_id,
+            status_process_form_id, 
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            param_change_type,
+			param_change_description
 		FROM
 			process_form.process_form_movement_personal pf
 		WHERE
@@ -124,13 +109,11 @@ AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
 		SELECT
-
- 				 id,
-	             form_movement_personal_id,
-	             date_made,
-	             ubication_id,
-	             status_process_form_id
-		
+			id,
+            form_movement_personal_id,
+            date_made,
+            ubication_id,
+            status_process_form_id
 		FROM
 			process_form.process_form_movement_personal pf
 		WHERE
@@ -141,11 +124,9 @@ AS $BODY$
 $BODY$;
 
 
-
-
 --function get one data process_form_movement_personal
 CREATE OR REPLACE FUNCTION process_form.get_process_form_movement_personal(
-	param_id INTEGER
+	param_form_movement_personal_id INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -164,7 +145,7 @@ AS $BODY$
 		FROM
 			process_form.process_form_movement_personal pf
 		WHERE
-			pf.id = param_id
+			pf.form_movement_personal_id = param_form_movement_personal_id
 		AND
 			pf.is_active = '1'
 		AND
@@ -174,7 +155,6 @@ $BODY$;
 
 -- function update all columns process_form_movement_personal
 CREATE OR REPLACE FUNCTION process_form.process_form_movement_personal_update_all_columns(
-
 	param_id INTEGER,
 	param_user_id BIGINT,
 	param_form_movement_personal_id INTEGER,
@@ -192,19 +172,14 @@ AS $udf$
     	local_is_successful BIT := '0';
   	BEGIN
   		UPDATE process_form.process_form_movement_personal SET
-
-	  		    
-	             form_movement_personal_id = param_form_movement_personal_id,
-	             date_made = param_date_made,
-	             ubication_id = param_ubication_id,
-	             status_process_form_id = param_status_process_form_id,
-	             is_active = param_is_active,
-  		   		  is_deleted = param_is_deleted,
-  		     last_modified_by = param_user_id,
-      		     last_modified_date = CLOCK_TIMESTAMP()
-
-  		
-  		
+            form_movement_personal_id = param_form_movement_personal_id,
+            date_made = param_date_made,
+            ubication_id = param_ubication_id,
+            status_process_form_id = param_status_process_form_id,
+            is_active = param_is_active,
+		    is_deleted = param_is_deleted,
+  		    last_modified_by = param_user_id,
+      		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
 
@@ -285,18 +260,11 @@ AS $udf$
 $udf$;
 
 
-
-
 	-- functions of process_form_ofice
-
 
 --function of insert process_form_ofice
 CREATE OR REPLACE FUNCTION process_form.process_form_ofice_insert(
-	
 	param_form_ofice_id INTEGER,
-	param_date_made DATE,
-	param_ubication_id INTEGER,
-	param_status_process_form_id INTEGER,
 	param_user_id BIGINT
 
 )
@@ -321,9 +289,9 @@ INSERT INTO process_form.process_form_ofice(
                 )
     VALUES (
     	     param_form_ofice_id,
-	   		 param_date_made,
-	   		 param_ubication_id,
-	   	     param_status_process_form_id,            
+	   		 CLOCK_TIMESTAMP(),
+	   		 5,
+	   	     1,            
             '1',
 			'0',
 			param_user_id,
@@ -342,8 +310,6 @@ INSERT INTO process_form.process_form_ofice(
     END;
 $udf$;
 
-
-
 	--function of insert log process_form_ofice
 	CREATE OR REPLACE FUNCTION process_form.process_form_ofice_insert_history(
 	  param_process_form_ofice_id BIGINT,
@@ -356,35 +322,32 @@ $udf$;
 	AS $udf$
 	  DECLARE
 	    local_is_successful BIT := '0';
-	  BEGIN
-	 
-
-	INSERT INTO process_form.process_form_ofice_history(
-	            process_form_ofice_id,
-	            form_movement_personal_id, 
-	            date_made,
-	            ubication_id,
-	            status_process_form_id, 
-	            is_active,
-	            is_deleted, 
-	            last_modified_by,
-	            last_modified_date, 
-	            change_type,
-	            change_description
-
+	BEGIN
+		INSERT INTO process_form.process_form_ofice_history(
+            process_form_ofice_id,
+            form_movement_personal_id, 
+            date_made,
+            ubication_id,
+            status_process_form_id, 
+            is_active,
+            is_deleted, 
+            last_modified_by,
+            last_modified_date, 
+            change_type,
+            change_description
 	  	)
 	  	SELECT
-	  		 	 id,
-	             form_movement_personal_id,
-	             date_made,
-	             ubication_id,
-	             status_process_form_id, 
-	             is_active,
-	             is_deleted,
-	             last_modified_by,
-	             last_modified_date,
-	             param_change_type,
-			   	param_change_description
+  		 	id,
+            form_movement_personal_id,
+            date_made,
+            ubication_id,
+            status_process_form_id, 
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            param_change_type,
+		   	param_change_description
 		FROM
 			process_form.process_form_ofice pf
 		WHERE
@@ -410,13 +373,11 @@ AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
 		SELECT
-
- 				 id,
-	             form_ofice_id,
-	             date_made,
-	             ubication_id,
-	             status_process_form_id
-		
+			id,
+         	form_ofice_id,
+         	date_made,
+         	ubication_id,
+         	status_process_form_id
 		FROM
 			process_form.process_form_ofice pf
 		WHERE
@@ -427,11 +388,9 @@ AS $BODY$
 $BODY$;
 
 
-
-
 --function get one data process_form_ofice
 CREATE OR REPLACE FUNCTION process_form.get_process_form_ofice(
-	param_id INTEGER
+	param_form_ofice_id INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -441,16 +400,16 @@ AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
 		SELECT
- 			 pf.id,
-	         pf.form_ofice_id,
-	         pf.date_made,
-	         pf.ubication_id,
-	         pf.status_process_form_id
+ 			pf.id,
+	        pf.form_ofice_id,
+	        pf.date_made,
+	        pf.ubication_id,
+	        pf.status_process_form_id
 		
 		FROM
 			process_form.process_form_ofice pf
 		WHERE
-			pf.id = param_id
+			pf.iform_ofice_idd = param_form_ofice_id
 		AND
 			pf.is_active = '1'
 		AND
@@ -460,7 +419,6 @@ $BODY$;
 
 -- function update all columns process_form_ofice 
 CREATE OR REPLACE FUNCTION process_form.process_form_ofice_update_all_columns(
-
 	param_id INTEGER,
 	param_user_id BIGINT,
 	param_form_ofice_id INTEGER,
@@ -477,19 +435,15 @@ AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
   	BEGIN
-  		UPDATE process_form.process_form_ofice SET
-
-	  		    
-	             form_ofice_id = param_form_ofice_id,
-	             date_made = param_date_made,
-	             ubication_id = param_ubication_id,
-	             status_process_form_id = param_status_process_form_id,
-	             is_active = param_is_active,
-  		    	 is_deleted = param_is_deleted,
-  		    	 last_modified_by = param_user_id,
-      		     last_modified_date = CLOCK_TIMESTAMP()
-	
-  		
+  		UPDATE process_form.process_form_ofice SET	  		    
+         	form_ofice_id = param_form_ofice_id,
+		    date_made = param_date_made,
+		    ubication_id = param_ubication_id,
+		    status_process_form_id = param_status_process_form_id,
+		    is_active = param_is_active,
+	    	is_deleted = param_is_deleted,
+	    	last_modified_by = param_user_id,
+		    last_modified_date = CLOCK_TIMESTAMP()  		
       	WHERE
       		id = param_id;
 
@@ -502,8 +456,6 @@ AS $udf$
     	RETURN local_is_successful;
   	END;
 $udf$;
-
-	
 
 -- function update is active process_form_ofice
 CREATE OR REPLACE FUNCTION process_form.process_form_ofice_update_is_active(
@@ -525,13 +477,11 @@ AS $udf$
       	WHERE
       		id = param_id;
 
-
     SELECT process_form_ofice_insert_history into local_is_successful FROM process_form.process_form_ofice_history(
       		param_form_ofice_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
-
 
     	RETURN local_is_successful;
   	END;
@@ -569,15 +519,10 @@ AS $udf$
 $udf$;
 
 
-
-
 --function of status_process_form
-
-
 
 --function of insert status_process_form
 CREATE OR REPLACE FUNCTION process_form.status_process_form_insert(
-	
 	param_description VARCHAR,
 	param_user_id BIGINT
 
@@ -590,16 +535,15 @@ AS $udf$
 		local_is_successful BIT := '0';
 		local_status_process_form_id BIGINT;
 	BEGIN
-
-INSERT INTO process_form.status_process_form(
-  			 description,
-             is_active,
-             is_deleted,
-             last_modified_by,
-             last_modified_date
-                )
-    VALUES (
-    	     param_description,	          
+		INSERT INTO process_form.status_process_form(
+		 	description,
+	     	is_active,
+	        is_deleted,
+	        last_modified_by,
+	        last_modified_date
+	    )
+    	VALUES (
+    	    param_description,	          
             '1',
 			'0',
 			param_user_id,
@@ -618,45 +562,38 @@ INSERT INTO process_form.status_process_form(
     END;
 $udf$;
 
-
-
-
-	--function of insert log status_process_form
-	CREATE OR REPLACE FUNCTION process_form.status_process_form_insert_history(
-	  param_status_process_form_id BIGINT,
-	  param_change_type VARCHAR,
-	  param_change_description VARCHAR
-	)
-	RETURNS BIT
-	LANGUAGE plpgsql VOLATILE
-	COST 100.0
-	AS $udf$
-	  DECLARE
-	    local_is_successful BIT := '0';
-	  BEGIN
-	 
-
-	INSERT INTO process_form.status_process_form_history(
-				
-				status_process_form_id,
-				description,
-	            is_active,
-	            is_deleted, 
-	            last_modified_by,
-	            last_modified_date, 
-	            change_type,
-	            change_description
-
+--function of insert log status_process_form
+CREATE OR REPLACE FUNCTION process_form.status_process_form_insert_history(
+    param_status_process_form_id BIGINT,
+    param_change_type VARCHAR,
+  	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		INSERT INTO process_form.status_process_form_history(		
+			status_process_form_id,
+			description,
+            is_active,
+            is_deleted, 
+            last_modified_by,
+            last_modified_date, 
+            change_type,
+            change_description
 	  	)
 	  	SELECT
-	  		 	 id,
-	  		 	 description,
-	             is_active,
-	             is_deleted,
-	             last_modified_by,
-	             last_modified_date,
-	              param_change_type,
-				  param_change_description
+  		 	id,
+  		 	description,
+            is_active,
+            is_deleted,
+            last_modified_by,
+            last_modified_date,
+            param_change_type,
+			param_change_description
 		FROM
 			process_form.status_process_form pf
 		WHERE
@@ -682,10 +619,8 @@ AS $BODY$
 	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
 	FROM (
 		SELECT
-
- 				 id,
-	        	 description
-		
+		 	id,
+        	description
 		FROM
 			process_form.status_process_form pf
 		WHERE
@@ -694,9 +629,6 @@ AS $BODY$
 			pf.is_deleted = '0'
 	)DATA;
 $BODY$;
-
-
-
 
 --function get one data status_process_form
 CREATE OR REPLACE FUNCTION process_form.get_status_process_form(
@@ -726,7 +658,6 @@ $BODY$;
 
 -- function update all columns status_process_form
 CREATE OR REPLACE FUNCTION process_form.status_process_form_update_all_columns(
-
 	param_id INTEGER,
 	param_description VARCHAR,
 	param_user_id BIGINT,
@@ -740,16 +671,12 @@ AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
   	BEGIN
-  		UPDATE process_form.status_process_form SET
-
-	  		    
+  		UPDATE process_form.status_process_form SET  
   			description = param_description,
   			is_active = param_is_active,
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
       		last_modified_date = CLOCK_TIMESTAMP()
-	
-  		
       	WHERE
       		id = param_id;
 
@@ -764,7 +691,6 @@ AS $udf$
 $udf$;
 
 	
-
 -- function update is active status_process_form
 CREATE OR REPLACE FUNCTION process_form.status_process_form_update_is_active(
 	param_id INTEGER,

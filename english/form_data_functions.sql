@@ -1107,3 +1107,320 @@ AS $udf$
 		RETURN local_is_successful;
 	END;
 $udf$;
+
+-- function of employee_form_ofices
+-- function of insert
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofices_insert(
+	param_code_form_ofice VARCHAR,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_emp_form_ofice_id BIGINT;
+	BEGIN
+		IF EXISTS(
+			SELECT
+				code_form
+			FROM
+				form_data.employee_form_ofices fo
+			WHERE
+				fo.code_form = param_code_form_ofice
+			AND
+				fo.is_active = '1'
+			AND
+				fo.is_deleted = '0'
+		)
+		THEN
+			RETURN local_is_successful;
+		ELSE
+			INSERT INTO form_data.employee_form_ofices(
+				code_form,
+				registration_date,
+				is_active,
+				is_deleted,
+				last_modified_by,
+				last_modified_date
+			)
+			VALUES (
+				param_code_form_ofice,
+				CLOCK_TIMESTAMP(),
+				'1',
+				'0',
+				param_user_id,
+				CLOCK_TIMESTAMP()
+			)
+			RETURNING id
+			INTO local_emp_form_ofice_id;
+
+
+			SELECT employee_form_ofices_insert_history INTO local_is_successful FROM form_data.employee_form_ofices_insert_history(
+				param_emp_form_ofice_id := local_emp_form_ofice_id,
+				param_change_type := 'FIRST INSERT',
+				param_change_description := 'FIRST INSERT'
+			);
+
+			local_is_successful := '1';
+
+			RETURN local_is_successful;
+
+		END IF;
+	END;
+$udf$;
+
+-- function of insert log
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofices_insert_history(
+	param_emp_form_ofice_id BIGINT,
+	param_change_type VARCHAR,
+	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		INSERT INTO form_data.employee_form_ofices_history(
+			form_ofice_id,
+			code_form,
+			registration_date,
+			approval_date,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			change_type,
+			change_description
+		)
+		SELECT
+			id,
+			code_form,
+			registration_date,
+			approval_date,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			param_change_type,
+			param_change_description
+		FROM
+			form_data.employee_form_ofices fo
+		WHERE
+			fo.id = param_emp_form_ofice_id
+		ORDER BY
+			fo.last_modified_date
+		DESC
+		LIMIT 1;
+
+		local_is_successful := '1';
+
+		RETURN local_is_successful;
+	END;
+$udf$;
+
+
+-- function of employee_form_personal_movement
+-- function of insert
+CREATE OR REPLACE FUNCTION form_data.employee_form_personal_movement_insert(
+	param_code_form_mov_per VARCHAR,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_emp_form_mov_per_id BIGINT;
+	BEGIN
+		IF EXISTS(
+			SELECT
+				code_form
+			FROM
+				form_data.employee_form_personal_movement fmp
+			WHERE
+				fmp.code_form = param_code_form_mov_per
+			AND
+				fmp.is_active = '1'
+			AND
+				fmp.is_deleted = '0'
+		)
+		THEN
+			RETURN local_is_successful;
+		ELSE
+			INSERT INTO form_data.employee_form_personal_movement(
+				code_form,
+				registration_date,
+				is_active,
+				is_deleted,
+				last_modified_by,
+				last_modified_date
+			)
+			VALUES (
+				param_code_form_mov_per,
+				CLOCK_TIMESTAMP(),
+				'1',
+				'0',
+				param_user_id,
+				CLOCK_TIMESTAMP()
+			)
+			RETURNING id
+			INTO local_emp_form_mov_per_id;
+
+
+			SELECT employee_form_personal_movement_insert_history INTO local_is_successful FROM form_data.employee_form_personal_movement_insert_history(
+				param_emp_form_mov_per_id := local_emp_form_mov_per_id,
+				param_change_type := 'FIRST INSERT',
+				param_change_description := 'FIRST INSERT'
+			);
+
+			local_is_successful := '1';
+
+			RETURN local_is_successful;
+
+		END IF;
+	END;
+$udf$;
+
+-- function of insert log
+CREATE OR REPLACE FUNCTION form_data.employee_form_personal_movement_insert_history(
+	param_emp_form_mov_per_id BIGINT,
+	param_change_type VARCHAR,
+	param_change_description VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		INSERT INTO form_data.employee_form_personal_movement_history(
+			form_person_movement_id,
+			code_form,
+			accountant_type_id,
+			progam_type_id,
+			registration_date,
+			approval_date,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			change_type,
+			change_description
+		)
+		SELECT
+			id,
+			code_form,
+			accountant_type_id,
+			progam_type_id,
+			registration_date,
+			approval_date,
+			is_active,
+			is_deleted,
+			last_modified_by,
+			last_modified_date,
+			param_change_type,
+			param_change_description
+		FROM
+			form_data.employee_form_personal_movement fmp
+		WHERE
+			fmp.id = param_emp_form_mov_per_id
+		ORDER BY
+			fmp.last_modified_date
+		DESC
+		LIMIT 1;
+
+		local_is_successful := '1';
+
+		RETURN local_is_successful;
+	END;
+$udf$; 
+
+-- function of employee_form_ofice_and_form_person_movement
+-- function of insert
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_and_form_person_movement_insert(
+	param_ofice_id BIGINT,
+	param_employee_id BIGINT,
+	param_dedication_id INTEGER,
+	param_movement_type_id INTEGER,
+	param_start_date DATE,
+	param_finish_date DATE,
+	param_school_id INTEGER,
+	param_institute_id INTEGER,
+	param_coordination_id INTEGER,
+	param_user_id BIGINT
+
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_emp_form_of_per_mov_id BIGINT;
+
+	BEGIN
+		IF EXISTS(
+			SELECT
+				form_ofice_id,
+				employee_id,
+				movement_type_id
+			FROM
+				form_data.employee_form_ofice_and_form_person_movement fomp
+			WHERE
+				fomp.form_ofice_id = param_ofice_id
+			AND
+				fomp.employee_id = param_employee_id
+			AND
+				fomp.movement_type_id = param_movement_type_id
+			AND
+				fomp.is_active = '1'
+			AND
+				fomp.is_deleted = '0'
+		)
+		THEN
+			RETURN local_is_successful;
+		ELSE
+			INSERT INTO employee_form_ofice_and_form_person_movement(
+				form_ofice_id,
+				employee_id,
+				dedication_id,
+				movement_type_id,
+				start_date,
+				finish_date,
+				school_id,
+				institute_id,
+				coordination_id,
+				is_active,
+				is_deleted,
+				last_modified_by,
+				last_modified_date
+			)
+			VALUES(
+				param_ofice_id,
+				param_employee_id,
+				param_dedication_id,
+				param_movement_type_id,
+				param_start_date,
+				param_finish_date,
+				param_school_id,
+				param_institute_id,
+				param_coordination_id,
+				'1',
+				'0',
+				param_user_id,
+				CLOCK_TIMESTAMP()
+			)
+			RETURNING id
+			INTO local_emp_form_of_per_mov_id;
+
+			SELECT FROM form_data
+
+		END IF;
+	ENd;
+$udf$;

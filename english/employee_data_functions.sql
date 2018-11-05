@@ -4584,7 +4584,7 @@ AS $udf$
 		RETURNING id
 		INTO STRICT local_employee_id;
 
-		SELECT employees_insert_history into local_is_successful FROM employee_data.employees_insert_history(
+		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
       		param_employee_id := local_employee_id,
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
@@ -4596,7 +4596,7 @@ AS $udf$
 $udf$;
 
 --function of insert log
-CREATE OR REPLACE FUNCTION employee_data.employees_insert_history(
+CREATE OR REPLACE FUNCTION employee_data.employee_insert_history(
 	param_employee_id BIGINT,
 	param_change_type VARCHAR,
 	param_change_description VARCHAR
@@ -4701,3 +4701,49 @@ AS $udf$
 	    RETURN local_is_successful;
 	  END;
 	$udf$;
+
+
+-- function update by form movent per
+CREATE OR REPLACE FUNCTION employee_data.employee_update_for_movement_personal(
+	param_employee_id INTEGER,
+	param_state_id INTEGER,
+	param_municipality_id INTEGER,
+	param_parish_id INTEGER,
+	param_ubication VARCHAR,
+	param_addres VARCHAR,
+	param_housing_type VARCHAR,
+	param_housing_identifier VARCHAR,
+	param_ingress_id INTEGER,
+	param_income_type_id INTEGER,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employees SET
+			state_id = param_state_id,
+			municipality_id = param_municipality_id,
+			parish_id = param_parish_id,
+			ubication = param_ubication,
+			address = param_addres,
+			housing_type = param_housing_type,
+			housing_identifier = param_housing_identifier,
+			ingress_id = param_ingress_id,
+			income_types = param_income_type_id,
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE 
+			id = param_employee_id;
+
+		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+			param_employee_id := param_user_id,
+			param_change_type := 'Update for form movement personal',
+			param_change_description := 'Update value for form movement personal'
+		)
+
+	END;
+$udf$;
