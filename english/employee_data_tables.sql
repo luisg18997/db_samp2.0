@@ -172,7 +172,7 @@ CREATE TABLE employee_data.idac_codes(
 
 CREATE TABLE employee_data.execunting_unit(
 	id INTEGER DEFAULT nextval('employee_data.execunting_unit_id_seq'::regclass) NOT NULL,
-	code INTEGER NOT NULL,
+	code VARCHAR(100) NOT NULL,
 	description VARCHAR(300) NOT NULL,
 	is_active BIT(1) NOT NULL,
 	is_deleted BIT(1) NOT NULL,
@@ -403,7 +403,7 @@ CREATE TABLE employee_data.idac_codes_history(
 CREATE TABLE employee_data.execunting_unit_history(
 	id BIGINT DEFAULT nextval('employee_data.execunting_unit_history_id_seq'::regclass) NOT NULL,
 	execunting_unit_id INTEGER,
-	code INTEGER,
+	code VARCHAR(100),
 	description VARCHAR(300),
 	is_active BIT(1),
 	is_deleted BIT(1),

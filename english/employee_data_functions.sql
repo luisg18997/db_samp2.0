@@ -1744,7 +1744,7 @@ $udf$;
 
 --function of insert
 CREATE OR REPLACE FUNCTION employee_data.execunting_unit_insert(
-	param_code INTEGER,
+	param_code VARCHAR,
 	param_description VARCHAR,
 	param_user_id BIGINT
 )
@@ -1900,6 +1900,7 @@ $BODY$;
 -- function update all columns
 CREATE OR REPLACE FUNCTION employee_data.execunting_unit_update_all_columns(
 	param_id INTEGER,
+	param_code VARCHAR,
 	param_description VARCHAR,
 	param_user_id BIGINT,
 	param_is_active BIT,
@@ -1914,6 +1915,7 @@ AS $udf$
   	BEGIN
   		UPDATE employee_data.execunting_unit SET
   			description = param_description,
+				code = param_code,
   			is_active = param_is_active,
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,

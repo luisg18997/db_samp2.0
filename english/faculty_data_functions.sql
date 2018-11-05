@@ -3,7 +3,7 @@
 -- function insert of faculty_data.schools
 
 CREATE OR REPLACE FUNCTION faculty_data.schools_insert(
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_faculty_id INTEGER
@@ -192,7 +192,7 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION faculty_data.school_update_all_columns(
   param_id INTEGER,
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_faculty_id INTEGER,
   param_user_id BIGINT,
@@ -296,7 +296,7 @@ $udf$;
 -- function of institute insert
 
 CREATE OR REPLACE FUNCTION faculty_data.institute_insert(
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_faculty_id INTEGER
@@ -481,7 +481,7 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION faculty_data.institute_update_all_columns(
   param_id INTEGER,
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_faculty_id INTEGER,
   param_user_id BIGINT,
@@ -586,7 +586,7 @@ $udf$;
 -- function of departament insert of the school
 
 CREATE OR REPLACE FUNCTION faculty_data.departament_school_insert(
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_school_id INTEGER
@@ -649,7 +649,7 @@ $udf$;
 
 -- function of departament insert of the institute
 CREATE OR REPLACE FUNCTION faculty_data.departament_institute_insert(
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_institute_id INTEGER
@@ -912,7 +912,7 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION faculty_data.departament_school_update_all_columns(
   param_id INTEGER,
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_school_id INTEGER,
   param_user_id BIGINT,
@@ -1022,7 +1022,7 @@ $udf$;
 
 CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_all_columns(
   param_id INTEGER,
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_institute_id INTEGER,
   param_user_id BIGINT,
@@ -1133,7 +1133,7 @@ $udf$;
 --function of insert
 
 CREATE OR REPLACE FUNCTION faculty_data.coordination_insert(
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_faculty_id INTEGER
@@ -1319,7 +1319,7 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION faculty_data.coordination_update_all_columns(
   param_id INTEGER,
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_faculty_id INTEGER,
   param_user_id BIGINT,
@@ -1424,7 +1424,7 @@ $udf$;
 -- function of insert
 
 CREATE OR REPLACE FUNCTION faculty_data.chair_insert(
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_departament_id INTEGER
@@ -1610,7 +1610,7 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION faculty_data.chair_update_all_columns(
   param_id INTEGER,
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_departament_id INTEGER,
   param_user_id BIGINT,
@@ -1721,7 +1721,7 @@ $udf$;
 -- function insert
 
 CREATE OR REPLACE FUNCTION faculty_data.faculty_insert(
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT
 )
@@ -1880,7 +1880,7 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION faculty_data.faculty_update_all_columns(
   param_id INTEGER,
-  param_code INTEGER,
+  param_code VARCHAR,
   param_name VARCHAR,
   param_user_id BIGINT,
   param_is_active BIT,

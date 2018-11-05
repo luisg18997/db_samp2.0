@@ -3,7 +3,7 @@
 -- faculty of the university
 CREATE TABLE faculty_data.faculty(
   id INTEGER DEFAULT nextval('faculty_data.faculty_id_seq'::regclass) NOT NULL,
-  code INTEGER NOT NULL,
+  code VARCHAR(100) NOT NULL,
   name VARCHAR(100) NOT NULL,
   is_active BIT(1) NOT NULL,
   is_deleted BIT(1) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE faculty_data.faculty(
 -- schools of the faculty
 CREATE TABLE faculty_data.schools(
   id INTEGER DEFAULT nextval('faculty_data.school_id_seq'::regclass) NOT NULL,
-  code INTEGER NOT NULL,
+  code VARCHAR(100) NOT NULL,
   name VARCHAR(100) NOT NULL,
   faculty_id INTEGER NOT NULL,
   is_active BIT(1) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE faculty_data.schools(
 
 CREATE TABLE faculty_data.institutes(
   id INTEGER DEFAULT nextval('faculty_data.institute_id_seq'::regclass) NOT NULL,
-  code INTEGER NOT NULL,
+  code VARCHAR(100) NOT NULL,
   name VARCHAR(100) NOT NULL,
   faculty_id INTEGER NOT NULL,
   is_active BIT(1) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE faculty_data.institutes(
 
 CREATE TABLE faculty_data.departaments(
   id INTEGER DEFAULT nextval('faculty_data.departament_id_seq'::regclass) NOT NULL,
-  code INTEGER NOT NULL,
+  code VARCHAR(100) NOT NULL,
   name VARCHAR(100) NOT NULL,
   school_id INTEGER,
   institute_id INTEGER,
@@ -58,7 +58,7 @@ CREATE TABLE faculty_data.departaments(
 
 CREATE TABLE faculty_data.chairs(
   id INTEGER DEFAULT nextval('faculty_data.chairs_id_seq'::regclass) NOT NULL,
-  code INTEGER NOT NULL,
+  code VARCHAR(100) NOT NULL,
   name VARCHAR(100) NOT NULL,
   departament_id INTEGER NOT NULL,
   is_active BIT(1) NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE faculty_data.chairs(
 
 CREATE TABLE faculty_data.coordinations(
   id INTEGER DEFAULT nextval('faculty_data.coordination_id_seq'::regclass) NOT NULL,
-  code INTEGER NOT NULL,
+  code VARCHAR(100) NOT NULL,
   name VARCHAR(100) NOT NULL,
   faculty_id INTEGER NOT NULL,
   is_active BIT(1) NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE faculty_data.coordinations(
 CREATE TABLE faculty_data.faculty_history(
   id BIGINT DEFAULT nextval('faculty_data.faculty_history_id_seq'::regclass) NOT NULL,
   faculty_id INTEGER,
-  code INTEGER ,
+  code VARCHAR(100) ,
   name VARCHAR(100) ,
   is_active BIT(1) ,
   is_deleted BIT(1) ,
@@ -101,7 +101,7 @@ CREATE TABLE faculty_data.faculty_history(
 CREATE TABLE faculty_data.schools_history(
   id BIGINT DEFAULT nextval('faculty_data.school_history_id_seq'::regclass) NOT NULL,
   school_id INTEGER,
-  code INTEGER ,
+  code VARCHAR(100) ,
   name VARCHAR(100) ,
   faculty_id INTEGER ,
   is_active BIT(1) ,
@@ -117,7 +117,7 @@ CREATE TABLE faculty_data.schools_history(
 CREATE TABLE faculty_data.institutes_history(
   id BIGINT DEFAULT nextval('faculty_data.institute_history_id_seq'::regclass) NOT NULL,
   institute_id INTEGER,
-  code INTEGER ,
+  code VARCHAR(100) ,
   name VARCHAR(100) ,
   faculty_id INTEGER ,
   is_active BIT(1) ,
@@ -133,7 +133,7 @@ CREATE TABLE faculty_data.institutes_history(
 CREATE TABLE faculty_data.departaments_history(
   id BIGINT DEFAULT nextval('faculty_data.departament_history_id_seq'::regclass) NOT NULL,
   departament_id INTEGER,
-  code INTEGER ,
+  code VARCHAR(100) ,
   name VARCHAR(100) ,
   school_id INTEGER,
   institute_id INTEGER,
@@ -150,7 +150,7 @@ CREATE TABLE faculty_data.departaments_history(
 CREATE TABLE faculty_data.chairs_history(
   id BIGINT DEFAULT nextval('faculty_data.chairs_history_id_seq'::regclass) NOT NULL,
   chair_id INTEGER,
-  code INTEGER ,
+  code VARCHAR(100) ,
   name VARCHAR(100) ,
   departament_id INTEGER ,
   is_active BIT(1) ,
@@ -166,7 +166,7 @@ CREATE TABLE faculty_data.chairs_history(
 CREATE TABLE faculty_data.coordinations_history(
   id BIGINT DEFAULT nextval('faculty_data.coordination_history_id_seq'::regclass) NOT NULL,
   coordination_id INTEGER,
-  code INTEGER ,
+  code VARCHAR(100) ,
   name VARCHAR(100) ,
   faculty_id INTEGER ,
   is_active BIT(1) ,
@@ -221,33 +221,33 @@ ALTER TABLE ONLY faculty_data.coordinations_history
 -- ADD fk in the tables
 
 ALTER TABLE ONLY faculty_data.schools
-  ADD CONSTRAINT school_faculty_id_fk FOREIGN KEY (faculty_id) 
+  ADD CONSTRAINT school_faculty_id_fk FOREIGN KEY (faculty_id)
   REFERENCES faculty_data.faculty(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY faculty_data.institutes
-  ADD CONSTRAINT institute_faculty_id_fk FOREIGN KEY (faculty_id) 
+  ADD CONSTRAINT institute_faculty_id_fk FOREIGN KEY (faculty_id)
   REFERENCES faculty_data.faculty(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY faculty_data.coordinations
-  ADD CONSTRAINT coordinations_faculty_id_fk FOREIGN KEY (faculty_id) 
+  ADD CONSTRAINT coordinations_faculty_id_fk FOREIGN KEY (faculty_id)
   REFERENCES faculty_data.faculty(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY faculty_data.departaments
-  ADD CONSTRAINT departaments_school_id_fk FOREIGN KEY (school_id) 
+  ADD CONSTRAINT departaments_school_id_fk FOREIGN KEY (school_id)
   REFERENCES faculty_data.schools(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY faculty_data.departaments
-  ADD CONSTRAINT departaments_institute_id_fk FOREIGN KEY (institute_id) 
+  ADD CONSTRAINT departaments_institute_id_fk FOREIGN KEY (institute_id)
   REFERENCES faculty_data.institutes(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY faculty_data.chairs
-  ADD CONSTRAINT chairs_departament_id_fk FOREIGN KEY (departament_id) 
+  ADD CONSTRAINT chairs_departament_id_fk FOREIGN KEY (departament_id)
   REFERENCES faculty_data.departaments(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
   -- ADD FK of table history
 
 ALTER TABLE ONLY faculty_data.faculty_history
-  ADD CONSTRAINT faculty_history_faculty_id_fk FOREIGN KEY (faculty_id) 
+  ADD CONSTRAINT faculty_history_faculty_id_fk FOREIGN KEY (faculty_id)
   REFERENCES faculty_data.faculty(id);
 
 ALTER TABLE ONLY faculty_data.schools_history
