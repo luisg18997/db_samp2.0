@@ -1871,6 +1871,32 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
+--function get list for filter
+CREATE OR REPLACE FUNCTION employee_data.get_execunting_unit_filter_code(
+	param_code VARCHAR
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			exec.id,
+			exec.code,
+			exec.description as execunting_unit
+		FROM
+			employee_data.execunting_unit exec
+		WHERE
+			exec.code LIKE param_code||'%'
+		AND
+			exec.is_active = '1'
+		AND
+			exec.is_deleted = '0'
+	)DATA;
+$BODY$;
+
 --function get one data
 CREATE OR REPLACE FUNCTION employee_data.get_execunting_unit(
 	param_id INTEGER
