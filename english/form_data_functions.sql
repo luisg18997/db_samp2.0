@@ -1533,3 +1533,75 @@ AS $udf$
 		RETURN local_is_successful;
 	END;
 $udf$;
+
+
+-- function of integrate insert form complete with employee and process
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_insert_complete(
+	param_employee_json json,
+	param_form_ofice_json json,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_employee_id BIGINT;
+		local_form_ofice_id BIGINT;
+
+	BEGIN
+		IF (
+			SELECT param_employee_json::TEXT
+			LIKE '%employee_id%'
+		) THEN
+		local_employee_id := (param_employee_id->>employee_id)::BIGINT;
+		ELSE
+		SELECT employee_insert INTO local_employee_id FROM employee_data.employee_insert(
+			(param_employee_json->>'nacionality_id')::INTEGER,
+			(param_employee_json->>'documentation_id')::INTEGER,
+			param_employee_json->>'identification',
+			param_employee_json->>'first_name',
+			param_employee_json->>'second_name',
+			param_employee_json->>'surname',
+			param_employee_json->>'second_surname',
+			(param_employee_json->>'birth_date')::DATE,
+			(param_employee_json->>'gender_id')::INTEGER,
+			param_employee_json->>'email',
+			(param_employee_json->>'school_id')::INTEGER,
+			(param_employee_json->>'institute_id')::INTEGER,
+			(param_employee_json->>'coordination_id')::INTEGER,
+			(param_employee_json->>'departament_id')::INTEGER,
+			(param_employee_json->>'chair_id')::INTEGER,
+			param_employee_json->>'mobile_phone_number',
+			param_employee_json->>'local_phone_number',
+			param_user_id
+		);
+		END IF;
+
+		SELECT employee_form_ofices_insert INTO local_form_ofice_id FROM form_data.employee_form_ofices_insert(
+			param_form_ofice_json->>'code_form',
+			param_user_id
+		);
+
+		PERFORM form_data.employee_form_ofice_person_movement_insert(
+			local_form_ofice_id,
+			local_employee_id,
+			(param_form_ofice_json->>'dedication_id')::INTEGER,
+			(param_form_ofice_json->>'movement_type_id')::INTEGER,
+			(param_form_ofice_json->>'start_date')::DATE,
+			(param_form_ofice_json->>'finish_date')::DATE,
+			(param_form_ofice_json->>'school_id')::INTEGER,
+			(param_form_ofice_json->>'institute_id')::INTEGER,
+			(param_form_ofice_json->>'cordination_id')::INTEGER,
+			param_user_id
+		);
+
+		SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
+			local_form_ofice_id,
+			param_user_id
+		);
+
+		RETURN local_is_successful;
+	END;
+$udf$;
