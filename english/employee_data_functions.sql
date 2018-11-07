@@ -4541,7 +4541,7 @@ CREATE OR REPLACE FUNCTION employee_data.employee_insert(
 	param_user_id bigint
  )
 
- RETURNS BIT
+ RETURNS INTEGER
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -4561,7 +4561,7 @@ AS $udf$
 			identification = param_identification
 	)
 	THEN
-		RETURN local_is_successful;
+		RETURN local_is_successful::INTEGER;
 	ELSE
 		INSERT INTO employee_data.employees(
 	   		nacionality_id,
@@ -4617,8 +4617,11 @@ AS $udf$
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
-
-    	RETURN local_employee_id;
+			IF local_is_successful = '1' THEN
+				RETURN local_employee_id;
+			ELSE
+				RETURN local_is_successful::INTEGER;
+			END IF;
     	END IF;
     END;
 $udf$;
@@ -4662,9 +4665,8 @@ AS $udf$
             cordination_id,
 	        departament_id,
             chair_id,
-	        first_mobile_phone_number,
-	        second_mobile_phone_number,
-	        local_phone_number,
+	        mobile_phone_number,
+            local_phone_number,
 	        ingress_id,
 	        income_type_id,
 	        admission_date,
@@ -4702,8 +4704,7 @@ AS $udf$
             cordination_id,
             departament_id,
             chair_id,
-            first_mobile_phone_number,
-            second_mobile_phone_number,
+            mobile_phone_number,
             local_phone_number,
             ingress_id,
             income_type_id,
@@ -4728,7 +4729,7 @@ AS $udf$
 		local_is_successful := '1';
 	    RETURN local_is_successful;
 	  END;
-	$udf$;
+$udf$;
 
 
 -- function update by form movent per
