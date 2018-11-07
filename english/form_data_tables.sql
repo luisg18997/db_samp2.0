@@ -315,11 +315,11 @@ ALTER TABLE ONLY form_data.employee_form_ofice_and_form_person_movement
 
 ALTER TABLE ONLY form_data.employee_form_ofice_and_form_person_movement
   ADD CONSTRAINT form_ofice_and_form_person_movement_form_ofice_id_fk FOREIGN KEY (form_ofice_id) 
-  REFERENCES form_data.employee_form_personal_movement(id) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES form_data.employee_form_ofices(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY form_data.employee_form_ofice_and_form_person_movement
   ADD CONSTRAINT form_ofice_and_form_person_movement_form_person_movement_id_fk FOREIGN KEY (form_person_movement_id) 
-  REFERENCES form_data.employee_form_ofices(id) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES form_data.employee_form_personal_movement(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY form_data.annex_types_for_movement_types
   ADD CONSTRAINT annex_types_for_movement_type_annex_type_id_fk FOREIGN KEY (annex_type_id) 
