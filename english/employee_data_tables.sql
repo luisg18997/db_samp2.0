@@ -195,8 +195,9 @@ CREATE TABLE employee_data.employee_idac_code(
 
 CREATE TABLE employee_data.employees_history(
 	id BIGINT DEFAULT nextval('employee_data.employee_hstory_id_seq'::regclass) NOT NULL,
-	employee_id INTEGER,
+	employee_id BIGINT,
 	nacionality_id INTEGER,
+	documentation_id INTEGER,
 	identification VARCHAR(20),
 	first_name VARCHAR(100),
 	second_name VARCHAR(100),
@@ -218,8 +219,7 @@ CREATE TABLE employee_data.employees_history(
 	cordination_id INTEGER,
 	departament_id INTEGER,
 	chair_id INTEGER,
-	first_mobile_phone_number VARCHAR(15),
-	second_mobile_phone_number VARCHAR(15),
+	mobile_phone_number VARCHAR(15),
 	local_phone_number VARCHAR(15),
 	ingress_id INTEGER,
 	income_type_id INTEGER,
