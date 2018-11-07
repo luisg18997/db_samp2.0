@@ -4618,7 +4618,7 @@ AS $udf$
       		param_change_description := 'FIRST INSERT'
       	);
 
-    	RETURN local_is_successful;
+    	RETURN local_employee_id;
     	END IF;
     END;
 $udf$;
@@ -4772,7 +4772,7 @@ AS $udf$
 			param_change_type := 'Update for form movement personal',
 			param_change_description := 'Update value for form movement personal'
 		);
-		local_is_successful := '1';
+
 		RETURN local_is_successful;
 	END;
 $udf$;

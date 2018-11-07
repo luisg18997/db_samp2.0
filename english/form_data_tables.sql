@@ -78,7 +78,7 @@ CREATE TABLE form_data.annex_types_for_movement_types(
 );
 
 CREATE TABLE form_data.employee_form_ofice_and_form_person_movement(
-	id INTEGER DEFAULT nextval('form_data.employee_form_ofice_and_form_person_movement_id_seq'::regclass) NOT NULL,
+	id BIGINT DEFAULT nextval('form_data.employee_form_ofice_and_form_person_movement_id_seq'::regclass) NOT NULL,
 	form_ofice_id BIGINT NOT NULL,
 	form_person_movement_id BIGINT,
 	employee_id BIGINT NOT NULL,

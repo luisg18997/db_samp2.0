@@ -1154,7 +1154,7 @@ AS $udf$
 				CLOCK_TIMESTAMP()
 			)
 			RETURNING id
-			INTO local_emp_form_ofice_id;
+			INTO STRICT local_emp_form_ofice_id;
 
 
 			SELECT employee_form_ofices_insert_history INTO local_is_successful FROM form_data.employee_form_ofices_insert_history(
@@ -1163,9 +1163,8 @@ AS $udf$
 				param_change_description := 'FIRST INSERT'
 			);
 
-			local_is_successful := '1';
 
-			RETURN local_is_successful;
+			RETURN local_emp_form_ofice_id;
 
 		END IF;
 	END;
@@ -1269,7 +1268,7 @@ AS $udf$
 				CLOCK_TIMESTAMP()
 			)
 			RETURNING id
-			INTO local_emp_form_mov_per_id;
+			INTO STRICT local_emp_form_mov_per_id;
 
 
 			SELECT employee_form_personal_movement_insert_history INTO local_is_successful FROM form_data.employee_form_personal_movement_insert_history(
@@ -1278,9 +1277,8 @@ AS $udf$
 				param_change_description := 'FIRST INSERT'
 			);
 
-			local_is_successful := '1';
 
-			RETURN local_is_successful;
+			RETURN local_emp_form_mov_per_id;
 
 		END IF;
 	END;
@@ -1411,13 +1409,13 @@ AS $udf$
 				param_school_id,
 				param_institute_id,
 				param_coordination_id,
-				'1',
+				'0',
 				'0',
 				param_user_id,
 				CLOCK_TIMESTAMP()
 			)
 			RETURNING id
-			INTO local_emp_form_of_per_mov_id;
+			INTO STRICT local_emp_form_of_per_mov_id;
 
 			SELECT employee_form_ofice_person_movement_insert_history INTO local_is_successful FROM form_data.employee_form_ofice_person_movement_insert_history(
 				param_emp_form_of_per_mov_id := local_emp_form_of_per_mov_id,
@@ -1491,5 +1489,41 @@ AS $udf$
 			local_is_successful := '1';
 
 			RETURN local_is_successful;
+	END;
+$udf$;
+
+
+-- function update add data of movement per
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_person_movement_update_mov_per(
+	param_id BIGINT,
+	param_ofice_id BIGINT,
+	param_movement_per_id BIGINT,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE form_data.employee_form_ofice_and_form_person_movement SET
+			form_person_movement_id = param_movement_per_id,
+			is_active = '1',
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE
+			id = param_id
+		AND
+			form_ofice_id = param_ofice_id;
+
+
+		SELECT employee_form_ofice_person_movement_insert_history INTO local_is_successful FROM form_data.employee_form_ofice_person_movement_insert_history(
+			param_emp_form_of_per_mov_id := local_emp_form_of_per_mov_id,
+			param_change_type := 'UPDATE MOVEMENT PERSONAL',
+			param_change_description := 'UPDATE value of MOVEMENT PERSONAL'
+		);
+
+		RETURN local_is_successful;
 	END;
 $udf$;
