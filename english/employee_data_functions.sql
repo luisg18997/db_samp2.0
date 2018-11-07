@@ -4617,11 +4617,11 @@ AS $udf$
       		param_change_type := 'FIRST INSERT',
       		param_change_description := 'FIRST INSERT'
       	);
-			IF local_is_successful = '1' THEN
-				RETURN local_employee_id;
-			ELSE
-				RETURN local_is_successful::INTEGER;
-			END IF;
+				IF local_is_successful = '1' THEN
+					RETURN local_employee_id;
+				ELSE
+					RETURN local_is_successful::INTEGER;
+				END IF;
     	END IF;
     END;
 $udf$;

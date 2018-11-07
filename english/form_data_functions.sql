@@ -1114,7 +1114,7 @@ CREATE OR REPLACE FUNCTION form_data.employee_form_ofices_insert(
 	param_code_form_ofice VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT
+RETURNS INTEGER
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1135,7 +1135,7 @@ AS $udf$
 				fo.is_deleted = '0'
 		)
 		THEN
-			RETURN local_is_successful;
+			RETURN local_is_successful::INTEGER;
 		ELSE
 			INSERT INTO form_data.employee_form_ofices(
 				code_form,
@@ -1163,8 +1163,11 @@ AS $udf$
 				param_change_description := 'FIRST INSERT'
 			);
 
-
-			RETURN local_emp_form_ofice_id;
+			IF local_is_successful = '1' THEN
+				RETURN local_emp_form_ofice_id;
+			ELSE
+				RETURN local_is_successful::INTEGER;
+			END IF;
 
 		END IF;
 	END;
@@ -1228,7 +1231,7 @@ CREATE OR REPLACE FUNCTION form_data.employee_form_personal_movement_insert(
 	param_code_form_mov_per VARCHAR,
 	param_user_id BIGINT
 )
-RETURNS BIT
+RETURNS INTEGER
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
@@ -1249,7 +1252,7 @@ AS $udf$
 				fmp.is_deleted = '0'
 		)
 		THEN
-			RETURN local_is_successful;
+			RETURN local_is_successful::INTEGER;
 		ELSE
 			INSERT INTO form_data.employee_form_personal_movement(
 				code_form,
@@ -1277,8 +1280,11 @@ AS $udf$
 				param_change_description := 'FIRST INSERT'
 			);
 
-
-			RETURN local_emp_form_mov_per_id;
+			IF local_is_successful = '1' THEN
+				RETURN local_emp_form_mov_per_id;
+			ELSE
+				RETURN local_is_successful::INTEGER;
+			END IF;
 
 		END IF;
 	END;

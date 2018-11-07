@@ -108,11 +108,11 @@ CREATE TABLE process_form.status_process_form_history(
 
 -- ADD fk in the tables history
 	ALTER TABLE ONLY process_form.process_form_movement_personal_history
-		ADD CONSTRAINT process_form_mov_pers_hist_process_form_mov_id FOREIGN KEY (form_movement_personal_id)
+		ADD CONSTRAINT process_form_mov_pers_hist_process_form_mov_id FOREIGN KEY (process_form_movement_personal_id)
 		REFERENCES process_form.process_form_movement_personal (id);
 
 	ALTER TABLE ONLY process_form.process_form_ofice_history
-		ADD CONSTRAINT process_form_ofice_hist_process_form_ofice_id FOREIGN KEY (form_ofice_id)
+		ADD CONSTRAINT process_form_ofice_hist_process_form_ofice_id FOREIGN KEY (process_form_ofice_id)
 		REFERENCES process_form.process_form_ofice (id);
 
 	ALTER TABLE ONLY process_form.status_process_form_history
