@@ -4742,6 +4742,7 @@ CREATE OR REPLACE FUNCTION employee_data.employee_update_for_movement_personal(
 	param_addres VARCHAR,
 	param_housing_type VARCHAR,
 	param_housing_identifier VARCHAR,
+	param_apartament VARCHAR,
 	param_ingress_id INTEGER,
 	param_income_type_id INTEGER,
 	param_user_id BIGINT
@@ -4761,6 +4762,7 @@ AS $udf$
 			address = param_addres,
 			housing_type = param_housing_type,
 			housing_identifier = param_housing_identifier,
+			apartament = param_apartament,
 			ingress_id = param_ingress_id,
 			income_types = param_income_type_id,
 			last_modified_by = param_user_id,

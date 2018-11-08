@@ -1,7 +1,7 @@
 -- functions of process_form_movement_personal
 
 --function of insert process_form_movement_personal
-CREATE OR REPLACE FUNCTION employee_data.process_form_movement_personal_insert(
+CREATE OR REPLACE FUNCTION process_form.process_form_movement_personal_insert(
 	param_form_movement_personal_id INTEGER,
 	param_user_id BIGINT
 )

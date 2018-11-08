@@ -1555,7 +1555,7 @@ AS $udf$
 			SELECT param_employee_json::TEXT
 			LIKE '%employee_id%'
 		) THEN
-		local_employee_id := (param_employee_json->>employee_id)::BIGINT;
+		local_employee_id := (param_employee_json->>'employee_id')::BIGINT;
 		ELSE
 		SELECT employee_insert INTO local_employee_id FROM employee_data.employee_insert(
 			(param_employee_json->>'nacionality_id')::INTEGER,
@@ -1598,10 +1598,60 @@ AS $udf$
 		);
 
 		SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
-			local_form_ofice_id,
+			local_form_ofice_id::INTEGER,
 			param_user_id
 		);
 
 		RETURN local_is_successful;
+	END;
+$udf$;
+
+-- function of insert form movement personal employee_form_ofice_insert_complete
+CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_insert_complete(
+	param_employee_json json,
+	param_form_mov_per_json json,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+		local_emp_form_mov_per_id BIGINT;
+	BEGIN
+		PERFOM employee_data.employee_update_for_movement_personal(
+			(param_employee_json->>'employee_id')::INTEGER,
+			(param_employee_json->>'state_id')::INTEGER,
+			(param_employee_json->>'municipality_id')::INTEGER,
+			(param_employee_json->>'parish_id')::INTEGER,
+			param_employee_json->>'ubication',
+			param_employee_json->>'address',
+			param_employee_json->>'housing_type',
+			param_employee_json->>'housing_identifier',
+			param_employee_json->>'apartament',
+			(param_employee_json->>'ingress_id')::INTEGER,
+			(param_employee_json->>'income_type_id')::INTEGER,
+			param_user_id
+		);
+
+		SELECT employee_form_personal_movement_insert INTO local_emp_form_mov_per_id FROM form_data.employee_form_personal_movement_insert(
+			param_form_mov_per_json->>'code_form',
+			param_user_id
+		);
+
+		PERFOM form_data.employee_form_ofice_person_movement_update_mov_per(
+			(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
+			(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
+			local_emp_form_mov_per_id,
+			param_user_id
+		);
+
+		SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
+			local_emp_form_mov_per_id::INTEGER,
+			param_user_id
+		);
+
+		RETRUN local_is_successful;
 	END;
 $udf$;
