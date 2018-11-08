@@ -1555,7 +1555,7 @@ AS $udf$
 			SELECT param_employee_json::TEXT
 			LIKE '%employee_id%'
 		) THEN
-		local_employee_id := (param_employee_id->>employee_id)::BIGINT;
+		local_employee_id := (param_employee_json->>employee_id)::BIGINT;
 		ELSE
 		SELECT employee_insert INTO local_employee_id FROM employee_data.employee_insert(
 			(param_employee_json->>'nacionality_id')::INTEGER,
