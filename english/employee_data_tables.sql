@@ -160,7 +160,7 @@ CREATE TABLE employee_data.employee_salaries(
 
 CREATE TABLE employee_data.idac_codes(
 	id INTEGER DEFAULT nextval('employee_data.idac_codes_id_seq'::regclass) NOT NULL,
-	code INTEGER Not NULL,
+	code VARCHAR(100) NOT NULL,
 	execunting_unit_id INTEGER NOT NULL,
 	vacant_date  DATE,
 	is_active BIT(1) NOT NULL,
@@ -389,7 +389,7 @@ CREATE TABLE employee_data.employee_salaries_history(
 CREATE TABLE employee_data.idac_codes_history(
 	id BIGINT DEFAULT nextval('employee_data.idac_codes_history_id_seq'::regclass) NOT NULL,
 	idac_code_id INTEGER,
-	code INTEGER,
+	code VARCHAR(100),
 	execunting_unit_id INTEGER,
 	vacant_date  TIMESTAMP WITHOUT TIME ZONE,
 	is_active BIT(1),
