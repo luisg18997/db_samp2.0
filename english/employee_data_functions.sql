@@ -3558,7 +3558,6 @@ CREATE OR REPLACE FUNCTION employee_data.idac_codes_insert(
  param_idac_code VARCHAR,
  param_execunting_unit_id INTEGER,
  param_vacant_date DATE,
- param_is_active BIT,
  param_user_id INTEGER
 )
 RETURNS BIT
@@ -3606,7 +3605,7 @@ AS $udf$
 	  			param_idac_code,
 	  			param_execunting_unit_id,
 	  			param_vacant_date,
-	  			param_is_active,
+	  			'1',
 	  			'0',
 	  			param_user_id,
 	  			CLOCK_TIMESTAMP()
