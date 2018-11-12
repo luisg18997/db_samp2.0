@@ -1606,8 +1606,8 @@ AS $udf$
 	END;
 $udf$;
 
--- function of insert form movement personal employee_form_ofice_insert_complete
-CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_insert_complete(
+-- function of insert form movement personal
+CREATE OR REPLACE FUNCTION form_data.employee_form_movement_personal_insert_complete(
 	param_employee_json json,
 	param_form_mov_per_json json,
 	param_user_id BIGINT
