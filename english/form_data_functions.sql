@@ -1584,23 +1584,26 @@ AS $udf$
 			param_user_id
 		);
 
-		PERFORM form_data.employee_form_ofice_person_movement_insert(
-			local_form_ofice_id,
-			local_employee_id,
-			(param_form_ofice_json->>'dedication_id')::INTEGER,
-			(param_form_ofice_json->>'movement_type_id')::INTEGER,
-			(param_form_ofice_json->>'start_date')::DATE,
-			(param_form_ofice_json->>'finish_date')::DATE,
-			(param_form_ofice_json->>'school_id')::INTEGER,
-			(param_form_ofice_json->>'institute_id')::INTEGER,
-			(param_form_ofice_json->>'cordination_id')::INTEGER,
-			param_user_id
-		);
+		IF (local_form_ofice_id != 0)
+		THEN
+			PERFORM form_data.employee_form_ofice_person_movement_insert(
+				local_form_ofice_id,
+				local_employee_id,
+				(param_form_ofice_json->>'dedication_id')::INTEGER,
+				(param_form_ofice_json->>'movement_type_id')::INTEGER,
+				(param_form_ofice_json->>'start_date')::DATE,
+				(param_form_ofice_json->>'finish_date')::DATE,
+				(param_form_ofice_json->>'school_id')::INTEGER,
+				(param_form_ofice_json->>'institute_id')::INTEGER,
+				(param_form_ofice_json->>'cordination_id')::INTEGER,
+				param_user_id
+			);
 
-		SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
-			local_form_ofice_id::INTEGER,
-			param_user_id
-		);
+			SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
+				local_form_ofice_id::INTEGER,
+				param_user_id
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
