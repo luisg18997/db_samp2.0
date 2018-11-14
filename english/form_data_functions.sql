@@ -1224,6 +1224,30 @@ AS $udf$
 	END;
 $udf$;
 
+-- function of obtain ultimate code of ofice
+CREATE OR REPLACE FUNCTION form_data.get_form_ofice_code()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			fo.code_form
+		FROM
+			form_data.employee_form_ofices fo
+		INNER JOIN
+			form_data.employee_form_ofice_and_form_person_movement fomp
+		ON
+			fo.id = fomp.form_ofice_id
+		ORDER BY
+			fo.last_modified_date
+		DESC
+		LIMIT 1
+	)DATA;
+$BODY$;
+
 
 -- function of employee_form_personal_movement
 -- function of insert
@@ -1344,6 +1368,31 @@ AS $udf$
 		RETURN local_is_successful;
 	END;
 $udf$;
+
+-- function of obtain ultimate code of mov personal
+CREATE OR REPLACE FUNCTION form_data.get_form_movement_personal_code()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			fmp.code_form
+		FROM
+			form_data.employee_form_personal_movement fmp
+		INNER JOIN
+			form_data.employee_form_ofice_and_form_person_movement fomp
+		ON
+			fmp.id = fomp.form_person_movement_id
+		ORDER BY
+			fmp.last_modified_date
+		DESC
+		LIMIT 1
+	)DATA;
+$BODY$;
+
 
 -- function of employee_form_ofice_and_form_person_movement
 -- function of insert
@@ -1623,7 +1672,7 @@ AS $udf$
 		local_is_successful BIT := '0';
 		local_emp_form_mov_per_id BIGINT;
 	BEGIN
-		PERFOM employee_data.employee_update_for_movement_personal(
+		PERFORM employee_data.employee_update_for_movement_personal(
 			(param_employee_json->>'employee_id')::INTEGER,
 			(param_employee_json->>'state_id')::INTEGER,
 			(param_employee_json->>'municipality_id')::INTEGER,
@@ -1643,18 +1692,22 @@ AS $udf$
 			param_user_id
 		);
 
-		PERFOM form_data.employee_form_ofice_person_movement_update_mov_per(
-			(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
-			(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
-			local_emp_form_mov_per_id,
-			param_user_id
-		);
+		IF (local_emp_form_mov_per_id != 0)
+		THEN
+			PERFORM form_data.employee_form_ofice_person_movement_update_mov_per(
+				(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
+				(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
+				local_emp_form_mov_per_id,
+				param_user_id
+			);
 
-		SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
-			local_emp_form_mov_per_id::INTEGER,
-			param_user_id
-		);
+			SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
+				local_emp_form_mov_per_id::INTEGER,
+				param_user_id
+			);
 
-		RETRUN local_is_successful;
+		END IF;
+
+		RETURN local_is_successful;
 	END;
 $udf$;
