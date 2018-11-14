@@ -1623,7 +1623,7 @@ AS $udf$
 		local_is_successful BIT := '0';
 		local_emp_form_mov_per_id BIGINT;
 	BEGIN
-		PERFOM employee_data.employee_update_for_movement_personal(
+		PERFORM employee_data.employee_update_for_movement_personal(
 			(param_employee_json->>'employee_id')::INTEGER,
 			(param_employee_json->>'state_id')::INTEGER,
 			(param_employee_json->>'municipality_id')::INTEGER,
@@ -1643,7 +1643,7 @@ AS $udf$
 			param_user_id
 		);
 
-		PERFOM form_data.employee_form_ofice_person_movement_update_mov_per(
+		PERFORM form_data.employee_form_ofice_person_movement_update_mov_per(
 			(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
 			(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
 			local_emp_form_mov_per_id,
@@ -1655,6 +1655,6 @@ AS $udf$
 			param_user_id
 		);
 
-		RETRUN local_is_successful;
+		RETURN local_is_successful;
 	END;
 $udf$;

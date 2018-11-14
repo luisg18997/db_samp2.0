@@ -1,4 +1,4 @@
--- functions of states
+ --functions of states
 
 --function of insert
 CREATE OR REPLACE FUNCTION employee_data.state_insert(
@@ -3587,7 +3587,7 @@ AS $udf$
   				AND
   					idac.code = param_idac_code
   				AND
-  					idac.execunting_unit = param_execunting_unit_id
+  					idac.execunting_unit_id = param_execunting_unit_id
   		)
   		THEN
   			RETURN local_idac_id;
@@ -3595,7 +3595,7 @@ AS $udf$
   			INSERT INTO employee_data.idac_codes(
 	  			code,
 	  			execunting_unit_id,
-	  			vacan_date,
+	  			vacant_date,
 	  			is_active,
 	  			is_deleted,
 	  			last_modified_by,
@@ -3641,7 +3641,7 @@ AS $udf$
     		idac_code_id,
     		code,
     		execunting_unit_id,
-    		vacan_date,
+    		vacant_date,
     		is_active,
     		is_deleted,
     		last_modified_by,
@@ -3653,13 +3653,13 @@ AS $udf$
     		id,
     		code,
     		execunting_unit_id,
-    		vacan_date,
+    		vacant_date,
     		is_active,
     		is_deleted,
     		last_modified_by,
     		last_modified_date,
     		param_change_type,
-    		param_description
+    		param_change_description
     	FROM
     		employee_data.idac_codes idac
     	WHERE
@@ -3943,7 +3943,7 @@ $BODY$;
 
 --function get by code
 CREATE OR REPLACE FUNCTION employee_data.get_idac_code_search(
-	param_idac_code INTEGER,
+	param_idac_code VARCHAR,
 	param_execunting_unit_id INTEGER
 )
 RETURNS json
