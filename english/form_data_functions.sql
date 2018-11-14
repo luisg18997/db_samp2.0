@@ -1224,6 +1224,30 @@ AS $udf$
 	END;
 $udf$;
 
+-- function obtain code
+CREATE OR REPLACE FUNCTION form_data.get_form_ofice_code()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			fo.code_form
+		FROM
+			form_data.employee_form_ofices fo
+		INNER JOIN
+			form_data.employee_form_ofice_and_form_person_movement fomp
+		ON
+			fo.id = fomp.form_ofice_id
+			ORDER BY
+				fo.last_modified_date
+			DESC
+			LIMIT 1
+	)DATA;
+$BODY$;
+
 
 -- function of employee_form_personal_movement
 -- function of insert
@@ -1344,6 +1368,29 @@ AS $udf$
 		RETURN local_is_successful;
 	END;
 $udf$;
+
+CREATE OR REPLACE FUNCTION form_data.get_form_mov_personal_code()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			fmp.code_form
+		FROM
+			form_data.employee_form_personal_movement fmp
+		INNER JOIN
+			form_data.employee_form_ofice_and_form_person_movement fomp
+		ON
+			fmp.id = fomp.form_person_movement_id
+			ORDER BY
+				fmp.last_modified_date
+			DESC
+			LIMIT 1
+	)DATA;
+$BODY$;
 
 -- function of employee_form_ofice_and_form_person_movement
 -- function of insert
