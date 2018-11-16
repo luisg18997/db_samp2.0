@@ -1224,7 +1224,8 @@ AS $udf$
 	END;
 $udf$;
 
--- function of obtain ultimate code of ofice
+
+-- function obtain code
 CREATE OR REPLACE FUNCTION form_data.get_form_ofice_code()
 RETURNS json
 LANGUAGE 'sql'
@@ -1369,8 +1370,8 @@ AS $udf$
 	END;
 $udf$;
 
--- function of obtain ultimate code of mov personal
-CREATE OR REPLACE FUNCTION form_data.get_form_movement_personal_code()
+
+CREATE OR REPLACE FUNCTION form_data.get_form_mov_personal_code()
 RETURNS json
 LANGUAGE 'sql'
 COST 100.0
@@ -1392,7 +1393,6 @@ AS $BODY$
 		LIMIT 1
 	)DATA;
 $BODY$;
-
 
 -- function of employee_form_ofice_and_form_person_movement
 -- function of insert

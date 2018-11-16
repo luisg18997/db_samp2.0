@@ -1,4 +1,4 @@
--- functions of states
+ --functions of states
 
 --function of insert
 CREATE OR REPLACE FUNCTION employee_data.state_insert(
