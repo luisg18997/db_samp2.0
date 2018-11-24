@@ -2245,7 +2245,7 @@ SELECT employee_data.idac_codes_insert('28865', 61, '12/11/2018', 0);
 SELECT employee_data.idac_codes_insert('8327', 62, '12/11/2018', 0);
 SELECT employee_data.idac_codes_insert('21595', 62, '12/11/2018', 0);
 SELECT employee_data.idac_codes_insert('23880', 62, '12/11/2018', 0);
-SELECT employee_data.idac_codes_insert('25292', 62, '12/11/2018', 0);
+SELECT employee_data.idac_codes_insert('25282', 62, '12/11/2018', 0);
 SELECT employee_data.idac_codes_insert('31388', 64, '12/11/2018', 0);
 SELECT employee_data.idac_codes_insert('33313', 65, '12/11/2018', 0);
 SELECT employee_data.idac_codes_insert('8355', 66, '12/11/2018', 0);
