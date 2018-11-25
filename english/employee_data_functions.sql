@@ -3769,7 +3769,7 @@ $BODY$;
 
 --function get list filter vacant not is null and execunting_unit
 CREATE OR REPLACE FUNCTION employee_data.get_idac_codes_filter_vacant_date_not_null_exec_unit_list(
-	param_execunting_unit_id INTEGER
+	param_execunting_unit_id INTEGER[]
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -3781,7 +3781,8 @@ AS $BODY$
 		SELECT
 			idac.id,
 			idac.code,
-			idac.execunting_unit_id
+			idac.execunting_unit_id,
+			exec.description as execunting_unit
 		FROM
 			employee_data.idac_codes idac
 			INNER JOIN
@@ -3796,9 +3797,9 @@ AS $BODY$
 		AND
 			idac.is_deleted = '0'
 		AND
-			idac.vacant_date != null
+			idac.vacant_date IS NOT NULL
 		AND
-			idac.execunting_unit_id = param_execunting_unit_id
+			idac.execunting_unit_id = ANY(param_execunting_unit_id)
 	)DATA;
 $BODY$;
 
