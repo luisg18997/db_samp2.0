@@ -1820,17 +1820,105 @@ LANGUAGE 'sql'
 COST 100.0
 
 AS $BODY$
-    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    SELECT ARRAY_AGG(ROW_TO_JSON(DATA))
     FROM (
     SELECT
-      name,
-      surname,
-      email,
-      ubication_id,
-      password
+      user.id,
+      user.name||' '||user.surname as name,
+      user.email,
+      user.ubication_id,
+      ub.name as ubication
+      user.password,
+      user.is_active,
+      user.is_deleted,
+      usrol.role_id,
+      rol.description as rol,
+      user.school_id,
+      schl.name as school,
+      user.institute_id,
+      inst.name as institute,
+      user.coordination_id,
+      cord.name as coordination,
+      ans.question_id,
+      qt.description,
+      ans.answer,
     FROM
-      user_data.users
-    WHERE
-      email = param_email
+      user_data.users user
+    INNER JOIN 
+        user_data.user_roles  usrol
+    ON 
+            user.email = param_email
+        AND
+            usrol.user_id = user.id
+        AND
+            usrol.is_deleted = '0'
+        INNER JOIN 
+            user_data.roles rol
+        ON
+                rol.id = usrol.role_id
+            AND
+                rol.is_active = '1'
+            AND
+                rol.is_deleted = '0'
+    INNER JOIN
+        user_data.ubications ub
+    ON
+            ub.id = user.ubication_id
+        AND
+            ub.is_active = '1'
+        AND
+            ub.is_deleted = '0'
+        OR
+            user.school_id  IN (SELECT schl.id
+                FROM faculty_data.schools schl
+                WHERE  schl.id = user.school_id)
+        OR
+            user.institute_id IN (SELECT inst.id
+                FROM faculty_data.institutes inst
+                WHERE inst.id = user.institute_id)
+        OR
+            user.coordination_id IN (SELECT cord.id
+                FROM faculty_data.coordinations cord
+                WHERE cord.id = user.coordination_id)
+        JOIN
+            faculty_data.schools schl
+        ON
+                schl.id = user.school_id
+            AND
+                schl.is_active = '1'
+            AND
+                schl.is_deleted = '0'
+        JOIN
+            faculty_data.institutes inst
+        ON
+                inst.id = user.institute_id
+            AND
+                inst.is_active = '1'
+            AND
+                inst.is_deleted = '0'
+        JOIN
+            faculty_data.coordinations cord
+        ON
+                cord.id = user.coordination_id
+            AND
+                cord.is_active = '1'
+            AND
+                cord.is_deleted = '0'
+    INNER JOIN
+        user_data.security_answers ans
+    ON
+            ans.user_id = user.id
+        AND
+            ans.is_deleted = '0'
+        INNER JOIN
+            user_data.security_questions qt
+        ON
+                qt.id = ans.question_id
+            AND
+                qt.is_active = '1'
+            AND
+                qt.is_deleted = '0'
+
+
     )DATA;
 $BODY$;
