@@ -1820,36 +1820,36 @@ LANGUAGE 'sql'
 COST 100.0
 
 AS $BODY$
-    SELECT ARRAY_AGG(ROW_TO_JSON(DATA))
+    SELECT ROW_TO_JSON(DATA)
     FROM (
     SELECT
-      user.id,
-      user.name||' '||user.surname as name,
-      user.email,
-      user.ubication_id,
-      ub.name as ubication
-      user.password,
-      user.is_active,
-      user.is_deleted,
+      usr.id,
+      usr.name||' '||usr.surname as name,
+      usr.email,
+      usr.ubication_id,
+      ub.name as ubication,
+      usr.password,
+      usr.is_active,
+      usr.is_deleted,
       usrol.role_id,
       rol.description as rol,
-      user.school_id,
+      usr.school_id,
       schl.name as school,
-      user.institute_id,
+      usr.institute_id,
       inst.name as institute,
-      user.coordination_id,
+      usr.coordination_id,
       cord.name as coordination,
       ans.question_id,
       qt.description,
-      ans.answer,
+      ans.answer
     FROM
-      user_data.users user
+      user_data.users usr
     INNER JOIN 
         user_data.user_roles  usrol
     ON 
-            user.email = param_email
+            usr.email = param_email
         AND
-            usrol.user_id = user.id
+            usrol.user_id = usr.id
         AND
             usrol.is_deleted = '0'
         INNER JOIN 
@@ -1863,51 +1863,45 @@ AS $BODY$
     INNER JOIN
         user_data.ubications ub
     ON
-            ub.id = user.ubication_id
+            ub.id = usr.ubication_id
         AND
             ub.is_active = '1'
         AND
             ub.is_deleted = '0'
         OR
-            user.school_id  IN (SELECT schl.id
+            usr.school_id  IN (SELECT schl.id
                 FROM faculty_data.schools schl
-                WHERE  schl.id = user.school_id)
+                WHERE schl.id = usr.school_id
+                AND schl.is_active = '1'
+                AND schl.is_deleted = '0')
         OR
-            user.institute_id IN (SELECT inst.id
+            usr.institute_id IN (SELECT inst.id
                 FROM faculty_data.institutes inst
-                WHERE inst.id = user.institute_id)
+                WHERE inst.id = usr.institute_id
+                AND inst.is_active = '1'
+                AND inst.is_deleted = '0')
         OR
-            user.coordination_id IN (SELECT cord.id
+            usr.coordination_id IN (SELECT cord.id
                 FROM faculty_data.coordinations cord
-                WHERE cord.id = user.coordination_id)
-        JOIN
+                WHERE cord.id = usr.coordination_id
+                AND cord.is_active = '1'
+                AND cord.is_deleted = '0')
+        JOIN 
             faculty_data.schools schl
         ON
-                schl.id = user.school_id
-            AND
-                schl.is_active = '1'
-            AND
-                schl.is_deleted = '0'
+            schl.id = usr.school_id
         JOIN
             faculty_data.institutes inst
         ON
-                inst.id = user.institute_id
-            AND
-                inst.is_active = '1'
-            AND
-                inst.is_deleted = '0'
+            inst.id = usr.institute_id
         JOIN
             faculty_data.coordinations cord
         ON
-                cord.id = user.coordination_id
-            AND
-                cord.is_active = '1'
-            AND
-                cord.is_deleted = '0'
+            cord.id = usr.coordination_id  
     INNER JOIN
         user_data.security_answers ans
     ON
-            ans.user_id = user.id
+            ans.user_id = usr.id
         AND
             ans.is_deleted = '0'
         INNER JOIN
@@ -1918,7 +1912,5 @@ AS $BODY$
                 qt.is_active = '1'
             AND
                 qt.is_deleted = '0'
-
-
     )DATA;
 $BODY$;
