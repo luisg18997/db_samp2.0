@@ -1226,20 +1226,32 @@ $udf$;
 
 
 -- function obtain code
-CREATE OR REPLACE FUNCTION form_data.get_form_ofice_code()
+CREATE OR REPLACE FUNCTION form_data.get_form_ofice_code(
+	param_school_id INTEGER,
+	param_institute_id INTEGER,
+	param_coordination_id INTEGER 
+)
 RETURNS json
 LANGUAGE 'sql'
 COST 100.0
 
 AS $BODY$
-	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	SELECT ROW_TO_JSON(DATA)
 	FROM (
 		SELECT
 			fo.code_form
 		FROM
 			form_data.employee_form_ofices fo
 		INNER JOIN
-			form_data.employee_form_ofice_and_form_person_movement fomp
+			(	
+				fomp.school_id = param_school_id
+			OR
+				fomp.institute_id = param_institute_id
+			OR
+				fomp.coordination_id = param_coordination_id
+			)
+			AND
+				form_data.employee_form_ofice_and_form_person_movement fomp
 		ON
 			fo.id = fomp.form_ofice_id
 		ORDER BY
@@ -1371,13 +1383,17 @@ AS $udf$
 $udf$;
 
 
-CREATE OR REPLACE FUNCTION form_data.get_form_mov_personal_code()
+CREATE OR REPLACE FUNCTION form_data.get_form_mov_personal_code(
+	param_school_id INTEGER,
+	param_institute_id INTEGER,
+	param_coordination_id INTEGER 
+)
 RETURNS json
 LANGUAGE 'sql'
 COST 100.0
 
 AS $BODY$
-	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	SELECT ROW_TO_JSON(DATA)
 	FROM (
 		SELECT
 			fmp.code_form
@@ -1386,13 +1402,35 @@ AS $BODY$
 		INNER JOIN
 			form_data.employee_form_ofice_and_form_person_movement fomp
 		ON
-			fmp.id = fomp.form_person_movement_id
+			(	fomp.school_id = param_school_id
+			OR
+				fomp.institute_id = param_institute_id
+			OR
+				fomp.coordination_id = param_coordination_id
+			)
+			AND
+				fmp.id = fomp.form_person_movement_id
 		ORDER BY
 			fmp.last_modified_date
 		DESC
 		LIMIT 1
 	)DATA;
 $BODY$;
+
+-- function get mov pers
+CREATE OR REPLACE FUNCTION form_data.get_form_movement_personal(
+	param_form_id INTEGER
+)RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ROW_TO_JSON(DATA)
+	FROM (
+		
+	)DATA;
+$BODY$;
+
 
 -- function of employee_form_ofice_and_form_person_movement
 -- function of insert
@@ -1627,33 +1665,41 @@ AS $udf$
 			param_user_id
 		);
 		END IF;
+		IF (param_employee_json->>'idac' != '' OR param_employee_json->>'idac' IS NOT NULL)
+		PERFORM employee_data.employee_idac_code_insert(
+			local_employee_id,
+			param_employee_json->>'idac',
+			param_user_id);
 
-		SELECT employee_form_ofices_insert INTO local_form_ofice_id FROM form_data.employee_form_ofices_insert(
-			param_form_ofice_json->>'code_form',
-			param_user_id
-		);
+			IF (param_form_ofice_json->>'code_form' != '' OR param_form_ofice_json->>'code_form' IS NOT NULL)
+			THEN
+				SELECT employee_form_ofices_insert INTO local_form_ofice_id FROM form_data.employee_form_ofices_insert(
+					param_form_ofice_json->>'code_form',
+					param_user_id
+				);
 
-		IF (local_form_ofice_id != 0)
-		THEN
-			PERFORM form_data.employee_form_ofice_person_movement_insert(
-				local_form_ofice_id,
-				local_employee_id,
-				(param_form_ofice_json->>'dedication_id')::INTEGER,
-				(param_form_ofice_json->>'movement_type_id')::INTEGER,
-				(param_form_ofice_json->>'start_date')::DATE,
-				(param_form_ofice_json->>'finish_date')::DATE,
-				(param_form_ofice_json->>'school_id')::INTEGER,
-				(param_form_ofice_json->>'institute_id')::INTEGER,
-				(param_form_ofice_json->>'cordination_id')::INTEGER,
-				param_user_id
-			);
+				IF (local_form_ofice_id != 0)
+				THEN
+					PERFORM form_data.employee_form_ofice_person_movement_insert(
+						local_form_ofice_id,
+						local_employee_id,
+						(param_form_ofice_json->>'dedication_id')::INTEGER,
+						(param_form_ofice_json->>'movement_type_id')::INTEGER,
+						(param_form_ofice_json->>'start_date')::DATE,
+						(param_form_ofice_json->>'finish_date')::DATE,
+						(param_form_ofice_json->>'school_id')::INTEGER,
+						(param_form_ofice_json->>'institute_id')::INTEGER,
+						(param_form_ofice_json->>'cordination_id')::INTEGER,
+						param_user_id
+					);
 
-			SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
-				local_form_ofice_id::INTEGER,
-				param_user_id
-			);
+					SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
+						local_form_ofice_id::INTEGER,
+						param_user_id
+					);
+				END IF;
+			END IF;
 		END IF;
-
 		RETURN local_is_successful;
 	END;
 $udf$;
@@ -1686,28 +1732,29 @@ AS $udf$
 			(param_employee_json->>'income_type_id')::INTEGER,
 			param_user_id
 		);
-
-		SELECT employee_form_personal_movement_insert INTO local_emp_form_mov_per_id FROM form_data.employee_form_personal_movement_insert(
-			param_form_mov_per_json->>'code_form',
-			param_user_id
-		);
-
-		IF (local_emp_form_mov_per_id != 0)
+		IF (param_form_mov_per_json->>'code_form' != '' OR param_form_mov_per_json->>'code_form' IS NOT NULL)
 		THEN
-			PERFORM form_data.employee_form_ofice_person_movement_update_mov_per(
-				(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
-				(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
-				local_emp_form_mov_per_id,
+			SELECT employee_form_personal_movement_insert INTO local_emp_form_mov_per_id FROM form_data.employee_form_personal_movement_insert(
+				param_form_mov_per_json->>'code_form',
 				param_user_id
 			);
 
-			SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
-				local_emp_form_mov_per_id::INTEGER,
-				param_user_id
-			);
+			IF (local_emp_form_mov_per_id != 0)
+			THEN
+				PERFORM form_data.employee_form_ofice_person_movement_update_mov_per(
+					(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
+					(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
+					local_emp_form_mov_per_id,
+					param_user_id
+				);
 
+				SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
+					local_emp_form_mov_per_id::INTEGER,
+					param_user_id
+				);
+
+			END IF;
 		END IF;
-
 		RETURN local_is_successful;
 	END;
 $udf$;
