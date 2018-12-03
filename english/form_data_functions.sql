@@ -1229,7 +1229,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION form_data.get_form_ofice_code(
 	param_school_id INTEGER,
 	param_institute_id INTEGER,
-	param_coordination_id INTEGER 
+	param_coordination_id INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -1243,24 +1243,23 @@ AS $BODY$
 		FROM
 			form_data.employee_form_ofices fo
 		INNER JOIN
-			(	
+				form_data.employee_form_ofice_and_form_person_movement fomp
+				ON
+					fomp.form_ofice_id = fo.id
+				AND
+			(
 				fomp.school_id = param_school_id
 			OR
 				fomp.institute_id = param_institute_id
 			OR
 				fomp.coordination_id = param_coordination_id
 			)
-			AND
-				form_data.employee_form_ofice_and_form_person_movement fomp
-		ON
-			fo.id = fomp.form_ofice_id
 		ORDER BY
 			fo.last_modified_date
 		DESC
 		LIMIT 1
 	)DATA;
 $BODY$;
-
 
 -- function of employee_form_personal_movement
 -- function of insert
@@ -1386,7 +1385,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION form_data.get_form_mov_personal_code(
 	param_school_id INTEGER,
 	param_institute_id INTEGER,
-	param_coordination_id INTEGER 
+	param_coordination_id INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -1446,16 +1445,16 @@ AS $BODY$
 			COALESCE(emp.apartament,'') as apartament,
 			COALESCE(emp.departament_id,0) as departament_id,
 			COALESCE(emp.parish_id,0) as parish_id,
-			COALESCE(epm.ingress_id,0) as ingress_id,
+			COALESCE(emp.ingress_id,0) as ingress_id,
 			COALESCE(emp.income_type_id,0) as income_type_id,
 			fomp.movement_type_id,
 			fomp.start_date,
 			fomp.finish_date,
 			COALESCE(emidac.idac_code_id,0) as idac_code_id,
-			COALESCE(idac.execunting_unit_id, 0 as execunting_unit_id,
-			COALESCE(sal.dedication_type_id, fomp.dedication_id) as current_dedication, 
+			COALESCE(idac.execunting_unit_id, 0) as execunting_unit_id,
+			COALESCE(sal.dedication_type_id, fomp.dedication_id) as current_dedication,
 			COALESCE(fomp.dedication_id, 0) as proposed_dedication,
-			COALESCE(sal.category_type_id, 0) salary_id category_type_id,
+			COALESCE(sal.category_type_id, 0) as category_type_id,
 			COALESCE(emsal.salary_id, 0) as salary_id
 		FROM
 			form_data.employee_form_ofice_and_form_person_movement fomp
@@ -1475,7 +1474,7 @@ AS $BODY$
 				OR
 					fomp.institute_id = emp.institute_id
 				OR
-					fomp.coordination_id = emp.coordination_id
+					fomp.coordination_id = emp.cordination_id
 				)
 			AND
 				fomp.is_deleted = '0'
@@ -1512,7 +1511,7 @@ AS $BODY$
 					AND
 						sal.is_active = '1'
 					AND
-						sal.is_deleted = '0'	
+						sal.is_deleted = '0'
 	)DATA;
 $BODY$;
 
@@ -1751,6 +1750,7 @@ AS $udf$
 		);
 		END IF;
 		IF (param_employee_json->>'idac' != '' OR param_employee_json->>'idac' IS NOT NULL)
+		THEN
 		PERFORM employee_data.employee_idac_code_insert(
 			local_employee_id,
 			param_employee_json->>'idac',

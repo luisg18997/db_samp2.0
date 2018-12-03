@@ -3327,8 +3327,7 @@ AS $BODY$
 			emsal.id,
 			emp.first_name,
 			emp.surname,
-			sal.salary,
-			emsal.insert_date
+			sal.salary
 		FROM
 			employee_data.employee_salaries emsal
 			INNER JOIN
