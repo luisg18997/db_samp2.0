@@ -1419,7 +1419,7 @@ $BODY$;
 
 -- function get mov pers
 CREATE OR REPLACE FUNCTION form_data.get_form_movement_personal(
-	param_form_id INTEGER
+	param_identification VARCHAR
 )RETURNS json
 LANGUAGE 'sql'
 COST 100.0
@@ -1427,7 +1427,92 @@ COST 100.0
 AS $BODY$
 	SELECT ROW_TO_JSON(DATA)
 	FROM (
-		
+		SELECT
+			fomp.id,
+			fomp.employee_id,
+			emp.first_name,
+			COALESCE(emp.second_name,'') as second_name,
+			emp.surname,
+			COALESCE(emp.second_surname,'') as second_surname,
+			emp.nacionality_id,
+			emp.identification,
+			COALESCE(emp.state_id,0) as state_id,
+			COALESCE(emp.municipality_id,0) as municipality_id,
+			COALESCE(emp.parish_id,0) as parish_id,
+			COALESCE(emp.ubication,'') as ubication,
+			COALESCE(emp.address,'') as address,
+			COALESCE(emp.housing_type,'') as housing_type,
+			COALESCE(emp.housing_identifier,'') as housing_identifier,
+			COALESCE(emp.apartament,'') as apartament,
+			COALESCE(emp.departament_id,0) as departament_id,
+			COALESCE(emp.parish_id,0) as parish_id,
+			COALESCE(epm.ingress_id,0) as ingress_id,
+			COALESCE(emp.income_type_id,0) as income_type_id,
+			fomp.movement_type_id,
+			fomp.start_date,
+			fomp.finish_date,
+			COALESCE(emidac.idac_code_id,0) as idac_code_id,
+			COALESCE(idac.execunting_unit_id, 0 as execunting_unit_id,
+			COALESCE(sal.dedication_type_id, fomp.dedication_id) as current_dedication, 
+			COALESCE(fomp.dedication_id, 0) as proposed_dedication,
+			COALESCE(sal.category_type_id, 0) salary_id category_type_id,
+			COALESCE(emsal.salary_id, 0) as salary_id
+		FROM
+			form_data.employee_form_ofice_and_form_person_movement fomp
+		INNER JOIN
+			employee_data.employees emp
+		ON
+				emp.identification = param_identification
+			AND
+				 emp.id = fomp.employee_id
+			AND
+				emp.retirement_date IS NULL
+			AND
+				emp.is_deleted = '0'
+			AND
+				(
+					fomp.school_id = emp.school_id
+				OR
+					fomp.institute_id = emp.institute_id
+				OR
+					fomp.coordination_id = emp.coordination_id
+				)
+			AND
+				fomp.is_deleted = '0'
+			AND
+				fomp.form_person_movement_id IS NULL
+			AND
+				fomp.form_ofice_id IS NOT NULL
+			INNER JOIN
+				employee_data.employee_idac_code emidac
+			ON
+					emidac.employee_id = fomp.employee_id
+				AND
+					emidac.is_deleted = '0'
+				INNER JOIN
+					employee_data.idac_codes idac
+				ON
+						idac.id = emidac.idac_code_id
+					AND
+						idac.vacant_date IS NULL
+					AND
+						idac.is_active = '1'
+					AND
+					 	idac.is_deleted = '0'
+			INNER JOIN
+				employee_data.employee_salaries emsal
+			ON
+					emsal.employee_id = fomp.employee_id
+				AND
+					emsal.is_deleted = '0'
+				INNER JOIN
+					employee_data.salaries sal
+				ON
+						sal.id = emsal.salary_id
+					AND
+						sal.is_active = '1'
+					AND
+						sal.is_deleted = '0'	
 	)DATA;
 $BODY$;
 

@@ -3105,7 +3105,6 @@ $udf$;
 
 CREATE OR REPLACE FUNCTION employee_data.employee_salaries_insert(
 	param_employee_id INTEGER,
-	param_salary_id INTEGER,
 	param_user_id INTEGER
 )
 RETURNS BIT
@@ -3118,8 +3117,6 @@ AS $udf$
 	BEGIN
 		INSERT INTO employee_data.employee_salaries(
 			employee_id,
-			salary_id,
-			insert_date,
 			is_active,
 			is_deleted,
 			last_modified_by,
@@ -3127,9 +3124,7 @@ AS $udf$
 		)
 		VALUES(
 			param_employee_id,
-			param_salary_id,
-			CLOCK_TIMESTAMP(),
-			'1',
+			'0',
 			'0',
 			param_user_id,
 			CLOCK_TIMESTAMP()
@@ -3166,7 +3161,7 @@ AS $udf$
   		employee_salary_id,
   		employee_id,
   		salary_id,
-  		insert_date,
+  		salary,
   		is_active,
   		is_deleted,
   		last_modified_by,
@@ -3178,7 +3173,7 @@ AS $udf$
   		id,
   		employee_id,
   		salary_id,
-  		insert_date,
+  		salary,
   		is_active,
   		is_deleted,
   		last_modified_by,
@@ -3211,8 +3206,7 @@ AS $BODY$
 			emsal.id,
 			emp.first_name,
 			emp.surname,
-			sal.salary,
-			emsal.insert_date
+			emsal.salary
 		FROM
 			employee_data.employee_salaries emsal
 			INNER JOIN
@@ -3251,8 +3245,7 @@ AS $BODY$
 			emsal.id,
 			emp.first_name,
 			emp.surname,
-			sal.salary,
-			emsal.insert_date
+			emsal.salary
 		FROM
 			employee_data.employee_salaries emsal
 			INNER JOIN
@@ -3293,8 +3286,7 @@ AS $BODY$
 			emsal.id,
 			emp.first_name,
 			emp.surname,
-			sal.salary,
-			emsal.insert_date
+			emsal.salary
 		FROM
 			employee_data.employee_salaries emsal
 			INNER JOIN
@@ -3378,8 +3370,7 @@ AS $BODY$
 			emsal.id,
 			emp.first_name,
 			emp.surname,
-			sal.salary,
-			emsal.insert_date
+			emsal.salary
 		FROM
 			employee_data.employee_salaries emsal
 			INNER JOIN
@@ -3413,6 +3404,7 @@ CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_all_columns(
 	param_id INTEGER,
 	param_employee_id INTEGER,
 	param_salary_id INTEGER,
+	param_salary MONEY,
 	param_is_active BIT,
 	param_is_deleted BIT,
 	param_user_id INTEGER
@@ -3426,7 +3418,7 @@ AS $udf$
   	BEGIN
   		UPDATE employee_data.employee_salaries SET
   			salary_id = param_salary_id,
-  			insert_date = CLOCK_TIMESTAMP(),
+  			salary = param_salary,
   			is_active = param_is_active,
   			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
@@ -3452,6 +3444,7 @@ CREATE OR REPLACE FUNCTION employee_data.employee_salary_update_salary(
 	param_id INTEGER,
 	param_employee_id INTEGER,
 	param_salary_id INTEGER,
+	param_salary MONEY,
 	param_user_id INTEGER
 )
 RETURNS BIT
@@ -3463,7 +3456,7 @@ AS $udf$
   	BEGIN
   		UPDATE employee_data.employee_salaries SET
   			salary_id = param_salary_id,
-  			insert_date = CLOCK_TIMESTAMP(),
+  			salary = param_salary,
   			last_modified_by = param_user_id,
   			last_modified_date = CLOCK_TIMESTAMP()
   		WHERE
