@@ -996,9 +996,9 @@ AS $udf$
 	END;
 $udf$;
 
--- function of annex_types_for_movement_types
+-- function of movement_types_annex_types
 -- function of insert
-CREATE OR REPLACE FUNCTION form_data.annex_types_for_movement_type_insert(
+CREATE OR REPLACE FUNCTION form_data.movement_types_annex_type_insert(
 	param_annex_type_id INTEGER,
 	param_movement_type_id INTEGER,
 	param_user_id INTEGER
@@ -1016,7 +1016,7 @@ AS $udf$
 				movannex.annex_type_id,
 				movannex.movement_type_id
 			FROM
-				form_data.annex_types_for_movement_types movannex
+				form_data.movement_types_annex_types movannex
 			WHERE
 				movannex.is_active = '1'
 			AND
@@ -1029,7 +1029,7 @@ AS $udf$
 		THEN
 			RETURN local_is_successful;
 		ELSE
-			INSERT INTO form_data.annex_types_for_movement_types(
+			INSERT INTO form_data.movement_types_annex_types(
 				annex_type_id,
 				movement_type_id,
 				is_active,
@@ -1048,7 +1048,7 @@ AS $udf$
 			RETURNING id
 			INTO STRICT local_annex_type_for_movement_type_id;
 
-			SELECT annex_types_for_movement_type_insert_hstory INTO local_is_successful FROM form_data.annex_types_for_movement_type_insert_hstory(
+			SELECT movement_types_annex_type_insert_hstory INTO local_is_successful FROM form_data.movement_types_annex_type_insert_hstory(
 				param_annex_for_movement_type_id := local_annex_type_for_movement_type_id,
 				param_change_type := 'FIRST INSERT',
       			param_change_description := 'FIRST INSERT'
@@ -1060,7 +1060,7 @@ AS $udf$
 $udf$;
 
 -- function of insert log
-CREATE OR REPLACE FUNCTION form_data.annex_types_for_movement_type_insert_hstory(
+CREATE OR REPLACE FUNCTION form_data.movement_types_annex_type_insert_hstory(
 	param_annex_for_movement_type_id BIGINT,
 	param_change_type VARCHAR,
 	param_change_description VARCHAR
@@ -1072,8 +1072,8 @@ AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
 	BEGIN
-		INSERT INTO form_data.annex_types_for_movement_types_history(
-			annex_types_for_movement_type_id,
+		INSERT INTO form_data.movement_types_annex_types_history(
+			movement_types_annex_type_id,
 			annex_type_id,
 			movement_type_id,
 			is_active,
@@ -1094,7 +1094,7 @@ AS $udf$
 			param_change_type,
 			param_change_description
 		FROM
-			form_data.annex_types_for_movement_types movannex
+			form_data.movement_types_annex_types movannex
 		WHERE
 			movannex.id  = param_annex_for_movement_type_id
 		ORDER BY
@@ -1108,9 +1108,9 @@ AS $udf$
 	END;
 $udf$;
 
--- function of employee_form_ofices
+-- function of official_forms
 -- function of insert
-CREATE OR REPLACE FUNCTION form_data.employee_form_ofices_insert(
+CREATE OR REPLACE FUNCTION form_data.official_forms_insert(
 	param_code_form_ofice VARCHAR,
 	param_user_id BIGINT
 )
@@ -1126,7 +1126,7 @@ AS $udf$
 			SELECT
 				code_form
 			FROM
-				form_data.employee_form_ofices fo
+				form_data.official_forms fo
 			WHERE
 				fo.code_form = param_code_form_ofice
 			AND
@@ -1137,7 +1137,7 @@ AS $udf$
 		THEN
 			RETURN local_is_successful::INTEGER;
 		ELSE
-			INSERT INTO form_data.employee_form_ofices(
+			INSERT INTO form_data.official_forms(
 				code_form,
 				registration_date,
 				is_active,
@@ -1157,7 +1157,7 @@ AS $udf$
 			INTO STRICT local_emp_form_ofice_id;
 
 
-			SELECT employee_form_ofices_insert_history INTO local_is_successful FROM form_data.employee_form_ofices_insert_history(
+			SELECT official_forms_insert_history INTO local_is_successful FROM form_data.official_forms_insert_history(
 				param_emp_form_ofice_id := local_emp_form_ofice_id,
 				param_change_type := 'FIRST INSERT',
 				param_change_description := 'FIRST INSERT'
@@ -1174,7 +1174,7 @@ AS $udf$
 $udf$;
 
 -- function of insert log
-CREATE OR REPLACE FUNCTION form_data.employee_form_ofices_insert_history(
+CREATE OR REPLACE FUNCTION form_data.official_forms_insert_history(
 	param_emp_form_ofice_id BIGINT,
 	param_change_type VARCHAR,
 	param_change_description VARCHAR
@@ -1186,7 +1186,7 @@ AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
 	BEGIN
-		INSERT INTO form_data.employee_form_ofices_history(
+		INSERT INTO form_data.official_forms_history(
 			form_ofice_id,
 			code_form,
 			registration_date,
@@ -1210,7 +1210,7 @@ AS $udf$
 			param_change_type,
 			param_change_description
 		FROM
-			form_data.employee_form_ofices fo
+			form_data.official_forms fo
 		WHERE
 			fo.id = param_emp_form_ofice_id
 		ORDER BY
@@ -1241,9 +1241,9 @@ AS $BODY$
 		SELECT
 			fo.code_form
 		FROM
-			form_data.employee_form_ofices fo
+			form_data.official_forms fo
 		INNER JOIN
-				form_data.employee_form_ofice_and_form_person_movement fomp
+				form_data.employee_oficcial_mov_personal_forms fomp
 				ON
 					fomp.form_ofice_id = fo.id
 				AND
@@ -1261,9 +1261,9 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
--- function of employee_form_personal_movement
+-- function of movement_personal_forms
 -- function of insert
-CREATE OR REPLACE FUNCTION form_data.employee_form_personal_movement_insert(
+CREATE OR REPLACE FUNCTION form_data.movement_personal_forms_insert(
 	param_code_form_mov_per VARCHAR,
 	param_user_id BIGINT
 )
@@ -1279,7 +1279,7 @@ AS $udf$
 			SELECT
 				code_form
 			FROM
-				form_data.employee_form_personal_movement fmp
+				form_data.movement_personal_forms fmp
 			WHERE
 				fmp.code_form = param_code_form_mov_per
 			AND
@@ -1290,7 +1290,7 @@ AS $udf$
 		THEN
 			RETURN local_is_successful::INTEGER;
 		ELSE
-			INSERT INTO form_data.employee_form_personal_movement(
+			INSERT INTO form_data.movement_personal_forms(
 				code_form,
 				registration_date,
 				is_active,
@@ -1310,7 +1310,7 @@ AS $udf$
 			INTO STRICT local_emp_form_mov_per_id;
 
 
-			SELECT employee_form_personal_movement_insert_history INTO local_is_successful FROM form_data.employee_form_personal_movement_insert_history(
+			SELECT movement_personal_forms_insert_history INTO local_is_successful FROM form_data.movement_personal_forms_insert_history(
 				param_emp_form_mov_per_id := local_emp_form_mov_per_id,
 				param_change_type := 'FIRST INSERT',
 				param_change_description := 'FIRST INSERT'
@@ -1327,7 +1327,7 @@ AS $udf$
 $udf$;
 
 -- function of insert log
-CREATE OR REPLACE FUNCTION form_data.employee_form_personal_movement_insert_history(
+CREATE OR REPLACE FUNCTION form_data.movement_personal_forms_insert_history(
 	param_emp_form_mov_per_id BIGINT,
 	param_change_type VARCHAR,
 	param_change_description VARCHAR
@@ -1339,7 +1339,7 @@ AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
 	BEGIN
-		INSERT INTO form_data.employee_form_personal_movement_history(
+		INSERT INTO form_data.movement_personal_forms_history(
 			form_person_movement_id,
 			code_form,
 			accountant_type_id,
@@ -1367,7 +1367,7 @@ AS $udf$
 			param_change_type,
 			param_change_description
 		FROM
-			form_data.employee_form_personal_movement fmp
+			form_data.movement_personal_forms fmp
 		WHERE
 			fmp.id = param_emp_form_mov_per_id
 		ORDER BY
@@ -1397,9 +1397,9 @@ AS $BODY$
 		SELECT
 			fmp.code_form
 		FROM
-			form_data.employee_form_personal_movement fmp
+			form_data.movement_personal_forms fmp
 		INNER JOIN
-			form_data.employee_form_ofice_and_form_person_movement fomp
+			form_data.employee_oficcial_mov_personal_forms fomp
 		ON
 			(	fomp.school_id = param_school_id
 			OR
@@ -1457,7 +1457,7 @@ AS $BODY$
 			COALESCE(sal.category_type_id, 0) as category_type_id,
 			COALESCE(emsal.salary_id, 0) as salary_id
 		FROM
-			form_data.employee_form_ofice_and_form_person_movement fomp
+			form_data.employee_oficcial_mov_personal_forms fomp
 		INNER JOIN
 			employee_data.employees emp
 		ON
@@ -1516,9 +1516,9 @@ AS $BODY$
 $BODY$;
 
 
--- function of employee_form_ofice_and_form_person_movement
+-- function of employee_oficcial_mov_personal_forms
 -- function of insert
-CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_person_movement_insert(
+CREATE OR REPLACE FUNCTION form_data.employee_oficcial_mov_personal_form_insert(
 	param_ofice_id BIGINT,
 	param_employee_id BIGINT,
 	param_dedication_id INTEGER,
@@ -1546,7 +1546,7 @@ AS $udf$
 				employee_id,
 				movement_type_id
 			FROM
-				form_data.employee_form_ofice_and_form_person_movement fomp
+				form_data.employee_oficcial_mov_personal_forms fomp
 			WHERE
 				fomp.form_ofice_id = param_ofice_id
 			AND
@@ -1561,7 +1561,7 @@ AS $udf$
 		THEN
 			RETURN local_is_successful;
 		ELSE
-			INSERT INTO form_data.employee_form_ofice_and_form_person_movement(
+			INSERT INTO form_data.employee_oficcial_mov_personal_forms(
 				form_ofice_id,
 				employee_id,
 				dedication_id,
@@ -1594,7 +1594,7 @@ AS $udf$
 			RETURNING id
 			INTO STRICT local_emp_form_of_per_mov_id;
 
-			SELECT employee_form_ofice_person_movement_insert_history INTO local_is_successful FROM form_data.employee_form_ofice_person_movement_insert_history(
+			SELECT employee_oficcial_mov_personal_form_insert_history INTO local_is_successful FROM form_data.employee_oficcial_mov_personal_form_insert_history(
 				param_emp_form_of_per_mov_id := local_emp_form_of_per_mov_id,
 				param_change_type := 'FIRST INSERT',
 				param_change_description := 'FIRST INSERT'
@@ -1607,7 +1607,7 @@ AS $udf$
 $udf$;
 
 --function of insert log
-CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_person_movement_insert_history(
+CREATE OR REPLACE FUNCTION form_data.employee_oficcial_mov_personal_form_insert_history(
 	param_emp_form_of_per_mov_id BIGINT,
 	param_change_type VARCHAR,
 	param_change_description VARCHAR
@@ -1619,7 +1619,7 @@ AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
 	BEGIN
-		INSERT INTO form_data.employee_form_ofice_and_form_person_movement_history(
+		INSERT INTO form_data.employee_oficcial_mov_personal_forms_history(
 			employee_form_ofice_form_person_movement_id,
 			form_ofice_id,
 			form_person_movement_id,
@@ -1655,7 +1655,7 @@ AS $udf$
 			param_change_type,
 			param_change_description
 			FROM
-				form_data.employee_form_ofice_and_form_person_movement fomp
+				form_data.employee_oficcial_mov_personal_forms fomp
 			WHERE
 				fomp.id = param_emp_form_of_per_mov_id
 			ORDER BY
@@ -1671,7 +1671,7 @@ $udf$;
 
 
 -- function update add data of movement per
-CREATE OR REPLACE FUNCTION form_data.employee_form_ofice_person_movement_update_mov_per(
+CREATE OR REPLACE FUNCTION form_data.employee_oficcial_mov_personal_form_update_mov_per(
 	param_id BIGINT,
 	param_ofice_id BIGINT,
 	param_movement_per_id BIGINT,
@@ -1684,7 +1684,7 @@ AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
 	BEGIN
-		UPDATE form_data.employee_form_ofice_and_form_person_movement SET
+		UPDATE form_data.employee_oficcial_mov_personal_forms SET
 			form_person_movement_id = param_movement_per_id,
 			is_active = '1',
 			last_modified_by = param_user_id,
@@ -1695,7 +1695,7 @@ AS $udf$
 			form_ofice_id = param_ofice_id;
 
 
-		SELECT employee_form_ofice_person_movement_insert_history INTO local_is_successful FROM form_data.employee_form_ofice_person_movement_insert_history(
+		SELECT employee_oficcial_mov_personal_form_insert_history INTO local_is_successful FROM form_data.employee_oficcial_mov_personal_form_insert_history(
 			param_emp_form_of_per_mov_id := local_emp_form_of_per_mov_id,
 			param_change_type := 'UPDATE MOVEMENT PERSONAL',
 			param_change_description := 'UPDATE value of MOVEMENT PERSONAL'
@@ -1749,23 +1749,33 @@ AS $udf$
 			param_user_id
 		);
 		END IF;
-		IF (param_employee_json->>'idac' != '' OR param_employee_json->>'idac' IS NOT NULL)
+		IF (SELECT param_employee_json::TEXT
+			LIKE '%employee_idac_id%'
+			)
 		THEN
-		PERFORM employee_data.employee_idac_code_insert(
-			local_employee_id,
-			param_employee_json->>'idac',
-			param_user_id);
+			PERFORM employee_data.employee_idac_code_udpate_idac_code(
+				param_employee_json->>'employee_idac_id',
+				local_employee_id,
+				param_employee_json->>'idac_id',
+				param_user_id
+			);			
+		ELSE
+			PERFORM employee_data.employee_idac_code_insert(
+				local_employee_id,
+				param_employee_json->>'idac_id',
+				param_user_id
+			);
 
 			IF (param_form_ofice_json->>'code_form' != '' OR param_form_ofice_json->>'code_form' IS NOT NULL)
 			THEN
-				SELECT employee_form_ofices_insert INTO local_form_ofice_id FROM form_data.employee_form_ofices_insert(
+				SELECT official_forms_insert INTO local_form_ofice_id FROM form_data.official_forms_insert(
 					param_form_ofice_json->>'code_form',
 					param_user_id
 				);
 
 				IF (local_form_ofice_id != 0)
 				THEN
-					PERFORM form_data.employee_form_ofice_person_movement_insert(
+					PERFORM form_data.employee_oficcial_mov_personal_form_insert(
 						local_form_ofice_id,
 						local_employee_id,
 						(param_form_ofice_json->>'dedication_id')::INTEGER,
@@ -1819,25 +1829,32 @@ AS $udf$
 		);
 		IF (param_form_mov_per_json->>'code_form' != '' OR param_form_mov_per_json->>'code_form' IS NOT NULL)
 		THEN
-			SELECT employee_form_personal_movement_insert INTO local_emp_form_mov_per_id FROM form_data.employee_form_personal_movement_insert(
+			SELECT movement_personal_forms_insert INTO local_emp_form_mov_per_id FROM form_data.movement_personal_forms_insert(
 				param_form_mov_per_json->>'code_form',
 				param_user_id
 			);
 
-			IF (local_emp_form_mov_per_id != 0)
+			IF (SELECT param_employee_json::TEXT
+			LIKE '%employee_salary_id%')
 			THEN
-				PERFORM form_data.employee_form_ofice_person_movement_update_mov_per(
-					(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
-					(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
-					local_emp_form_mov_per_id,
-					param_user_id
-				);
+				PERFORM employee_data.employee_salary_update_salary()
+			ELSE
+				PERFORM employee_data.employee_salaries_insert()
+				IF (local_emp_form_mov_per_id != 0)
+				THEN
+					PERFORM form_data.employee_oficcial_mov_personal_form_update_mov_per(
+						(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
+						(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
+						local_emp_form_mov_per_id,
+						param_user_id
+					);
 
-				SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
-					local_emp_form_mov_per_id::INTEGER,
-					param_user_id
-				);
+					SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
+						local_emp_form_mov_per_id::INTEGER,
+						param_user_id
+					);
 
+				END IF;
 			END IF;
 		END IF;
 		RETURN local_is_successful;
