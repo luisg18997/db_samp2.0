@@ -1754,15 +1754,15 @@ AS $udf$
 			)
 		THEN
 			PERFORM employee_data.employee_idac_code_udpate_idac_code(
-				param_employee_json->>'employee_idac_id',
+				(param_employee_json->>'employee_idac_id')::INTEGER,
 				local_employee_id,
-				param_employee_json->>'idac_id',
+				(param_employee_json->>'idac_id')::INTEGER,
 				param_user_id
 			);			
 		ELSE
 			PERFORM employee_data.employee_idac_code_insert(
 				local_employee_id,
-				param_employee_json->>'idac_id',
+				(param_employee_json->>'idac_id')::INTEGER,
 				param_user_id
 			);
 
@@ -1837,9 +1837,19 @@ AS $udf$
 			IF (SELECT param_employee_json::TEXT
 			LIKE '%employee_salary_id%')
 			THEN
-				PERFORM employee_data.employee_salary_update_salary()
+				PERFORM employee_data.employee_salary_update_salary(
+					(param_employee_json->>'employee_salary_id')::INTEGER,
+					(param_employee_json->>'employee_id')::INTEGER,
+					(param_employee_json->>'salary_id')::INTEGER,
+					param_user_id
+				);
 			ELSE
-				PERFORM employee_data.employee_salaries_insert()
+				PERFORM employee_data.employee_salaries_insert(
+					(param_employee_json->>'employee_id')::INTEGER,
+					(param_employee_json->>'salary_id')::INTEGER,
+					param_user_id
+				);
+
 				IF (local_emp_form_mov_per_id != 0)
 				THEN
 					PERFORM form_data.employee_oficcial_mov_personal_form_update_mov_per(
