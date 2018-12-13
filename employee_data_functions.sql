@@ -4142,7 +4142,7 @@ AS $udf$
 		THEN
 			RETURN local_is_successful;
 		ELSE
-			INSERT INTO employee_idac_code(
+			INSERT INTO employee_data.employee_idac_code(
 				employee_id,
 				idac_code_id,
 				is_active,
@@ -4175,7 +4175,7 @@ $udf$;
 
 -- function of insert of log
 CREATE OR REPLACE FUNCTION employee_data.employee_idac_code_insert_history(
-param_employee_idac_id INTEGER,
+param_employee_idac_id BIGINT,
 param_change_type VARCHAR,
 param_change_description VARCHAR
 )
@@ -4186,7 +4186,7 @@ AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
 	BEGIN
-		INSERT INTO employee_idac_code_history(
+		INSERT INTO employee_data.employee_idac_code_history(
 			employee_idac_code_id,
 			employee_id,
 			idac_code_id,

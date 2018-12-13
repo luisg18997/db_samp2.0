@@ -1727,6 +1727,7 @@ AS $udf$
 			LIKE '%employee_id%'
 		) THEN
 		local_employee_id := (param_employee_json->>'employee_id')::BIGINT;
+		raise DEBUG 'exist local_employee_id %', local_employee_id;
 		ELSE
 		SELECT employee_insert INTO local_employee_id FROM employee_data.employee_insert(
 			(param_employee_json->>'nacionality_id')::INTEGER,
@@ -1748,6 +1749,7 @@ AS $udf$
 			param_employee_json->>'local_phone_number',
 			param_user_id
 		);
+		raise DEBUG 'insert local_employee_id %', local_employee_id;
 		END IF;
 		IF (SELECT param_employee_json::TEXT
 			LIKE '%employee_idac_id%'
@@ -1755,16 +1757,18 @@ AS $udf$
 		THEN
 			PERFORM employee_data.employee_idac_code_udpate_idac_code(
 				(param_employee_json->>'employee_idac_id')::INTEGER,
-				local_employee_id,
-				(param_employee_json->>'idac_id')::INTEGER,
-				param_user_id
-			);			
-		ELSE
-			PERFORM employee_data.employee_idac_code_insert(
-				local_employee_id,
+				local_employee_id::INTEGER,
 				(param_employee_json->>'idac_id')::INTEGER,
 				param_user_id
 			);
+			raise DEBUG 'exist idac %', (param_employee_json->>'idac_id')::INTEGER;		
+		ELSE
+			PERFORM employee_data.employee_idac_code_insert(
+				local_employee_id::INTEGER,
+				(param_employee_json->>'idac_id')::INTEGER,
+				param_user_id
+			);
+			raise DEBUG 'insert idac %', (param_employee_json->>'idac_id')::INTEGER;	
 
 			IF (param_form_ofice_json->>'code_form' != '' OR param_form_ofice_json->>'code_form' IS NOT NULL)
 			THEN
@@ -1772,6 +1776,7 @@ AS $udf$
 					param_form_ofice_json->>'code_form',
 					param_user_id
 				);
+				raise DEBUG 'insert ilocal_form_ofice_id %', local_form_ofice_id;	
 
 				IF (local_form_ofice_id != 0)
 				THEN
@@ -1784,10 +1789,10 @@ AS $udf$
 						(param_form_ofice_json->>'finish_date')::DATE,
 						(param_form_ofice_json->>'school_id')::INTEGER,
 						(param_form_ofice_json->>'institute_id')::INTEGER,
-						(param_form_ofice_json->>'cordination_id')::INTEGER,
+						(param_form_ofice_json->>'coordination_id')::INTEGER,
 						param_user_id
 					);
-
+					
 					SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
 						local_form_ofice_id::INTEGER,
 						param_user_id
