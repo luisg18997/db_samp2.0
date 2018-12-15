@@ -1419,10 +1419,10 @@ $BODY$;
 -- function get mov pers
 CREATE OR REPLACE FUNCTION form_data.get_form_movement_personal(
 	param_identification VARCHAR
-)RETURNS json
+)
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
-
 AS $BODY$
 	SELECT ROW_TO_JSON(DATA)
 	FROM (
@@ -1461,7 +1461,7 @@ AS $BODY$
 		INNER JOIN
 			employee_data.employees emp
 		ON
-				emp.identification = param_identification
+				emp.identification = '25862920'
 			AND
 				 emp.id = fomp.employee_id
 			AND
@@ -1493,18 +1493,16 @@ AS $BODY$
 				ON
 						idac.id = emidac.idac_code_id
 					AND
-						idac.vacant_date IS NULL
-					AND
 						idac.is_active = '1'
 					AND
 					 	idac.is_deleted = '0'
-			INNER JOIN
+			LEFT OUTER JOIN
 				employee_data.employee_salaries emsal
 			ON
 					emsal.employee_id = fomp.employee_id
 				AND
 					emsal.is_deleted = '0'
-				INNER JOIN
+				 LEFT OUTER JOIN
 					employee_data.salaries sal
 				ON
 						sal.id = emsal.salary_id
@@ -1875,3 +1873,20 @@ AS $udf$
 		RETURN local_is_successful;
 	END;
 $udf$;
+
+-- function of get list forms
+CREATE OR REPLACE FUNCTION form_data.get_forms_list(
+	param_ubication INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM (
+		SELECT
+			fomp.id,
+			COALESCE(fo.code_form, fmp.code_form) as code_form,
+			COALESCE(fo.registration_date, fmp.registration_date) as registration_date,
+			
+	)DATA;
