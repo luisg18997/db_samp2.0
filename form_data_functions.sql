@@ -1759,14 +1759,14 @@ AS $udf$
 				(param_employee_json->>'idac_id')::INTEGER,
 				param_user_id
 			);
-			raise DEBUG 'exist idac %', (param_employee_json->>'idac_id')::INTEGER;		
+			raise DEBUG 'exist idac %', (param_employee_json->>'idac_id')::INTEGER;
 		ELSE
 			PERFORM employee_data.employee_idac_code_insert(
 				local_employee_id::INTEGER,
 				(param_employee_json->>'idac_id')::INTEGER,
 				param_user_id
 			);
-			raise DEBUG 'insert idac %', (param_employee_json->>'idac_id')::INTEGER;	
+			raise DEBUG 'insert idac %', (param_employee_json->>'idac_id')::INTEGER;
 
 			IF (param_form_ofice_json->>'code_form' != '' OR param_form_ofice_json->>'code_form' IS NOT NULL)
 			THEN
@@ -1774,7 +1774,7 @@ AS $udf$
 					param_form_ofice_json->>'code_form',
 					param_user_id
 				);
-				raise DEBUG 'insert ilocal_form_ofice_id %', local_form_ofice_id;	
+				raise DEBUG 'insert ilocal_form_ofice_id %', local_form_ofice_id;
 
 				IF (local_form_ofice_id != 0)
 				THEN
@@ -1790,7 +1790,7 @@ AS $udf$
 						(param_form_ofice_json->>'coordination_id')::INTEGER,
 						param_user_id
 					);
-					
+
 					SELECT process_form_ofice_insert INTO local_is_successful FROM process_form.process_form_ofice_insert(
 						local_form_ofice_id::INTEGER,
 						param_user_id
@@ -1876,7 +1876,8 @@ $udf$;
 
 -- function of get list forms
 CREATE OR REPLACE FUNCTION form_data.get_forms_list(
-	param_ubication INTEGER
+	param_ubication INTEGER,
+	param_ubication_form INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -1888,5 +1889,33 @@ AS $BODY$
 			fomp.id,
 			COALESCE(fo.code_form, fmp.code_form) as code_form,
 			COALESCE(fo.registration_date, fmp.registration_date) as registration_date,
-			
+			mov.description as movement_type,
+			exec.description as ubication
+		FROM
+			form_data.employee_oficcial_mov_personal_forms fomp
+		LEFT OUTER JOIN
+			form_data.official_forms fo
+		ON
+				fo.id = fomp.form_ofice_id
+			AND
+				fo.is_active = '1'
+			AND
+				fo.is_deleted = '0'
+			AND
+				fomp.is_deleted = '0'
+			AND
+				fo.approval_date IS NULL
+		LEFT OUTER JOIN
+			form_data.movement_personal_forms fmp
+		ON
+				fmp.id = fomp.form_person_movement_id
+			AND
+				fmp.is_active = '1'
+			AND
+				fmp.is_deleted = '0'
+			AND
+				fomp.is_deleted = '0'
+			AND
+				fmp.approval_date IS NULL
+
 	)DATA;
