@@ -1267,7 +1267,7 @@ CREATE OR REPLACE FUNCTION form_data.get_form_oficcial_list(
 	param_institute_id INTEGER,
 	param_coordination_id INTEGER
 )
-ETURNS json
+RETURNS json
 LANGUAGE 'sql'
 COST 100.0
 
@@ -1321,7 +1321,7 @@ AS $BODY$
 					OR
 						emp.institute_id = param_institute_id
 					OR
-						emp.coordination_id = param_coordination_id
+						emp.cordination_id = param_coordination_id
 				)
 				AND
 					emp.id = fomp.employee_id
@@ -1340,7 +1340,7 @@ AS $BODY$
 					INNER JOIN
 						employee_data.idac_codes id
 					ON
-								id.id = emipd.idac_code_id
+								id.id = emid.idac_code_id
 						AND
 								id.is_deleted = '0'
 						AND
@@ -1971,8 +1971,8 @@ $udf$;
 
 -- function of get list forms
 CREATE OR REPLACE FUNCTION form_data.get_forms_list(
-	param_ubication INTEGER,
-	param_ubication_form INTEGER
+	param_ubication_id INTEGER,
+	param_ubication_form_id INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -2030,7 +2030,7 @@ AS $BODY$
 				(
 						sch.id = fomp.school_id
 					OR
-						sch.id = param_ubication_form
+						sch.id = param_ubication_form_id
 				)
 			AND
 				sch.is_active = '1'
@@ -2042,7 +2042,7 @@ AS $BODY$
 				(
 						ins.id = fomp.institute_id
 					OR
-						ins.id = param_ubication_form
+						ins.id = param_ubication_form_id
 				)
 			AND
 				ins.is_active = '1'
@@ -2054,7 +2054,7 @@ AS $BODY$
 				(
 						coord.id = fomp.coordination_id
 					OR
-						coord.id = param_ubication_form
+						coord.id = param_ubication_form_id
 				)
 			AND
 				coord.is_active = '1'
@@ -2079,7 +2079,7 @@ AS $BODY$
 			ON
 					fmp.id = pfmp.form_movement_personal_id
 				AND
-					pfmp.ubication_id = param_ubication
+					pfmp.ubication_id = param_ubication_id
 				AND
 					pfmp.is_active = '1'
 				AND
@@ -2090,7 +2090,7 @@ AS $BODY$
 			ON
 					fo.id = pfo.form_ofice_id
 				AND
-					pfo.ubication_id = param_ubication
+					pfo.ubication_id = param_ubication_id
 				AND
 					pfo.is_active = '1'
 				AND
