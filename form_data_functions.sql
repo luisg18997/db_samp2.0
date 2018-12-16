@@ -1261,6 +1261,100 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
+-- function get list
+CREATE OR REPLACE FUNCTION form_data.get_form_oficcial_list(
+	param_school_id INTEGER,
+	param_institute_id INTEGER,
+	param_coordination_id INTEGER
+)
+ETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM(
+		SELECT
+			fo.id,
+			emp.first_name||' '||emp.surname as name,
+			emp.identification,
+			exe.description as execunting_unit,
+			id.code idac_code,
+			mov.description as movement_type,
+			fo.registration_date
+		FROM
+			form_data.official_forms fo
+		INNER JOIN
+			form_data.employee_oficcial_mov_personal_forms fomp
+		ON
+					fomp.form_movement_personal_id IS NULL
+			AND
+					fo.approval_date IS NULL
+			AND
+					fo.id = fomp.form_ofice_id
+			AND
+				(
+						fomp.school_id = param_school_id
+					OR
+						fomp.institute_id = param_institute_id
+					OR
+						fomp.coordination_id = param_coordination_id
+				)
+			AND
+				fo.is_deleted = '0'
+			AND
+				fo.is_active = '1'
+			INNER JOIN
+				form_data.movement_types mov
+			ON
+					mov.id = fomp.movement_type_id
+			AND
+					mov.is_deleted = '0'
+			AND
+					mov.is_active = '0'
+			INNER JOIN
+				employee_data.employees emp
+			ON
+				(
+						emp.school_id = param_school_id
+					OR
+						emp.institute_id = param_institute_id
+					OR
+						emp.coordination_id = param_coordination_id
+				)
+				AND
+					emp.id = fomp.employee_id
+				AND
+					emp.is_deleted = '0'
+				AND
+					emp.retirement_date IS NULL
+				INNER JOIN
+					employee_data.employee_idac_code emid
+				ON
+							emid.employee_id = emp.id
+					AND
+							emid.is_deleted = '0'
+					AND
+							emid.is_active = '1'
+					INNER JOIN
+						employe_data.idac_codes id
+					ON
+								id.id = emipd.idac_code_id
+						AND
+								id.is_deleted = '0'
+						AND
+								id.is_active = '1'
+					INNER JOIN
+						employe_data.execunting_unit exe
+					ON
+								exe.id = id.execunting_unit_id
+						AND
+								exe.is_deleted = '0'
+						AND
+								exe.is_active = '1'
+	)DATA;
+$BODY$;
+
 -- function of movement_personal_forms
 -- function of insert
 CREATE OR REPLACE FUNCTION form_data.movement_personal_forms_insert(
@@ -2019,3 +2113,4 @@ AS $BODY$
 				AND
 					emp.is_deleted = '0'
 	)DATA;
+$BODY$;
