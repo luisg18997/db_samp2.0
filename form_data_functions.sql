@@ -1890,7 +1890,11 @@ AS $BODY$
 			COALESCE(fo.code_form, fmp.code_form) as code_form,
 			COALESCE(fo.registration_date, fmp.registration_date) as registration_date,
 			mov.description as movement_type,
-			exec.description as ubication
+			exe.description as ubication,
+			emp.first_name||' '||emp.surname as employee_name,
+			fo.id as form_ofice_id,
+			fmp.id as form_person_movement_id,
+			spf.description as status_form
 		FROM
 			form_data.employee_oficcial_mov_personal_forms fomp
 		LEFT OUTER JOIN
@@ -1917,5 +1921,101 @@ AS $BODY$
 				fomp.is_deleted = '0'
 			AND
 				fmp.approval_date IS NULL
+		INNER JOIN
+			form_data.movement_types mov
+		ON
+					mov.id = fomp.movement_type_id
+				AND
+					mov.is_active = '1'
+				AND
+					mov.is_deleted = '0'
+		LEFT OUTER JOIN
+			faculty_data.schools sch
+		ON
+				(
+						sch.id = fomp.school_id
+					OR
+						sch.id = param_ubication_form
+				)
+			AND
+				sch.is_active = '1'
+			AND
+				sch.is_deleted = '0'
+		LEFT OUTER JOIN
+			faculty_data.institutes ins
+		ON
+				(
+						ins.id = fomp.institute_id
+					OR
+						ins.id = param_ubication_form
+				)
+			AND
+				ins.is_active = '1'
+			AND
+				ins.is_deleted = '0'
+		LEFT OUTER JOIN
+			faculty_data.coordinations coord
+		ON
+				(
+						coord.id = fomp.coordination_id
+					OR
+						coord.id = param_ubication_form
+				)
+			AND
+				coord.is_active = '1'
+			AND
+				coord.is_deleted = '0'
+			INNER JOIN
+				employee_data.execunting_unit exe
+			ON
+					(
+							exe.code = sch.code
+						OR
+							exe.code = ins.code
+						OR
+							exe.code = coord.code
+					)
+				AND
+					exe.is_active = '1'
+				AND
+					exe.is_deleted = '0'
+			LEFT OUTER JOIN
+				process_form.process_form_movement_personal pfmp
+			ON
+					fmp.id = pfmp.form_movement_personal_id
+				AND
+					pfmp.ubication = param_ubication
+				AND
+					pfmp.is_active = '1'
+				AND
+					pfmp.is_deleted = '0'
 
+			LEFT OUTER JOIN
+				process_form.process_form_ofice pfo
+			ON
+					fo.id = pfo.form_ofice_id
+				AND
+					pfo.ubication = param_ubication
+				AND
+					pfo.is_active = '1'
+				AND
+					pfo.is_deleted = '0'
+			INNER JOIN
+				process_form.status_process_form spf
+			ON
+					(
+							spf.id = pfo.status_process_form_id
+						OR
+							spf.id = pfmp.status_process_form_id
+					)
+					AND
+						spf.is_active = '1'
+					AND
+						spf.is_deleted = '0'
+			INNER JOIN
+				employee_data.employees emp
+			ON
+					epm.id = fomp.employee_id
+				AND
+					emp.is_deleted = '0'
 	)DATA;
