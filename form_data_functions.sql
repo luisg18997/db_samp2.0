@@ -1276,6 +1276,7 @@ AS $BODY$
 	FROM(
 		SELECT
 			fo.id,
+			fo.code_form,
 			emp.first_name||' '||emp.surname as name,
 			emp.identification,
 			exe.description as execunting_unit,
@@ -1287,7 +1288,7 @@ AS $BODY$
 		INNER JOIN
 			form_data.employee_oficcial_mov_personal_forms fomp
 		ON
-					fomp.form_movement_personal_id IS NULL
+					fomp.form_person_movement_id IS NULL
 			AND
 					fo.approval_date IS NULL
 			AND
@@ -1311,7 +1312,7 @@ AS $BODY$
 			AND
 					mov.is_deleted = '0'
 			AND
-					mov.is_active = '0'
+					mov.is_active = '1'
 			INNER JOIN
 				employee_data.employees emp
 			ON
@@ -1337,7 +1338,7 @@ AS $BODY$
 					AND
 							emid.is_active = '1'
 					INNER JOIN
-						employe_data.idac_codes id
+						employee_data.idac_codes id
 					ON
 								id.id = emipd.idac_code_id
 						AND
@@ -1345,7 +1346,7 @@ AS $BODY$
 						AND
 								id.is_active = '1'
 					INNER JOIN
-						employe_data.execunting_unit exe
+						employee_data.execunting_unit exe
 					ON
 								exe.id = id.execunting_unit_id
 						AND
@@ -2078,7 +2079,7 @@ AS $BODY$
 			ON
 					fmp.id = pfmp.form_movement_personal_id
 				AND
-					pfmp.ubication = param_ubication
+					pfmp.ubication_id = param_ubication
 				AND
 					pfmp.is_active = '1'
 				AND
@@ -2089,7 +2090,7 @@ AS $BODY$
 			ON
 					fo.id = pfo.form_ofice_id
 				AND
-					pfo.ubication = param_ubication
+					pfo.ubication_id = param_ubication
 				AND
 					pfo.is_active = '1'
 				AND
@@ -2109,7 +2110,7 @@ AS $BODY$
 			INNER JOIN
 				employee_data.employees emp
 			ON
-					epm.id = fomp.employee_id
+					emp.id = fomp.employee_id
 				AND
 					emp.is_deleted = '0'
 	)DATA;
