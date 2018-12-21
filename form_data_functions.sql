@@ -1528,7 +1528,8 @@ AS $BODY$
 			COALESCE(emp.second_name,'') as second_name,
 			emp.surname,
 			COALESCE(emp.second_surname,'') as second_surname,
-			emp.nacionality_id,
+			nac.description as nacionality,
+			doc.description as documentation,
 			emp.identification,
 			COALESCE(emp.state_id,0) as state_id,
 			COALESCE(emp.municipality_id,0) as municipality_id,
@@ -1538,24 +1539,22 @@ AS $BODY$
 			COALESCE(emp.housing_type,'') as housing_type,
 			COALESCE(emp.housing_identifier,'') as housing_identifier,
 			COALESCE(emp.apartament,'') as apartament,
-			COALESCE(emp.departament_id,0) as departament_id,
 			dept.name as departament,
-			COALESCE(emp.chair_id,0) as chair_id,
 			cha.name as chair,
 			COALESCE(emp.ingress_id,0) as ingress_id,
 			COALESCE(emp.income_type_id,0) as income_type_id,
-			fomp.movement_type_id,
 			mov.description as movement_type,
 			fomp.start_date,
 			fomp.finish_date,
-			COALESCE(emidac.idac_code_id,0) as idac_code_id,
 			idac.code as idac_code,
-			COALESCE(idac.execunting_unit_id, 0) as execunting_unit_id,
 			exe.description as execunting_unit,
-			COALESCE(sal.dedication_type_id, fomp.dedication_id) as current_dedication_id,
+			json_build_object('id',COALESCE(sal.dedication_type_id, fomp.dedication_id),'description',cded.description) as current_dedication,
 			COALESCE(fomp.dedication_id, 0) as proposed_dedication_id,
+			pded.description as proposed_dedication,
 			COALESCE(sal.category_type_id, 0) as category_type_id,
-			COALESCE(emsal.salary_id, 0) as salary_id
+			COALESCE(emsal.id, 0) as employee_salary_id,
+			COALESCE(emsal.salary_id, 0) as salary_id,
+			COALESCE(sal.salary,'0') as salary
 		FROM
 			form_data.employee_oficcial_mov_personal_forms fomp
 		INNER JOIN
@@ -1642,6 +1641,42 @@ AS $BODY$
 						sal.is_active = '1'
 					AND
 						sal.is_deleted = '0'
+		INNER JOIN
+			employee_data.dedication_types cded
+		ON
+					(
+							cded.id = sal.dedication_type_id
+						OR
+							cded.id = fomp.dedication_id
+					)
+			AND
+					cded.is_deleted = '0'
+			AND
+					cded.is_active = '1'
+		LEFT OUTER JOIN
+			employee_data.dedication_types pded
+		ON
+					pded.id = fomp.dedication_id
+			AND
+					pded.is_deleted = '0'
+			AND
+					pded.is_active = '1'
+		INNER JOIN
+			employee_data.nacionalities nac
+		ON
+					nac.id = emp.nacionality_id
+			AND
+					nac.is_deleted = '0'
+			AND
+					nac.is_active = '1'
+	INNER JOIN
+		employee_data.documentations doc
+	ON
+				doc.id = emp.documentation_id
+		AND
+				doc.is_deleted = '0'
+		AND
+				doc.is_active = '1'
 	)DATA;
 $BODY$;
 
