@@ -1539,16 +1539,21 @@ AS $BODY$
 			COALESCE(emp.housing_identifier,'') as housing_identifier,
 			COALESCE(emp.apartament,'') as apartament,
 			COALESCE(emp.departament_id,0) as departament_id,
-			COALESCE(emp.parish_id,0) as parish_id,
+			dept.name as departament,
+			COALESCE(emp.chair_id,0) as chair_id,
+			cha.name as chair,
 			COALESCE(emp.ingress_id,0) as ingress_id,
 			COALESCE(emp.income_type_id,0) as income_type_id,
 			fomp.movement_type_id,
+			mov.description as movement_type,
 			fomp.start_date,
 			fomp.finish_date,
 			COALESCE(emidac.idac_code_id,0) as idac_code_id,
+			idac.code as idac_code,
 			COALESCE(idac.execunting_unit_id, 0) as execunting_unit_id,
-			COALESCE(sal.dedication_type_id, fomp.dedication_id) as current_dedication,
-			COALESCE(fomp.dedication_id, 0) as proposed_dedication,
+			exe.description as execunting_unit,
+			COALESCE(sal.dedication_type_id, fomp.dedication_id) as current_dedication_id,
+			COALESCE(fomp.dedication_id, 0) as proposed_dedication_id,
 			COALESCE(sal.category_type_id, 0) as category_type_id,
 			COALESCE(emsal.salary_id, 0) as salary_id
 		FROM
@@ -1556,7 +1561,7 @@ AS $BODY$
 		INNER JOIN
 			employee_data.employees emp
 		ON
-				emp.identification = '25862920'
+				emp.identification = param_identification
 			AND
 				 emp.id = fomp.employee_id
 			AND
@@ -1577,6 +1582,30 @@ AS $BODY$
 				fomp.form_person_movement_id IS NULL
 			AND
 				fomp.form_ofice_id IS NOT NULL
+				INNER JOIN
+					form_data.movement_types mov
+				ON
+						mov.id = fomp.movement_type_id
+				AND
+						mov.is_deleted = '0'
+				AND
+						mov.is_active = '1'
+				INNER JOIN
+					faculty_data.chairs cha
+				ON
+						cha.id = emp.chair_id
+					AND
+						cha.is_active = '1'
+					AND
+						cha.is_deleted = '0'
+				INNER JOIN
+					faculty_data.departaments dept
+				ON
+						dept.id = emp.departament_id
+					AND
+						dept.is_active = '1'
+					AND
+						dept.is_deleted = '0'
 			INNER JOIN
 				employee_data.employee_idac_code emidac
 			ON
@@ -1591,6 +1620,14 @@ AS $BODY$
 						idac.is_active = '1'
 					AND
 					 	idac.is_deleted = '0'
+				INNER JOIN
+					employee_data.execunting_unit exe
+				ON
+							exe.id = idac.execunting_unit_id
+					AND
+							exe.is_deleted = '0'
+					AND
+							exe.is_active = '1'
 			LEFT OUTER JOIN
 				employee_data.employee_salaries emsal
 			ON
