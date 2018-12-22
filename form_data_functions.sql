@@ -1531,9 +1531,9 @@ AS $BODY$
 			nac.description as nacionality,
 			doc.description as documentation,
 			emp.identification,
-			COALESCE(emp.state_id,0) as state_id,
-			COALESCE(emp.municipality_id,0) as municipality_id,
-			COALESCE(emp.parish_id,0) as parish_id,
+			json_build_object('id',COALESCE(emp.state_id,0),'name',COALESCE(sta.name,'')) as state,
+			json_build_object('id',COALESCE(emp.municipality_id,0),'name',COALESCE(mun.name,'')) as municipality,
+			json_build_object('id',COALESCE(emp.parish_id,0),'name',COALESCE(par.name,'')) as parish,
 			COALESCE(emp.ubication,'') as ubication,
 			COALESCE(emp.address,'') as address,
 			COALESCE(emp.housing_type,'') as housing_type,
@@ -1541,20 +1541,18 @@ AS $BODY$
 			COALESCE(emp.apartament,'') as apartament,
 			dept.name as departament,
 			cha.name as chair,
-			COALESCE(emp.ingress_id,0) as ingress_id,
-			COALESCE(emp.income_type_id,0) as income_type_id,
+			json_build_object('id',COALESCE(emp.ingress_id,0),'description', COALESCE(ing.description,'')) as ingres,
+			json_build_object('id',COALESCE(emp.income_type_id,0),'description',COALESCE(inct.description,'')) as income_type,
 			mov.description as movement_type,
 			fomp.start_date,
 			fomp.finish_date,
 			idac.code as idac_code,
 			exe.description as execunting_unit,
 			json_build_object('id',COALESCE(sal.dedication_type_id, fomp.dedication_id),'description',cded.description) as current_dedication,
-			COALESCE(fomp.dedication_id, 0) as proposed_dedication_id,
-			pded.description as proposed_dedication,
-			COALESCE(sal.category_type_id, 0) as category_type_id,
+			json_build_object('id',COALESCE(fomp.dedication_id, 0),'description',COALESCE(pded.description,'')) as proposed_dedication,
+			json_build_object('id',COALESCE(sal.category_type_id, 0),'description', COALESCE(cat.description,'')) as category_type,
 			COALESCE(emsal.id, 0) as employee_salary_id,
-			COALESCE(emsal.salary_id, 0) as salary_id,
-			COALESCE(sal.salary,'0') as salary
+			json_build_object('id',COALESCE(emsal.salary_id, 0),'description',COALESCE(sal.salary,'0')) as salary
 		FROM
 			form_data.employee_oficcial_mov_personal_forms fomp
 		INNER JOIN
@@ -1677,9 +1675,56 @@ AS $BODY$
 				doc.is_deleted = '0'
 		AND
 				doc.is_active = '1'
+	LEFT OUTER JOIN
+			employee_data.category_types cat
+	ON
+				cat.id = sal.category_type_id
+		AND
+				cat.is_deleted = '0'
+		AND
+				cat.is_active = '1'
+	LEFT OUTER JOIN
+			employee_data.ingress ing
+	ON
+				ing.id =  emp.ingress_id
+		AND
+				ing.is_deleted = '0'
+		AND
+				ing.is_active = '1'
+	LEFT OUTER JOIN
+			employee_data.income_types inct
+	ON
+				inct.id =  emp.income_type_id
+		AND
+				inct.is_deleted = '0'
+		AND
+				inct.is_active = '1'
+	LEFT OUTER JOIN
+			employee_data.states sta
+	ON
+				sta.id = emp.state_id
+		AND
+				sta.is_deleted = '0'
+		AND
+				sta.is_active = '1'
+	LEFT OUTER JOIN
+			employee_data.municipalities mun
+	ON
+				mun.id =  emp.ingress_id
+		AND
+				mun.is_deleted = '0'
+		AND
+				mun.is_active = '1'
+	LEFT OUTER JOIN
+			employee_data.parish par
+	ON
+				par.id =  emp.parish_id
+		AND
+				par.is_deleted = '0'
+		AND
+				par.is_active = '1'
 	)DATA;
 $BODY$;
-
 
 -- function of employee_oficcial_mov_personal_forms
 -- function of insert

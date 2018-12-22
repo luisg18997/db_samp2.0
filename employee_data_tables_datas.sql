@@ -1504,7 +1504,6 @@ SELECT employee_data.ingress_insert('Ingresos Propios', 0);
 SELECT employee_data.ingress_insert('Concurso de Oposición', 0);
 
 -- data of income type table
-SELECT employee_data.income_type_insert('Tipo de Ingreso', 0);
 SELECT employee_data.income_type_insert('Artículo 101,102,103', 0);
 SELECT employee_data.income_type_insert('Artículo 105,106,107', 0);
 SELECT employee_data.income_type_insert('Concurso de Credenciales', 0);
