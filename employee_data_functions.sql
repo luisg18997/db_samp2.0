@@ -2222,7 +2222,7 @@ LANGUAGE 'sql'
 COST 100.0
 
 AS $BODY$
-	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	SELECT ROW_TO_JSON(DATA)
 	FROM (
 		SELECT
 			sal.id,
@@ -2234,28 +2234,28 @@ AS $BODY$
 			INNER JOIN
 				employee_data.dedication_types ded
 			ON
+				sal.dedication_type_id = param_dedication_id
+			AND
 				ded.id = sal.category_type_id
 			AND
 				ded.is_deleted = '0'
 			AND
 				ded.is_active = '1'
+			AND
+				sal.is_active = '1'
+			AND
+				sal.is_deleted = '0'
 			INNER JOIN
 				employee_data.category_types cat
 			ON
+				sal.category_type_id =  param_category_id
+			AND
 				cat.id = sal.category_type_id
 			AND
 				cat.is_deleted = '0'
 			AND
 				cat.is_active = '1'
-		WHERE
-			sal.is_active = '1'
-		AND
-			sal.is_deleted = '0'
-		AND
-			sal.category_type_id =  param_category_id
-		AND
-			sal.dedication_type_id = param_dedication_id
-	)DATA;
+		)DATA;
 $BODY$;
 
 --function get list for dedication_type and category_type
