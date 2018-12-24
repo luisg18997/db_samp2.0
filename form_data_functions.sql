@@ -1360,6 +1360,7 @@ $BODY$;
 -- function of insert
 CREATE OR REPLACE FUNCTION form_data.movement_personal_forms_insert(
 	param_code_form_mov_per VARCHAR,
+	param_reason VARCHAR,
 	param_user_id BIGINT
 )
 RETURNS INTEGER
@@ -1387,6 +1388,7 @@ AS $udf$
 		ELSE
 			INSERT INTO form_data.movement_personal_forms(
 				code_form,
+				reason,
 				registration_date,
 				is_active,
 				is_deleted,
@@ -1395,6 +1397,7 @@ AS $udf$
 			)
 			VALUES (
 				param_code_form_mov_per,
+				param_reason,
 				CLOCK_TIMESTAMP(),
 				'1',
 				'0',
@@ -2046,6 +2049,7 @@ AS $udf$
 		THEN
 			SELECT movement_personal_forms_insert INTO local_emp_form_mov_per_id FROM form_data.movement_personal_forms_insert(
 				param_form_mov_per_json->>'code_form',
+				param_form_mov_per_json->>'reason',
 				param_user_id
 			);
 
