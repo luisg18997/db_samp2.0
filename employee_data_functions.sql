@@ -3106,7 +3106,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION employee_data.employee_salaries_insert(
 	param_employee_id INTEGER,
 	param_salary_id INTEGER,
-	param_user_id INTEGER
+	param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -4728,6 +4728,91 @@ AS $udf$
 	  END;
 $udf$;
 
+-- function get list
+CREATE OR REPLACE FUNCTION form_data.get_employees_list(
+	param_school_id INTEGER,
+	param_institute_id INTEGER,
+	param_coordination_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM(
+		SELECT
+			emp.id,
+			emp.first_name||' '||emp.surname as name,
+			emp.identification,
+			exe.description as execunting_unit,
+			id.code idac_code,
+			ded.description as dedication_type,
+			emp.admission_date
+		FROM
+			employee_data.employees emp
+		INNER JOIN
+			employee_data.employee_idac_code emid
+		ON
+					(
+							emp.school_id = param_school_id
+						OR
+							emp.institute_id = param_institute_id
+						OR
+							emp.cordination_id = param_coordination_id
+					)
+			AND
+					emp.is_deleted = '0'
+			AND
+					emp.is_active = '1'
+			AND
+					emp.retirement_date IS NULL
+			AND
+					emid.employee_id = emp.id
+			AND
+					emid.is_deleted = '0'
+			AND
+					emid.is_active = '1'
+			INNER JOIN
+				employee_data.idac_codes id
+			ON
+						id.id = emid.idac_code_id
+				AND
+						id.is_deleted = '0'
+				AND
+						id.is_active = '1'
+			INNER JOIN
+				employee_data.execunting_unit exe
+			ON
+						exe.id = id.execunting_unit_id
+				AND
+						exe.is_deleted = '0'
+				AND
+						exe.is_active = '1'
+		INNER JOIN
+			employee_data.employee_salaries emsal
+		ON
+				emsal.employee_id = emp.id
+			AND
+				emsal.is_deleted = '0'
+ 		INNER JOIN
+			employee_data.salaries sal
+		ON
+				sal.id = emsal.salary_id
+			AND
+				sal.is_active = '1'
+			AND
+				sal.is_deleted = '0'
+	INNER JOIN
+		employee_data.dedication_types ded
+	ON
+				ded.id = sal.dedication_type_id
+		AND
+				ded.is_deleted = '0'
+		AND
+				ded.is_active = '1'
+	)DATA;
+$BODY$;
 
 -- function update by form movent per
 CREATE OR REPLACE FUNCTION employee_data.employee_update_for_movement_personal(
@@ -4761,7 +4846,7 @@ AS $udf$
 			housing_identifier = param_housing_identifier,
 			apartament = param_apartament,
 			ingress_id = param_ingress_id,
-			income_types = param_income_type_id,
+			income_type_id = param_income_type_id,
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE

@@ -1262,7 +1262,7 @@ AS $BODY$
 $BODY$;
 
 -- function get list
-CREATE OR REPLACE FUNCTION form_data.get_form_oficcial_list(
+CREATE OR REPLACE FUNCTION form_data.get_form_official_list(
 	param_school_id INTEGER,
 	param_institute_id INTEGER,
 	param_coordination_id INTEGER
@@ -1909,7 +1909,7 @@ AS $udf$
 
 
 		SELECT employee_oficcial_mov_personal_form_insert_history INTO local_is_successful FROM form_data.employee_oficcial_mov_personal_form_insert_history(
-			param_emp_form_of_per_mov_id := local_emp_form_of_per_mov_id,
+			param_emp_form_of_per_mov_id := param_movement_per_id,
 			param_change_type := 'UPDATE MOVEMENT PERSONAL',
 			param_change_description := 'UPDATE value of MOVEMENT PERSONAL'
 		);
@@ -2029,7 +2029,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
-		local_emp_form_mov_per_id BIGINT;
+		local_form_mov_per_id BIGINT;
 	BEGIN
 		PERFORM employee_data.employee_update_for_movement_personal(
 			(param_employee_json->>'employee_id')::INTEGER,
@@ -2047,7 +2047,7 @@ AS $udf$
 		);
 		IF (param_form_mov_per_json->>'code_form' != '' OR param_form_mov_per_json->>'code_form' IS NOT NULL)
 		THEN
-			SELECT movement_personal_forms_insert INTO local_emp_form_mov_per_id FROM form_data.movement_personal_forms_insert(
+			SELECT movement_personal_forms_insert INTO local_form_mov_per_id FROM form_data.movement_personal_forms_insert(
 				param_form_mov_per_json->>'code_form',
 				param_form_mov_per_json->>'reason',
 				param_user_id
@@ -2069,17 +2069,17 @@ AS $udf$
 					param_user_id
 				);
 
-				IF (local_emp_form_mov_per_id != 0)
+				IF (local_form_mov_per_id != 0)
 				THEN
 					PERFORM form_data.employee_oficcial_mov_personal_form_update_mov_per(
 						(param_form_mov_per_json->>'employee_form_ofice_form_person_movement_id')::BIGINT,
 						(param_form_mov_per_json->>'form_ofice_id')::BIGINT,
-						local_emp_form_mov_per_id,
+						local_form_mov_per_id,
 						param_user_id
 					);
 
 					SELECT process_form_movement_personal_insert INTO local_is_successful FROM process_form.process_form_movement_personal_insert(
-						local_emp_form_mov_per_id::INTEGER,
+						local_form_mov_per_id::INTEGER,
 						param_user_id
 					);
 
