@@ -4002,7 +4002,7 @@ AS $udf$
   		WHERE
   			id = param_id;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employe_data.idac_codes_insert_history(
+  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
   			param_idac_id := param_id,
   			param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
@@ -4034,7 +4034,7 @@ AS $udf$
   		WHERE
   			id = param_id;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employe_data.idac_codes_insert_history(
+  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
   			param_idac_id := param_id,
   			param_change_type := 'UPDATE vacant_date',
       		param_change_description := 'UPDATE value of vacant_date'
@@ -4068,7 +4068,7 @@ AS $udf$
   		AND
   			code = param_idac_code;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employe_data.idac_codes_insert_history(
+  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
   			param_idac_id := param_id,
   			param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
@@ -4101,7 +4101,7 @@ AS $udf$
   		AND
   			code = param_idac_code;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employe_data.idac_codes_insert_history(
+  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
   			param_idac_id := param_id,
   			param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'

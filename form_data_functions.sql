@@ -1344,7 +1344,7 @@ AS $BODY$
 						AND
 								id.is_deleted = '0'
 						AND
-								id.is_active = '1'
+								id.is_active = '0'
 					INNER JOIN
 						employee_data.execunting_unit exe
 					ON
@@ -1526,6 +1526,7 @@ AS $BODY$
 	FROM (
 		SELECT
 			fomp.id,
+			fomp.official_form_id,
 			fomp.employee_id,
 			emp.first_name,
 			COALESCE(emp.second_name,'') as second_name,
@@ -1617,7 +1618,7 @@ AS $BODY$
 				ON
 						idac.id = emidac.idac_code_id
 					AND
-						idac.is_active = '1'
+						idac.is_active = '0'
 					AND
 					 	idac.is_deleted = '0'
 				INNER JOIN
@@ -1984,7 +1985,7 @@ AS $udf$
 
 			PERFORM employee_data.idac_codes_update_vacant_date(
 				(param_employee_json->>'idac_id')::INTEGER,
-				'null',
+				null,
 				'0',
 				param_user_id
 			);
@@ -2115,6 +2116,7 @@ AS $BODY$
 			COALESCE(fo.registration_date, fmp.registration_date) as registration_date,
 			mov.description as movement_type,
 			exe.description as ubication,
+			emp.identification,
 			emp.first_name||' '||emp.surname as employee_name,
 			fo.id as official_form_id,
 			fmp.id as mov_personal_form_id,
