@@ -2198,17 +2198,17 @@ AS $BODY$
 			INNER JOIN
 				employee_data.dedication_types ded
 			ON
-				ded.id = sal.category_type_id
+				sal.dedication_type_id = param_dedication_id
+			AND
+				ded.id = sal.dedication_type_id
 			AND
 				ded.is_deleted = '0'
 			AND
 				ded.is_active = '1'
-		WHERE
+			AND
 			sal.is_active = '1'
 		AND
 			sal.is_deleted = '0'
-		AND
-			sal.category_type_id = param_dedication_id
 	)DATA;
 $BODY$;
 
@@ -4015,8 +4015,8 @@ $udf$;
 -- function update vacant_date
 CREATE OR REPLACE FUNCTION employee_data.idac_codes_update_vacant_date(
 	param_id INTEGER,
-	param_idac_code INTEGER,
-	param_vacant_date DATE,
+	param_vacant_date VARCHAR,
+	param_is_active BIT,
 	param_user_id BIGINT
 )
 RETURNS BIT
@@ -4027,13 +4027,12 @@ AS $udf$
     	local_is_successful BIT := '0';
   	BEGIN
   		UPDATE employee_data.idac_codes SET
-  			vacant_date = param_vacant_date,
+  			vacant_date = param_vacant_date::DATE,
+				is_active = param_is_active,
   			last_modified_by = param_user_id,
   			last_modified_date = CLOCK_TIMESTAMP()
   		WHERE
-  			id = param_id
-  		AND
-  			code = param_idac_code;
+  			id = param_id;
 
   		SELECT idac_codes_insert_history INTO local_is_successful FROM employe_data.idac_codes_insert_history(
   			param_idac_id := param_id,
@@ -4729,7 +4728,7 @@ AS $udf$
 $udf$;
 
 -- function get list
-CREATE OR REPLACE FUNCTION form_data.get_employees_list(
+CREATE OR REPLACE FUNCTION employee_data.get_employees_list(
 	param_school_id INTEGER,
 	param_institute_id INTEGER,
 	param_coordination_id INTEGER
