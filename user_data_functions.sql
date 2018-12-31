@@ -1599,7 +1599,9 @@ CREATE OR REPLACE FUNCTION user_data.user_insert(
 	param_email VARCHAR,
 	param_password VARCHAR,
 	param_ubication_id INTEGER,
-    param_ubication_user_id INTEGER
+  param_school_id INTEGER,
+  param_institute_id INTEGER,
+  param_coordination_id INTEGER
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -1634,6 +1636,9 @@ AS $udf$
     			email,
     			password,
     			ubication_id,
+          school_id,
+          institute_id,
+          coordination_id,
     			is_active,
     			is_deleted,
     			last_modified_by,
@@ -1646,6 +1651,9 @@ AS $udf$
     			param_email,
     			param_password,
           param_ubication_id,
+          param_school_id,
+          param_institute_id,
+          param_coordination_id,
     			'0',
     			'0',
     			param_user_id,
@@ -1678,8 +1686,8 @@ CREATE OR REPLACE FUNCTION user_data.user_insert_for_a_admin(
 	param_email VARCHAR,
 	param_password VARCHAR,
 	param_ubication_id INTEGER,
-    param_ubication_user_id INTEGER,
-    param_role_user_id INTEGER,
+  param_ubication_user_id INTEGER,
+  param_role_user_id INTEGER,
 	param_user_id INTEGER
 )
 RETURNS BIT
