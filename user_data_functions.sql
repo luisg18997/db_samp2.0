@@ -1822,95 +1822,81 @@ COST 100.0
 AS $BODY$
     SELECT ROW_TO_JSON(DATA)
     FROM (
-    SELECT
-      usr.id,
-      usr.name||' '||usr.surname as name,
-      usr.email,
-      usr.ubication_id,
-      ub.name as ubication,
-      usr.password,
-      usr.is_active,
-      usr.is_deleted,
-      usrol.role_id,
-      rol.description as rol,
-      usr.school_id,
-      schl.name as school,
-      usr.institute_id,
-      inst.name as institute,
-      usr.coordination_id,
-      cord.name as coordination,
-      ans.question_id,
-      qt.description,
-      ans.answer
-    FROM
-      user_data.users usr
-    INNER JOIN 
-        user_data.user_roles  usrol
-    ON 
-            usr.email = param_email
-        AND
-            usrol.user_id = usr.id
-        AND
-            usrol.is_deleted = '0'
-        INNER JOIN 
-            user_data.roles rol
-        ON
-                rol.id = usrol.role_id
-            AND
-                rol.is_active = '1'
-            AND
-                rol.is_deleted = '0'
-    INNER JOIN
-        user_data.ubications ub
-    ON
-            ub.id = usr.ubication_id
-        AND
-            ub.is_active = '1'
-        AND
-            ub.is_deleted = '0'
-        OR
-            usr.school_id  IN (SELECT schl.id
-                FROM faculty_data.schools schl
-                WHERE schl.id = usr.school_id
-                AND schl.is_active = '1'
-                AND schl.is_deleted = '0')
-        OR
-            usr.institute_id IN (SELECT inst.id
-                FROM faculty_data.institutes inst
-                WHERE inst.id = usr.institute_id
-                AND inst.is_active = '1'
-                AND inst.is_deleted = '0')
-        OR
-            usr.coordination_id IN (SELECT cord.id
-                FROM faculty_data.coordinations cord
-                WHERE cord.id = usr.coordination_id
-                AND cord.is_active = '1'
-                AND cord.is_deleted = '0')
-        JOIN 
-            faculty_data.schools schl
-        ON
-            schl.id = usr.school_id
-        JOIN
-            faculty_data.institutes inst
-        ON
-            inst.id = usr.institute_id
-        JOIN
-            faculty_data.coordinations cord
-        ON
-            cord.id = usr.coordination_id  
-    INNER JOIN
-        user_data.security_answers ans
-    ON
-            ans.user_id = usr.id
-        AND
-            ans.is_deleted = '0'
-        INNER JOIN
-            user_data.security_questions qt
-        ON
-                qt.id = ans.question_id
-            AND
-                qt.is_active = '1'
-            AND
-                qt.is_deleted = '0'
+      SELECT
+        usr.id,
+        usr.name||' '||usr.surname as name,
+        usr.email,
+        usr.ubication_id,
+        ub.name as ubication,
+        usr.password,
+        usr.is_active,
+        usr.is_deleted,
+        usrol.role_id,
+        rol.description as rol,
+        usr.school_id,
+        usr.institute_id,
+        usr.coordination_id,
+        COALESCE(schl.name,inst.name,cord.name) as ubication_user,
+        ans.question_id,
+        qt.description as question,
+        ans.answer
+      FROM
+        user_data.users usr
+      INNER JOIN
+          user_data.user_roles  usrol
+      ON
+              usr.email = param_email
+          AND
+              usrol.user_id = usr.id
+          AND
+              usrol.is_deleted = '0'
+       LEFT OUTER JOIN
+              user_data.roles rol
+          ON
+                  rol.id = usrol.role_id
+              AND
+                  rol.is_active = '1'
+              AND
+                  rol.is_deleted = '0'
+      INNER JOIN
+  	user_data.ubications ub
+      ON
+  	ub.id = usr.ubication_id
+  	AND
+              ub.is_active = '1'
+          AND
+              ub.is_deleted = '0'
+      LEFT OUTER JOIN
+  	faculty_data.schools schl
+          ON
+              schl.id = usr.school_id
+             AND schl.is_active = '1'
+                  AND schl.is_deleted = '0'
+        LEFT OUTER JOIN
+  	faculty_data.institutes inst
+          ON
+              inst.id = usr.institute_id
+             AND inst.is_active = '1'
+                  AND inst.is_deleted = '0'
+         LEFT OUTER JOIN
+  	faculty_data.coordinations cord
+          ON
+              cord.id = usr.coordination_id
+             AND cord.is_active = '1'
+                  AND cord.is_deleted = '0'
+          INNER JOIN
+          user_data.security_answers ans
+      ON
+              ans.user_id = usr.id
+          AND
+              ans.is_deleted = '0'
+          LEFT OUTER JOIN
+              user_data.security_questions qt
+          ON
+                  qt.id = ans.question_id
+              AND
+                  qt.is_active = '1'
+              AND
+                  qt.is_deleted = '0'
     )DATA;
 $BODY$;
