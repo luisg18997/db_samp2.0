@@ -1380,6 +1380,7 @@ AS $BODY$
 		idac.code idac_code,
 		mov.description as movement_type,
 		fo.registration_date,
+		fo.code_form,
 		fomp.start_date,
 		fomp.finish_date,
 		sch.name as school,
@@ -1387,7 +1388,9 @@ AS $BODY$
 		coord.name as coordination,
 		dept.name as departament,
 		cha.name as chair,
-		pfo.id as process_form_id
+		pfo.id as process_form_id,
+		pfo.status_process_form_id,
+		COALESCE(cded.description,pded.description) as dedication_type
 		FROM
 			form_data.employee_official_mov_personal_forms fomp
 		INNER JOIN
@@ -1502,6 +1505,40 @@ AS $BODY$
 					OR
 						pfo.status_process_form_id != 4
 				)
+				LEFT OUTER JOIN
+					employee_data.employee_salaries emsal
+				ON
+						emsal.employee_id = fomp.employee_id
+					AND
+						emsal.is_deleted = '0'
+					 LEFT OUTER JOIN
+						employee_data.salaries sal
+					ON
+							sal.id = emsal.salary_id
+						AND
+							sal.is_active = '1'
+						AND
+							sal.is_deleted = '0'
+			INNER JOIN
+				employee_data.dedication_types cded
+			ON
+						(
+								cded.id = sal.dedication_type_id
+							OR
+								cded.id = fomp.dedication_id
+						)
+				AND
+						cded.is_deleted = '0'
+				AND
+						cded.is_active = '1'
+			LEFT OUTER JOIN
+				employee_data.dedication_types pded
+			ON
+						pded.id = fomp.dedication_id
+				AND
+						pded.is_deleted = '0'
+				AND
+						pded.is_active = '1'
 
 	)DATA;
 $BODY$;
