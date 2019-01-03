@@ -1356,6 +1356,156 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
+CREATE OR REPLACE FUNCTION form_data.get_form_official(
+	param_identification VARCHAR,
+	param_ubication_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ROW_TO_JSON(DATA)
+	FROM(
+		SELECT
+		fomp.id,
+		fomp.official_form_id,
+		fomp.employee_id,
+		emp.first_name,
+		COALESCE(emp.second_name,'') as second_name,
+		emp.surname,
+		COALESCE(emp.second_surname,'') as second_surname,
+		emp.identification,
+		exe.description as execunting_unit,
+		idac.code idac_code,
+		mov.description as movement_type,
+		fo.registration_date,
+		fomp.start_date,
+		fomp.finish_date,
+		sch.name as school,
+		inst.name as institute,
+		coord.name as coordination,
+		dept.name as departament,
+		cha.name as chair,
+		pfo.id as process_form_id
+		FROM
+			form_data.employee_official_mov_personal_forms fomp
+		INNER JOIN
+			employee_data.employees emp
+		ON
+				emp.identification = param_identification
+			AND
+				 emp.id = fomp.employee_id
+			AND
+				emp.retirement_date IS NULL
+			AND
+				emp.is_deleted = '0'
+			AND
+					fomp.is_deleted = '0'
+			AND
+					fomp.is_active = '1'
+			AND
+				fomp.official_form_id IS NOT NULL
+			INNER JOIN
+				form_data.official_forms fo
+			ON
+						fo.id = fomp.official_form_id
+				AND
+						fo.is_deleted = '0'
+				AND
+						fo.is_active = '1'
+				AND
+						fo.approval_date IS NULL
+			INNER JOIN
+				form_data.movement_types mov
+			ON
+					mov.id = fomp.movement_type_id
+			AND
+					mov.is_deleted = '0'
+			AND
+					mov.is_active = '1'
+			INNER JOIN
+				faculty_data.chairs cha
+			ON
+					cha.id = emp.chair_id
+				AND
+					cha.is_active = '1'
+				AND
+					cha.is_deleted = '0'
+			INNER JOIN
+				faculty_data.departaments dept
+			ON
+					dept.id = emp.departament_id
+				AND
+					dept.is_active = '1'
+				AND
+					dept.is_deleted = '0'
+		INNER JOIN
+			employee_data.employee_idac_code emidac
+		ON
+				emidac.employee_id = fomp.employee_id
+			AND
+				emidac.is_deleted = '0'
+			INNER JOIN
+				employee_data.idac_codes idac
+			ON
+					idac.id = emidac.idac_code_id
+				AND
+					idac.is_active = '0'
+				AND
+					idac.is_deleted = '0'
+			INNER JOIN
+				employee_data.execunting_unit exe
+			ON
+						exe.id = idac.execunting_unit_id
+				AND
+						exe.is_deleted = '0'
+				AND
+						exe.is_active = '1'
+			LEFT OUTER JOIN
+				faculty_data.schools sch
+			ON
+					sch.id = emp.school_id
+			AND
+					sch.is_active = '1'
+			AND
+			 		sch.is_deleted = '0'
+			LEFT OUTER JOIN
+				faculty_data.institutes inst
+			ON
+					inst.id = emp.institute_id
+			AND
+					inst.is_active = '1'
+			AND
+			 		inst.is_deleted = '0'
+			LEFT OUTER JOIN
+				faculty_data.coordinations coord
+			ON
+					coord.id = emp.cordination_id
+			AND
+					coord.is_active = '1'
+			AND
+			 		coord.is_deleted = '0'
+		INNER JOIN
+			process_form.process_official_form pfo
+		ON
+				fo.id = pfo.official_form_id
+			AND
+				pfo.ubication_id = param_ubication_id
+			AND
+				pfo.is_active = '1'
+			AND
+				pfo.is_deleted = '0'
+			AND
+				(
+						pfo.status_process_form_id != 3
+					OR
+						pfo.status_process_form_id != 4
+				)
+
+	)DATA;
+$BODY$;
+
 -- function of movement_personal_forms
 -- function of insert
 CREATE OR REPLACE FUNCTION form_data.movement_personal_forms_insert(
@@ -2215,7 +2365,6 @@ AS $BODY$
 					pfmp.is_active = '1'
 				AND
 					pfmp.is_deleted = '0'
-
 			LEFT OUTER JOIN
 				process_form.process_official_form pfo
 			ON
