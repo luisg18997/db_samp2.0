@@ -1406,8 +1406,6 @@ AS $BODY$
 			AND
 					fomp.is_deleted = '0'
 			AND
-					fomp.is_active = '1'
-			AND
 				fomp.official_form_id IS NOT NULL
 			INNER JOIN
 				form_data.official_forms fo
