@@ -2289,41 +2289,150 @@ CREATE OR REPLACE FUNCTION form_data.get_forms_list(
 	param_ubication_id INTEGER,
 	param_ubication_form_id INTEGER
 )
-RETURNS json
-LANGUAGE 'sql'
+RETURNS text
+LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $BODY$
-	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+DECLARE
+	local_form_mov_personal TEXT;
+	local_form_official TEXT;
+	local_form_list TEXT;
+BEGIN
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA2))) INTO local_form_official
 	FROM (
-		SELECT
-			fomp.id,
-			COALESCE(fo.code_form, fmp.code_form) as code_form,
-			COALESCE(fo.registration_date, fmp.registration_date) as registration_date,
-			mov.description as movement_type,
-			exe.description as ubication,
-			emp.identification,
-			emp.first_name||' '||emp.surname as employee_name,
-			fo.id as official_form_id,
-			fmp.id as mov_personal_form_id,
-			spf.description as status_form
-		FROM
-			form_data.employee_official_mov_personal_forms fomp
-		LEFT OUTER JOIN
-			form_data.official_forms fo
+	SELECT
+		fomp.id,
+		fo.code_form,
+		fo.registration_date,
+		mov.description as movement_type,
+		exe.description as ubication,
+		emp.identification,
+		emp.first_name||' '||emp.surname as employee_name,
+		fo.id as official_form_id,
+		pfo.id as process_official_form_id,
+		pfo.status_process_form_id,
+		spf.description as status_form
+	FROM
+		form_data.official_forms fo
+	INNER JOIN
+		form_data.employee_official_mov_personal_forms fomp
+	ON
+		fo.id = fomp.official_form_id
+	AND
+		fo.is_active = '1'
+	AND
+		fo.is_deleted = '0'
+	AND
+		fomp.is_deleted = '0'
+	AND
+		fo.approval_date IS NULL
+	INNER JOIN
+			form_data.movement_types mov
 		ON
-				fo.id = fomp.official_form_id
-			AND
-				fo.is_active = '1'
-			AND
-				fo.is_deleted = '0'
-			AND
-				fomp.is_deleted = '0'
-			AND
-				fo.approval_date IS NULL
+					mov.id = fomp.movement_type_id
+				AND
+					mov.is_active = '1'
+				AND
+					mov.is_deleted = '0'
 		LEFT OUTER JOIN
-			form_data.movement_personal_forms fmp
+			faculty_data.schools sch
 		ON
-				fmp.id = fomp.mov_personal_form_id
+				(
+						sch.id = fomp.school_id
+					OR
+						sch.id = param_ubication_form_id
+				)
+			AND
+				sch.is_active = '1'
+			AND
+				sch.is_deleted = '0'
+		LEFT OUTER JOIN
+			faculty_data.institutes ins
+		ON
+				(
+						ins.id = fomp.institute_id
+					OR
+						ins.id = param_ubication_form_id
+				)
+			AND
+				ins.is_active = '1'
+			AND
+				ins.is_deleted = '0'
+		LEFT OUTER JOIN
+			faculty_data.coordinations coord
+		ON
+				(
+						coord.id = fomp.coordination_id
+					OR
+						coord.id = param_ubication_form_id
+				)
+			AND
+				coord.is_active = '1'
+			AND
+				coord.is_deleted = '0'
+			INNER JOIN
+				employee_data.execunting_unit exe
+			ON
+					(
+							exe.code = sch.code
+						OR
+							exe.code = ins.code
+						OR
+							exe.code = coord.code
+					)
+				AND
+					exe.is_active = '1'
+				AND
+					exe.is_deleted = '0'
+	INNER JOIN
+		process_form.process_official_form pfo
+			ON
+					fo.id = pfo.official_form_id
+				AND
+					pfo.ubication_id = param_ubication_id
+				AND
+					pfo.is_active = '1'
+				AND
+					pfo.is_deleted = '0'
+			INNER JOIN
+				process_form.status_process_form spf
+			ON
+
+					spf.id = pfo.status_process_form_id
+					AND
+						spf.is_active = '1'
+					AND
+						spf.is_deleted = '0'
+			INNER JOIN
+				employee_data.employees emp
+			ON
+					emp.id = fomp.employee_id
+				AND
+					emp.is_deleted = '0'
+
+	)DATA2;
+	RAISE NOTICE 'form_official_list: %', local_form_official;
+
+	SELECT  ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA1))) INTO local_form_mov_personal
+	FROM (
+	SELECT
+		fomp.id,
+		fmp.code_form,
+		fmp.registration_date,
+		mov.description as movement_type,
+		exe.description as ubication,
+		emp.identification,
+		emp.first_name||' '||emp.surname as employee_name,
+		fmp.id as mov_personal_form_id,
+		pfmp.id as process_mov_personal_form_id,
+		pfmp.status_process_form_id,
+		spf.description as status_form
+	FROM
+		form_data.movement_personal_forms fmp
+	INNER JOIN
+		form_data.employee_official_mov_personal_forms fomp
+	ON
+		fmp.id = fomp.mov_personal_form_id
 			AND
 				fmp.is_active = '1'
 			AND
@@ -2390,7 +2499,7 @@ AS $BODY$
 					exe.is_active = '1'
 				AND
 					exe.is_deleted = '0'
-			LEFT OUTER JOIN
+			INNER JOIN
 				process_form.process_movement_personal_form pfmp
 			ON
 					fmp.id = pfmp.movement_personal_form_id
@@ -2400,33 +2509,23 @@ AS $BODY$
 					pfmp.is_active = '1'
 				AND
 					pfmp.is_deleted = '0'
-			LEFT OUTER JOIN
-				process_form.process_official_form pfo
-			ON
-					fo.id = pfo.official_form_id
-				AND
-					pfo.ubication_id = param_ubication_id
-				AND
-					pfo.is_active = '1'
-				AND
-					pfo.is_deleted = '0'
 			INNER JOIN
 				process_form.status_process_form spf
 			ON
-					(
-							spf.id = pfo.status_process_form_id
-						OR
-							spf.id = pfmp.status_process_form_id
-					)
-					AND
-						spf.is_active = '1'
-					AND
-						spf.is_deleted = '0'
+					spf.id = pfmp.status_process_form_id
+				AND
+					spf.is_active = '1'
+				AND
+					spf.is_deleted = '0'
 			INNER JOIN
 				employee_data.employees emp
 			ON
 					emp.id = fomp.employee_id
 				AND
-					emp.is_deleted = '0'
-	)DATA;
+					emp.is_deleted = '0')DATA1;
+		RAISE NOTICE 'form_mov_personal_list: %', local_form_mov_personal;
+	SELECT local_form_mov_personal::jsonb || local_form_official::jsonb INTO local_form_list;
+	RAISE NOTICE 'form_list: %', local_form_list;
+	return local_form_list;
+	END;
 $BODY$;
