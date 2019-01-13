@@ -2289,7 +2289,7 @@ CREATE OR REPLACE FUNCTION form_data.get_forms_list(
 	param_ubication_id INTEGER,
 	param_ubication_form_id INTEGER
 )
-RETURNS text
+RETURNS json
 LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $BODY$

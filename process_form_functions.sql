@@ -160,7 +160,6 @@ CREATE OR REPLACE FUNCTION process_form.process_movement_personal_form_update_al
 	param_id INTEGER,
 	param_user_id BIGINT,
 	param_movement_personal_form_id INTEGER,
-	param_date_made DATE,
 	param_ubication_id INTEGER,
 	param_status_process_form_id INTEGER,
 	param_is_active BIT,
@@ -175,7 +174,7 @@ AS $udf$
   	BEGIN
   		UPDATE process_form.process_movement_personal_form SET
             movement_personal_form_id = param_movement_personal_form_id,
-            date_made = param_date_made,
+            date_made = CLOCK_TIMESTAMP(),
             ubication_id = param_ubication_id,
             status_process_form_id = param_status_process_form_id,
             is_active = param_is_active,
@@ -426,7 +425,6 @@ CREATE OR REPLACE FUNCTION process_form.process_official_form_update_all_columns
 	param_id INTEGER,
 	param_user_id BIGINT,
 	param_official_form_id INTEGER,
-	param_date_made DATE,
 	param_ubication_id INTEGER,
 	param_status_process_form_id INTEGER,
 	param_is_active BIT,
@@ -441,7 +439,7 @@ AS $udf$
   	BEGIN
   		UPDATE process_form.process_official_form SET
          	official_form_id = param_official_form_id,
-		    date_made = param_date_made,
+		    date_made = CLOCK_TIMESTAMP(),
 		    ubication_id = param_ubication_id,
 		    status_process_form_id = param_status_process_form_id,
 		    is_active = param_is_active,
