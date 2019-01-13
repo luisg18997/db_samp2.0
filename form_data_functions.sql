@@ -2523,9 +2523,24 @@ BEGIN
 					emp.id = fomp.employee_id
 				AND
 					emp.is_deleted = '0')DATA1;
-		RAISE NOTICE 'form_mov_personal_list: %', local_form_mov_personal;
-	SELECT local_form_mov_personal::jsonb || local_form_official::jsonb INTO local_form_list;
-	RAISE NOTICE 'form_list: %', local_form_list;
-	return local_form_list;
+			if (local_form_mov_personal IS NOT NULL AND local_form_official IS NOT NULL)
+			then
+				SELECT local_form_mov_personal::jsonb || local_form_official::jsonb INTO local_form_list;
+				RAISE NOTICE 'form_list: %', local_form_list;
+				return local_form_list;
+			ELSE IF (local_form_mov_personal IS NOT NULL AND local_form_official IS NULL)
+			THEN
+				RAISE NOTICE 'form data mov personal';
+				return local_form_mov_personal;
+			ELSE IF (local_form_mov_personal IS NULL AND local_form_official IS NOT NULL)
+			THEN
+				RAISE NOTICE 'form data official';
+				return local_form_official;
+			ELSE
+				RAISE NOTICE 'Found not DATA';
+				return local_form_list;
+			END IF;
+			END IF;
+			END IF;
 	END;
 $BODY$;
