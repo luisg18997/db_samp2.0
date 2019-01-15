@@ -161,6 +161,7 @@ CREATE OR REPLACE FUNCTION process_form.process_movement_personal_form_update_al
 	param_user_id BIGINT,
 	param_movement_personal_form_id INTEGER,
 	param_ubication_id INTEGER,
+	param_observation TEXT,
 	param_status_process_form_id INTEGER,
 	param_is_active BIT,
 	param_is_deleted BIT
@@ -176,6 +177,7 @@ AS $udf$
             movement_personal_form_id = param_movement_personal_form_id,
             date_made = CLOCK_TIMESTAMP(),
             ubication_id = param_ubication_id,
+						observation=param_observation,
             status_process_form_id = param_status_process_form_id,
             is_active = param_is_active,
 		    is_deleted = param_is_deleted,
@@ -193,8 +195,6 @@ AS $udf$
     	RETURN local_is_successful;
   	END;
 $udf$;
-
-
 
 -- function update is active process_movement_personal_form
 CREATE OR REPLACE FUNCTION process_form.process_movement_personal_form_update_is_active(
@@ -426,6 +426,7 @@ CREATE OR REPLACE FUNCTION process_form.process_official_form_update_all_columns
 	param_user_id BIGINT,
 	param_official_form_id INTEGER,
 	param_ubication_id INTEGER,
+	param_observation TEXT,
 	param_status_process_form_id INTEGER,
 	param_is_active BIT,
 	param_is_deleted BIT
@@ -441,6 +442,7 @@ AS $udf$
          	official_form_id = param_official_form_id,
 		    date_made = CLOCK_TIMESTAMP(),
 		    ubication_id = param_ubication_id,
+					observation=param_observation,
 		    status_process_form_id = param_status_process_form_id,
 		    is_active = param_is_active,
 	    	is_deleted = param_is_deleted,
