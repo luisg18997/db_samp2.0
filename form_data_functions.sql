@@ -1497,12 +1497,6 @@ AS $BODY$
 				pfo.is_active = '1'
 			AND
 				pfo.is_deleted = '0'
-			AND
-				(
-						pfo.status_process_form_id != 3
-					OR
-						pfo.status_process_form_id != 4
-				)
 				LEFT OUTER JOIN
 					employee_data.employee_salaries emsal
 				ON
@@ -1701,7 +1695,8 @@ $BODY$;
 
 -- function get mov pers
 CREATE OR REPLACE FUNCTION form_data.get_movement_personal_form(
-	param_identification VARCHAR
+	param_identification VARCHAR,
+	param_ubication_id integer
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -1710,38 +1705,46 @@ AS $BODY$
 	SELECT ROW_TO_JSON(DATA)
 	FROM (
 		SELECT
-			fomp.id,
-			fomp.official_form_id,
-			fomp.employee_id,
-			emp.first_name,
-			COALESCE(emp.second_name,'') as second_name,
-			emp.surname,
-			COALESCE(emp.second_surname,'') as second_surname,
-			nac.description as nacionality,
-			doc.description as documentation,
-			emp.identification,
-			json_build_object('id',COALESCE(emp.state_id,0),'name',COALESCE(sta.name,'')) as state,
-			json_build_object('id',COALESCE(emp.municipality_id,0),'name',COALESCE(mun.name,'')) as municipality,
-			json_build_object('id',COALESCE(emp.parish_id,0),'name',COALESCE(par.name,'')) as parish,
-			COALESCE(emp.ubication,'') as ubication,
-			COALESCE(emp.address,'') as address,
-			COALESCE(emp.housing_type,'') as housing_type,
-			COALESCE(emp.housing_identifier,'') as housing_identifier,
-			COALESCE(emp.apartament,'') as apartament,
-			dept.name as departament,
-			cha.name as chair,
-			json_build_object('id',COALESCE(emp.ingress_id,0),'description', COALESCE(ing.description,'')) as ingres,
-			json_build_object('id',COALESCE(emp.income_type_id,0),'description',COALESCE(inct.description,'')) as income_type,
-			mov.description as movement_type,
-			fomp.start_date,
-			fomp.finish_date,
-			idac.code as idac_code,
-			exe.description as execunting_unit,
-			json_build_object('id',COALESCE(sal.dedication_type_id, fomp.dedication_id),'description',cded.description) as current_dedication,
-			json_build_object('id',COALESCE(fomp.dedication_id, 0),'description',COALESCE(pded.description,'')) as proposed_dedication,
-			json_build_object('id',COALESCE(sal.category_type_id, 0),'description', COALESCE(cat.description,'')) as category_type,
-			COALESCE(emsal.id, 0) as employee_salary_id,
-			json_build_object('id',COALESCE(emsal.salary_id, 0),'description',COALESCE(sal.salary,'0')) as salary
+		fomp.id,
+		fmp.code_form,
+		fmp.registration_date,
+		fomp.mov_personal_form_id,
+		fomp.employee_id,
+		emp.first_name,
+		COALESCE(emp.second_name,'') as second_name,
+		emp.surname,
+		COALESCE(emp.second_surname,'') as second_surname,
+		nac.description as nacionality,
+		doc.description as documentation,
+		emp.identification,
+		emp.admission_date,
+		json_build_object('id',COALESCE(emp.state_id,0),'name',COALESCE(sta.name,'')) as state,
+		json_build_object('id',COALESCE(emp.municipality_id,0),'name',COALESCE(mun.name,'')) as municipality,
+		json_build_object('id',COALESCE(emp.parish_id,0),'name',COALESCE(par.name,'')) as parish,
+		COALESCE(emp.ubication,'') as ubication,
+		COALESCE(emp.address,'') as address,
+		COALESCE(emp.housing_type,'') as housing_type,
+		COALESCE(emp.housing_identifier,'') as housing_identifier,
+		COALESCE(emp.apartament,'') as apartament,
+		dept.name as departament,
+		cha.name as chair,
+		json_build_object('id',COALESCE(emp.ingress_id,0),'description', COALESCE(ing.description,'')) as ingres,
+		json_build_object('id',COALESCE(emp.income_type_id,0),'description',COALESCE(inct.description,'')) as income_type,
+		mov.description as movement_type,
+		fomp.start_date,
+		fomp.finish_date,
+		idac.code as idac_code,
+		exe.description as execunting_unit,
+		sch.name as school,
+		ins.name as institute,
+		coord.name as coordination,
+		json_build_object('id',COALESCE(sal.dedication_type_id, fomp.dedication_id),'description',cded.description) as current_dedication,
+		json_build_object('id',COALESCE(fomp.dedication_id, 0),'description',COALESCE(pded.description,'')) as proposed_dedication,
+		json_build_object('id',COALESCE(sal.category_type_id, 0),'description', COALESCE(cat.description,'')) as category_type,
+		COALESCE(emsal.id, 0) as employee_salary_id,
+		json_build_object('id',COALESCE(emsal.salary_id, 0),'description',COALESCE(sal.salary,'0')) as salary,
+		fmp.reason,
+		pfmp.id as process_mov_personal_form_id
 		FROM
 			form_data.employee_official_mov_personal_forms fomp
 		INNER JOIN
@@ -1765,9 +1768,41 @@ AS $BODY$
 			AND
 				fomp.is_deleted = '0'
 			AND
-				fomp.mov_personal_form_id IS NULL
-			AND
 				fomp.official_form_id IS NOT NULL
+		LEFT OUTER JOIN
+			form_data.movement_personal_forms fmp
+		ON
+					fmp.id = fomp.mov_personal_form_id
+				AND
+					fmp.is_active = '1'
+				AND
+					fmp.is_deleted = '0'
+				AND
+					fmp.approval_date IS NULL
+		LEFT OUTER JOIN
+			faculty_data.schools sch
+		ON
+					sch.id = fomp.school_id
+			AND
+					sch.is_active = '1'
+			AND
+					sch.is_deleted = '0'
+		LEFT OUTER JOIN
+			faculty_data.institutes ins
+		ON
+					ins.id = fomp.institute_id
+			AND
+					ins.is_active = '1'
+			AND
+					ins.is_deleted = '0'
+		LEFT OUTER JOIN
+			faculty_data.coordinations coord
+		ON
+					coord.id = fomp.coordination_id
+			AND
+					coord.is_active = '1'
+			AND
+					coord.is_deleted = '0'
 				INNER JOIN
 					form_data.movement_types mov
 				ON
@@ -1912,6 +1947,16 @@ AS $BODY$
 				par.is_deleted = '0'
 		AND
 				par.is_active = '1'
+LEFT OUTER JOIN
+			process_form.process_movement_personal_form pfmp
+		ON
+				fmp.id = pfmp.movement_personal_form_id
+			AND
+				pfmp.ubication_id = param_ubication_id
+			AND
+				pfmp.is_active = '1'
+			AND
+				pfmp.is_deleted = '0'
 	)DATA;
 $BODY$;
 

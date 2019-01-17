@@ -33,10 +33,10 @@ CREATE TABLE employee_data.employees(
 	last_updated_date date,
 	retirement_date date,
 	is_active BIT(1) NOT NULL,
-  	is_deleted BIT(1) NOT NULL,
-  	last_modified_by BIGINT NOT NULL,
-  	last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  	CONSTRAINT employee_identification_unique UNIQUE (identification)
+  is_deleted BIT(1) NOT NULL,
+  last_modified_by BIGINT NOT NULL,
+  last_modified_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+  CONSTRAINT employee_identification_unique UNIQUE (identification)
 );
 
 CREATE TABLE employee_data.documentations(
