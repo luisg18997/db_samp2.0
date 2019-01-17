@@ -1539,6 +1539,7 @@ $BODY$;
 -- function of insert
 CREATE OR REPLACE FUNCTION form_data.movement_personal_forms_insert(
 	param_code_form_mov_per VARCHAR,
+	param_salary MONEY,
 	param_reason VARCHAR,
 	param_user_id BIGINT
 )
@@ -1567,6 +1568,7 @@ AS $udf$
 		ELSE
 			INSERT INTO form_data.movement_personal_forms(
 				code_form,
+				salary,
 				reason,
 				registration_date,
 				is_active,
@@ -1576,6 +1578,7 @@ AS $udf$
 			)
 			VALUES (
 				param_code_form_mov_per,
+				param_salary,
 				param_reason,
 				CLOCK_TIMESTAMP(),
 				'1',
@@ -1619,6 +1622,7 @@ AS $udf$
 		INSERT INTO form_data.movement_personal_forms_history(
 			mov_personal_form_id,
 			code_form,
+			salary,
 			accountant_type_id,
 			progam_type_id,
 			registration_date,
@@ -1633,6 +1637,7 @@ AS $udf$
 		SELECT
 			id,
 			code_form,
+			salary,
 			accountant_type_id,
 			progam_type_id,
 			registration_date,
@@ -1742,7 +1747,7 @@ AS $BODY$
 		json_build_object('id',COALESCE(fomp.dedication_id, 0),'description',COALESCE(pded.description,'')) as proposed_dedication,
 		json_build_object('id',COALESCE(sal.category_type_id, 0),'description', COALESCE(cat.description,'')) as category_type,
 		COALESCE(emsal.id, 0) as employee_salary_id,
-		json_build_object('id',COALESCE(emsal.salary_id, 0),'description',COALESCE(sal.salary,'0')) as salary,
+		json_build_object('id',COALESCE(emsal.salary_id, 0),'description',COALESCE(fmp.salary,sal.salary,'0')) as salary,
 		fmp.reason,
 		pfmp.status_process_form_id,
 		pfmp.id as process_mov_personal_form_id,
@@ -1977,7 +1982,7 @@ LEFT OUTER JOIN
 							anx.is_deleted = '0'
 			GROUP BY
 			fomp.id,fmp.code_form,fmp.registration_date,
-			fomp.mov_personal_form_id,fomp.employee_id,
+			fomp.mov_personal_form_id,fomp.employee_id,fmp.salary,
 			emp.first_name,second_name,emp.surname,second_surname,
 			nacionality,documentation,emp.identification,emp.admission_date,emp.state_id,
 			sta.name,emp.municipality_id,mun.name,emp.parish_id,par.name,
@@ -2318,6 +2323,7 @@ AS $udf$
 		THEN
 			SELECT movement_personal_forms_insert INTO local_form_mov_per_id FROM form_data.movement_personal_forms_insert(
 				param_form_mov_per_json->>'code_form',
+				(param_form_mov_per_json->>'code_form')::MONEY,
 				param_form_mov_per_json->>'reason',
 				param_user_id
 			);

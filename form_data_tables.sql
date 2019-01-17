@@ -3,6 +3,7 @@
 CREATE TABLE form_data.movement_personal_forms(
 	id INTEGER DEFAULT nextval('form_data.movement_personal_forms_person_id_seq'::regclass) NOT NULL,
 	code_form VARCHAR(15) NOT NULL,
+	salary MONEY NOT NULL,
 	accountant_type_id INTEGER,
 	progam_type_id INTEGER,
 	reason TEXT NOT NULL,
@@ -115,6 +116,7 @@ CREATE TABLE form_data.movement_personal_forms_history(
 	id BIGINT DEFAULT nextval('form_data.movement_personal_forms_person_history_id_seq'::regclass) NOT NULL,
 	mov_personal_form_id INTEGER,
 	code_form VARCHAR(15),
+	salary MONEY NOT NULL,
 	accountant_type_id INTEGER,
 	progam_type_id INTEGER,
 	reason TEXT,

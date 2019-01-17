@@ -1690,7 +1690,7 @@ CREATE OR REPLACE FUNCTION user_data.user_insert_for_a_admin(
 	param_user_id INTEGER,
   param_school_id INTEGER,
   param_institute_id INTEGER,
-  param_coordination_id INTEGER,
+  param_coordination_id INTEGER
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
