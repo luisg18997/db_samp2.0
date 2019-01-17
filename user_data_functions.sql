@@ -1932,7 +1932,8 @@ AS $BODY$
         ub.name as ubication,
         us.ubication_id,
         us.is_active,
-        us.is_deleted
+        us.is_deleted,
+        usrol.id as user_role_id
       FROM
         user_data.users us
       INNER JOIN
@@ -1947,5 +1948,63 @@ AS $BODY$
             ub.is_active = '1'
         AND
             ub.is_deleted = '0'
+      INNER JOIN
+          user_data.user_roles usrol
+      ON
+          usrol.user_id = us.id
+        AND
+          usrol.is_active = '1'
+        AND
+          usrol.is_deleted = '0'
+    )DATA;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION user_data.get_user_list()
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+AS $BODY$
+  SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+  FROM (
+      SELECT
+        us.id,
+        us.name||' '||us.surname as name,
+        us.email,
+        ub.name as ubication,
+        us.ubication_id,
+        rol.description as role,
+        usrol.role_id,
+        us.is_active,
+        us.is_deleted
+      FROM
+        user_data.users us
+      INNER JOIN
+	       user_data.ubications ub
+	    ON
+            us.is_active = '1'
+        AND
+            us.is_deleted = '0'
+        AND
+            us.ubication_id = ub.id
+        AND
+            ub.is_active = '1'
+        AND
+            ub.is_deleted = '0'
+        INNER JOIN
+            user_data.user_roles usrol
+        ON
+            usrol.user_id = us.id
+          AND
+            usrol.is_active = '1'
+          AND
+            usrol.is_deleted = '0'
+          INNER JOIN
+            user_data.roles rol
+          ON
+              usrol.role_id = rol.id
+            AND
+             rol.is_active = '0'
+            AND
+              rol.is_deleted = '0'
     )DATA;
 $BODY$;
