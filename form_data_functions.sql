@@ -1717,7 +1717,7 @@ AS $BODY$
 		nac.description as nacionality,
 		doc.description as documentation,
 		emp.identification,
-		emp.admission_date,
+		COALESCE(emp.admission_date::TEXT,'') as admission_date,
 		json_build_object('id',COALESCE(emp.state_id,0),'name',COALESCE(sta.name,'')) as state,
 		json_build_object('id',COALESCE(emp.municipality_id,0),'name',COALESCE(mun.name,'')) as municipality,
 		json_build_object('id',COALESCE(emp.parish_id,0),'name',COALESCE(par.name,'')) as parish,
