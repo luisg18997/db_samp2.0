@@ -1744,7 +1744,9 @@ AS $BODY$
 		COALESCE(emsal.id, 0) as employee_salary_id,
 		json_build_object('id',COALESCE(emsal.salary_id, 0),'description',COALESCE(sal.salary,'0')) as salary,
 		fmp.reason,
-		pfmp.id as process_mov_personal_form_id
+		pfmp.status_process_form_id,
+		pfmp.id as process_mov_personal_form_id,
+		jsonb_agg(jsonb_build_object('id',anx.id, 'description', anx.description)) as annex_types
 		FROM
 			form_data.employee_official_mov_personal_forms fomp
 		INNER JOIN
@@ -1957,6 +1959,34 @@ LEFT OUTER JOIN
 				pfmp.is_active = '1'
 			AND
 				pfmp.is_deleted = '0'
+				LEFT OUTER JOIN
+					form_data.movement_types_annex_types movannex
+				ON
+							movannex.movement_type_id = mov.id
+						AND
+							movannex.is_active = '1'
+						AND
+							movannex.is_deleted = '0'
+					LEFT OUTER JOIN
+						form_data.annex_types anx
+					ON
+							anx.id = movannex.annex_type_id
+						AND
+							anx.is_active = '1'
+						AND
+							anx.is_deleted = '0'
+			GROUP BY
+			fomp.id,fmp.code_form,fmp.registration_date,
+			fomp.mov_personal_form_id,fomp.employee_id,
+			emp.first_name,second_name,emp.surname,second_surname,
+			nacionality,documentation,emp.identification,emp.admission_date,emp.state_id,
+			sta.name,emp.municipality_id,mun.name,emp.parish_id,par.name,
+			emp.ubication,emp.address,emp.housing_type,emp.housing_identifier,
+			emp.apartament,dept.name,cha.name,emp.ingress_id, ing.description,emp.income_type_id,inct.description,
+			mov.description,fomp.start_date,fomp.finish_date,idac.code,
+			exe.description,sch.name,ins.name,coord.name,sal.dedication_type_id, fomp.dedication_id,cded.description,
+			pded.description,sal.category_type_id,cat.description,emsal.id,
+			emsal.salary_id,sal.salary,fmp.reason,pfmp.status_process_form_id,process_mov_personal_form_id
 	)DATA;
 $BODY$;
 
