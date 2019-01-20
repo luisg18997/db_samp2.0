@@ -1,6 +1,6 @@
 # DB UCV FHE
 
-##Prerequisites
+## Prerequisites
 have installed PostgreSQL 9 or higher on the local machine with any operating system (Linux, Windows or Mac 'OS) or DOCKER CEHave installed PostgreSQL 9 or higher on the local machine or DOCKER CE
 
 ## Install Database and Usage
@@ -14,8 +14,8 @@ $ git clone https://gitlab.com/ucv-fhe/db.git
 ```bash
 $ sudo -i -u postgres
 $ psql
-$ CREATE DATABASE db_ucv_fhe_sist;
-$ \q
+$ psql: CREATE DATABASE db_ucv_fhe_sist;
+$ psql: \q
 ```
 -- 3  go to the folder where the files are and run the file **install_database.sh**
 ```bash
