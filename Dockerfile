@@ -1,10 +1,6 @@
 FROM postgres:9.6
-ENV POSTGRES_PASSWORD=postgresql
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_DB=db_ucv_fhe_sist
 COPY locale.gen /etc/
 RUN locale-gen
-ENV POSTGRES_INITDB_ARGS="--locale=es_VE.UTF-8"
 COPY 001_faculty_data_sequence.sql /docker-entrypoint-initdb.d/
 COPY 002_faculty_data_tables.sql /docker-entrypoint-initdb.d/
 COPY 003_faculty_data_functions.sql /docker-entrypoint-initdb.d/
