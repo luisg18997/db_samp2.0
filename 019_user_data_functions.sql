@@ -1843,20 +1843,17 @@ AS $BODY$
         usr.id,
         usr.name||' '||usr.surname as name,
         usr.email,
-        usr.ubication_id,
-        ub.name as ubication,
+        json_build_object('id',usr.ubication_id,'description', ub.name) as ubication,
         usr.password,
         usr.is_active,
         usr.is_deleted,
-        usrol.role_id,
-        rol.description as rol,
+        json_build_object('id',usrol.role_id, 'description', COALESCE(rol.description,'')) as rol,
         usr.school_id,
         usr.institute_id,
         usr.coordination_id,
-        COALESCE(schl.name,inst.name,cord.name) as ubication_user,
-        ans.question_id,
-        qt.description as question,
-        ans.answer
+        exe.description as ubication_user,
+        json_build_object('id', COALESCE(ans.question_id, 0),'description',  qt.description)  as question,
+        json_build_object('id',ans.id,'description', COALESCE(ans.answer,'')) as answer
       FROM
         user_data.users usr
       INNER JOIN
@@ -1884,10 +1881,10 @@ AS $BODY$
           AND
               ub.is_deleted = '0'
       LEFT OUTER JOIN
-  	faculty_data.schools schl
-          ON
-              schl.id = usr.school_id
-             AND schl.is_active = '1'
+  	   faculty_data.schools schl
+      ON
+            schl.id = usr.school_id
+           AND schl.is_active = '1'
                   AND schl.is_deleted = '0'
         LEFT OUTER JOIN
   	faculty_data.institutes inst
@@ -1901,6 +1898,20 @@ AS $BODY$
               cord.id = usr.coordination_id
              AND cord.is_active = '1'
                   AND cord.is_deleted = '0'
+        INNER JOIN
+					employee_data.execunting_unit exe
+				ON
+							 (
+                  exe.code = schl.code
+                OR
+                  exe.code = inst.code
+                OR
+                  exe.code = cord.code
+               )
+					AND
+							exe.is_deleted = '0'
+					AND
+							exe.is_active = '1'
           INNER JOIN
           user_data.security_answers ans
       ON
@@ -1929,8 +1940,7 @@ AS $BODY$
         us.id,
         us.name||' '||us.surname as name,
         us.email,
-        ub.name as ubication,
-        us.ubication_id,
+        json_build_object('id',us.ubication_id,'description', ub.name) as ubication,
         us.is_active,
         us.is_deleted,
         usrol.id as user_role_id
@@ -1970,12 +1980,11 @@ AS $BODY$
         us.id,
         us.name||' '||us.surname as name,
         us.email,
-        ub.name as ubication,
-        us.ubication_id,
-        rol.description as role,
-        usrol.role_id,
+        json_build_object('id',us.ubication_id,'description', ub.name) as ubication,
+        json_build_object('id',usrol.role_id, 'description', rol.description) as rol,
         us.is_active,
-        us.is_deleted
+        us.is_deleted,
+        usrol.id as user_role_id
       FROM
         user_data.users us
       INNER JOIN
@@ -2008,3 +2017,143 @@ AS $BODY$
               rol.is_deleted = '0'
     )DATA;
 $BODY$;
+
+-- get user
+CREATE OR REPLACE FUNCTION user_data.get_user(
+  param_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+AS $BODY$
+SELECT ROW_TO_JSON(DATA)
+FROM (
+  SELECT
+    usr.id,
+    usr.name||' '||usr.surname as name,
+    usr.email,
+    json_build_object('id',usr.ubication_id,'description', ub.name) as ubication,
+    usr.password,
+    usr.is_active,
+    usr.is_deleted,
+    json_build_object('id',usrol.role_id, 'description', COALESCE(rol.description,'')) as rol,
+    usr.school_id,
+    usr.institute_id,
+    usr.coordination_id,
+    exe.description as ubication_user
+  FROM
+    user_data.users usr
+  INNER JOIN
+      user_data.user_roles  usrol
+  ON
+          usr.id = param_id
+      AND
+          usrol.user_id = usr.id
+   LEFT OUTER JOIN
+          user_data.roles rol
+      ON
+          rol.id = usrol.role_id
+  INNER JOIN
+    user_data.ubications ub
+  ON
+    ub.id = usr.ubication_id
+    AND
+          ub.is_active = '1'
+      AND
+          ub.is_deleted = '0'
+  LEFT OUTER JOIN
+   faculty_data.schools schl
+  ON
+        schl.id = usr.school_id
+       AND schl.is_active = '1'
+              AND schl.is_deleted = '0'
+    LEFT OUTER JOIN
+faculty_data.institutes inst
+      ON
+          inst.id = usr.institute_id
+         AND inst.is_active = '1'
+              AND inst.is_deleted = '0'
+     LEFT OUTER JOIN
+faculty_data.coordinations cord
+      ON
+          cord.id = usr.coordination_id
+         AND cord.is_active = '1'
+              AND cord.is_deleted = '0'
+    INNER JOIN
+      employee_data.execunting_unit exe
+    ON
+           (
+              exe.code = schl.code
+            OR
+              exe.code = inst.code
+            OR
+              exe.code = cord.code
+           )
+      AND
+          exe.is_deleted = '0'
+      AND
+          exe.is_active = '1'
+)DATA;
+$BODY$;
+
+-- update user Validate
+CREATE OR REPLACE FUNCTION user_data.user_update_by_validate(
+  param_id INTEGER,
+  param_role_user_id INTEGER,
+  param_role_id INTEGER,
+  param_is_active BIT,
+  param_is_deleted BIT,
+  param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+      local_is_successful BIT := '0';
+      local_security_answer_id BIGINT;
+  BEGIN
+    UPDATE user_data.users SET
+      is_active = param_is_active,
+      is_deleted = param_is_deleted,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+
+    PERFORM  user_data.user_rol_update_role_is_active(param_role_user_id, param_id, param_is_active, param_user_id);
+
+    iF(param_is_deleted = '1' AND param_role_id = 0)
+    THEN
+      PERFORM user_data.user_rol_update_is_deleted(param_role_user_id, param_id, param_is_deleted, param_user_id);
+    ELSE
+      PERFORM user_data.user_rol_update_role(param_role_user_id,param_id, param_role_id, param_user_id);
+    END IF;
+
+    IF (param_is_active = '0' AND  param_is_deleted = '1')
+    THEN
+      UPDATE user_data.security_answers SET
+        is_active = param_is_active,
+        is_deleted = param_is_deleted,
+        last_modified_by = param_user_id,
+        last_modified_date = CLOCK_TIMESTAMP()
+      WHERE
+        user_id = param_id
+        RETURNING id
+        INTO STRICT local_security_answer_id;
+
+      PERFORM user_data.security_answer_insert_history(
+      param_security_answer_id := local_security_answer_id,
+      param_change_type := 'UPDATE is_deleted',
+      param_change_description := 'UPDATE value of is_deleted');
+    END IF;
+
+    SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
+        param_user_id := param_id,
+        param_change_type := 'UPDATE IS VALIDATE',
+        param_change_description := 'UPDATE VALUE IS VALIDATE'
+    );
+
+    RETURN local_is_successful;
+    END;
+$udf$;
