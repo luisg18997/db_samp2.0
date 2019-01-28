@@ -1869,7 +1869,7 @@ AS $BODY$
           ON
                   rol.id = usrol.role_id
               AND
-                  rol.is_active = '1'
+                  rol.is_active = '0'
               AND
                   rol.is_deleted = '0'
       INNER JOIN
