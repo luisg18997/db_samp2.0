@@ -2626,3 +2626,8 @@ BEGIN
 			END IF;
 	END;
 $BODY$;
+
+-- update form official complete
+CREATE OR REPLACE FUNCTION form_data.employee_official_form_update_complete(
+    param_id INTEGER
+)
