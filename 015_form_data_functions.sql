@@ -1714,6 +1714,7 @@ AS $BODY$
 		fmp.code_form,
 		fmp.registration_date,
 		fomp.mov_personal_form_id,
+		fomp.official_form_id,
 		fomp.employee_id,
 		emp.first_name,
 		COALESCE(emp.second_name,'') as second_name,
@@ -1988,7 +1989,7 @@ LEFT OUTER JOIN
 			sta.name,emp.municipality_id,mun.name,emp.parish_id,par.name,
 			emp.ubication,emp.address,emp.housing_type,emp.housing_identifier,
 			emp.apartament,dept.name,cha.name,emp.ingress_id, ing.description,emp.income_type_id,inct.description,
-			mov.description,fomp.start_date,fomp.finish_date,idac.code,
+			mov.description,fomp.start_date,fomp.finish_date,idac.code, fomp.official_form_id,
 			exe.description,sch.name,ins.name,coord.name,sal.dedication_type_id, fomp.dedication_id,cded.description,
 			pded.description,sal.category_type_id,cat.description,emsal.id,
 			emsal.salary_id,sal.salary,fmp.reason,pfmp.status_process_form_id,process_mov_personal_form_id
@@ -2323,7 +2324,7 @@ AS $udf$
 		THEN
 			SELECT movement_personal_forms_insert INTO local_form_mov_per_id FROM form_data.movement_personal_forms_insert(
 				param_form_mov_per_json->>'code_form',
-				(param_form_mov_per_json->>'code_form')::MONEY,
+				(param_form_mov_per_json->>'salary')::MONEY,
 				param_form_mov_per_json->>'reason',
 				param_user_id
 			);

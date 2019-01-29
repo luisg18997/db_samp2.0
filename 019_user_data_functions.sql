@@ -1990,10 +1990,6 @@ AS $BODY$
       INNER JOIN
 	       user_data.ubications ub
 	    ON
-            us.is_active = '1'
-        AND
-            us.is_deleted = '0'
-        AND
             us.ubication_id = ub.id
         AND
             ub.is_active = '1'
@@ -2012,7 +2008,7 @@ AS $BODY$
           ON
               usrol.role_id = rol.id
             AND
-             rol.is_active = '0'
+             rol.is_active = '1'
             AND
               rol.is_deleted = '0'
     )DATA;
