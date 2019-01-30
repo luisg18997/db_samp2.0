@@ -1963,7 +1963,7 @@ AS $BODY$
       ON
           usrol.user_id = us.id
         AND
-          usrol.is_active = '1'
+          usrol.is_active = '0'
         AND
           usrol.is_deleted = '0'
     )DATA;
