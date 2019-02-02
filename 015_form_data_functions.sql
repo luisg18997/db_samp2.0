@@ -1535,6 +1535,52 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
+-- update form official approval
+CREATE OR REPLACE FUNCTION form_data.official_form_update_approval(
+    param_id INTEGER,
+		param_official_form_process_id INTEGER,
+		param_ubication_id INTEGER,
+		param_status_process_form_id INTEGER,
+		param_observation VARCHAR,
+		param_is_active BIT,
+		param_is_deleted BIT,
+		param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+			UPDATE form_data.official_forms SET
+				approval_date = CLOCK_TIMESTAMP(),
+				last_modified_by = param_user_id,
+				last_modified_date = CLOCK_TIMESTAMP()
+			WHERE
+				id = param_id;
+
+		PERFORM process_form.process_official_form_update_all_columns(
+			param_official_form_process_id,
+			param_user_id,
+			param_id,
+			param_ubication_id,
+			param_observation,
+			param_status_process_form_id,
+			param_is_active,
+			param_is_deleted
+		);
+
+		SELECT official_forms_insert_history INTO local_is_successful FROM form_data.official_forms_insert_history(
+			param_emp_official_form_id := param_id,
+			param_change_type := 'UPDATE OFFICIAL FORM APPROVAL',
+			param_change_description := 'UPDATE VALUE BY OFFICIAL FORM APPROVAL'
+		);
+
+		RETURN local_is_successful;
+	END;
+$udf$;
+
 -- function of movement_personal_forms
 -- function of insert
 CREATE OR REPLACE FUNCTION form_data.movement_personal_forms_insert(
@@ -2626,8 +2672,3 @@ BEGIN
 			END IF;
 	END;
 $BODY$;
-
--- update form official complete
-CREATE OR REPLACE FUNCTION form_data.employee_official_form_update_complete(
-    param_id INTEGER
-)
