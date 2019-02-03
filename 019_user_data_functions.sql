@@ -1898,7 +1898,7 @@ AS $BODY$
               cord.id = usr.coordination_id
              AND cord.is_active = '1'
                   AND cord.is_deleted = '0'
-        INNER JOIN
+        LEFT OUTER JOIN
 					employee_data.execunting_unit exe
 				ON
 							 (
