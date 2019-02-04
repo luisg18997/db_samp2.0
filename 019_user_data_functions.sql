@@ -2153,3 +2153,31 @@ AS $udf$
     RETURN local_is_successful;
     END;
 $udf$;
+
+CREATE OR REPLACE FUNCTION user_data.user_update_password(
+  param_id INTEGER,
+  param_password VARCHAR
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+      local_is_successful BIT := '0';
+  BEGIN
+    UPDATE user_data.users SET
+      password = param_password,
+      last_modified_by = param_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+
+      SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
+          param_user_id := param_id,
+          param_change_type := 'UPDATE IS PASSWORD',
+          param_change_description := 'UPDATE VALUE OF PASSWORD USER'
+      );
+
+      RETURN local_is_successful;
+      END;
+  $udf$;
