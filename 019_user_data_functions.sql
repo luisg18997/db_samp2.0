@@ -2075,7 +2075,7 @@ faculty_data.coordinations cord
           cord.id = usr.coordination_id
          AND cord.is_active = '1'
               AND cord.is_deleted = '0'
-    INNER JOIN
+    LEFT OUTER JOIN
       employee_data.execunting_unit exe
     ON
            (
@@ -2089,6 +2089,61 @@ faculty_data.coordinations cord
           exe.is_deleted = '0'
       AND
           exe.is_active = '1'
+)DATA;
+$BODY$;
+
+-- get user email update password
+CREATE OR REPLACE FUNCTION user_data.get_user_for_change_password(
+  param_email VARCHAR
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+AS $BODY$
+SELECT ROW_TO_JSON(DATA)
+FROM (
+  SELECT
+    usr.id,
+    usr.name||' '||usr.surname as name,
+    usr.email,
+    usr.password,
+    usr.is_active,
+    usr.is_deleted,
+    usr.school_id,
+    usr.institute_id,
+    usr.coordination_id
+  FROM
+    user_data.users usr
+  LEFT OUTER JOIN
+   faculty_data.schools schl
+  ON
+          schl.id = usr.school_id
+       AND
+          schl.is_active = '1'
+        AND
+          schl.is_deleted = '0'
+  LEFT OUTER JOIN
+    faculty_data.institutes inst
+  ON
+        inst.id = usr.institute_id
+      AND
+        inst.is_active = '1'
+      AND
+        inst.is_deleted = '0'
+  LEFT OUTER JOIN
+    faculty_data.coordinations cord
+  ON
+          cord.id = usr.coordination_id
+      AND
+          cord.is_active = '1'
+      AND
+          cord.is_deleted = '0'
+  WHERE
+      usr.email = param_email
+    AND
+      usr.is_active = '1'
+    AND
+      usr.is_deleted = '0'
 )DATA;
 $BODY$;
 
