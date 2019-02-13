@@ -1385,12 +1385,13 @@ LANGUAGE 'sql'
 COST 100.0
 
 AS $BODY$
-    SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+    SELECT ROW_TO_JSON(DATA)
     FROM (
         SELECT
             ans.id,
             usr.name,
-            qt.description
+            qt.description as question,
+            ans.answer
         FROM
             user_data.security_answers ans
             LEFT OUTER JOIN
@@ -2100,51 +2101,36 @@ RETURNS json
 LANGUAGE 'sql'
 COST 100.0
 AS $BODY$
-SELECT ROW_TO_JSON(DATA)
-FROM (
-  SELECT
-    usr.id,
-    usr.name||' '||usr.surname as name,
-    usr.email,
-    usr.password,
-    usr.is_active,
-    usr.is_deleted,
-    usr.school_id,
-    usr.institute_id,
-    usr.coordination_id
-  FROM
-    user_data.users usr
-  LEFT OUTER JOIN
-   faculty_data.schools schl
-  ON
-          schl.id = usr.school_id
-       AND
-          schl.is_active = '1'
+    SELECT ROW_TO_JSON(DATA)
+    FROM (
+      SELECT
+        usr.id,
+        usr.name||' '||usr.surname as name,
+        usr.email,
+        json_build_object('id', COALESCE(ans.question_id, 0),'description',  qt.description)  as question
+      FROM
+        user_data.users usr
+     LEFT OUTER JOIN
+          user_data.security_answers ans
+      ON
+            usr.email = param_email
         AND
-          schl.is_deleted = '0'
-  LEFT OUTER JOIN
-    faculty_data.institutes inst
-  ON
-        inst.id = usr.institute_id
-      AND
-        inst.is_active = '1'
-      AND
-        inst.is_deleted = '0'
-  LEFT OUTER JOIN
-    faculty_data.coordinations cord
-  ON
-          cord.id = usr.coordination_id
-      AND
-          cord.is_active = '1'
-      AND
-          cord.is_deleted = '0'
-  WHERE
-      usr.email = param_email
-    AND
-      usr.is_active = '1'
-    AND
-      usr.is_deleted = '0'
-)DATA;
+            ans.user_id = usr.id
+        AND
+            usr.is_active = '1'
+        AND
+            usr.is_deleted = '0'
+        AND
+            ans.is_deleted = '0'
+      LEFT OUTER JOIN
+          user_data.security_questions qt
+      ON
+              qt.id = ans.question_id
+          AND
+              qt.is_active = '1'
+          AND
+              qt.is_deleted = '0'
+    )DATA;
 $BODY$;
 
 -- update user Validate
