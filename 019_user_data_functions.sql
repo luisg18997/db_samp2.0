@@ -1719,42 +1719,42 @@ AS $udf$
 		THEN
 			RETURN local_is_successful;
     	ELSE
-    		INSERT INTO user_data.users(
-    			name,
-    			surname,
-    			email,
-    			password,
-    			ubication_id,
-          school_id,
-          institute_id,
-          coordination_id,
-    			is_active,
-    			is_deleted,
-    			last_modified_by,is_active,
-    			user_create_date,
-    			last_modified_date
-    		)
-    		VALUES(
-    			param_name,
-    			param_surname,
-    			param_email,
-    			param_password,
-          param_ubication_id,
-          param_school_id,
-          param_institute_id,
-          param_coordination_id,
-    			'1',
-    			'0',
-    			param_user_id,
-    			CLOCK_TIMESTAMP(),
-    			CLOCK_TIMESTAMP()
-    		)
-            RETURNING id
-            INTO STRICT local_user_id;
+      INSERT INTO user_data.users(
+        name,
+        surname,
+        email,
+        password,
+        ubication_id,
+        school_id,
+        institute_id,
+        coordination_id,
+        is_active,
+        is_deleted,
+        last_modified_by,
+        user_create_date,
+        last_modified_date
+      )
+      VALUES(
+        param_name,
+        param_surname,
+        param_email,
+        param_password,
+        param_ubication_id,
+        param_school_id,
+        param_institute_id,
+        param_coordination_id,
+        '1',
+        '0',
+        param_user_id,
+        CLOCK_TIMESTAMP(),
+        CLOCK_TIMESTAMP()
+      )
+          RETURNING id
+          INTO STRICT local_user_id;
 
-            PERFORM user_data.user_roles_with_rol_insert(local_user_id, param_role_id, param_user_id);
+          PERFORM user_data.user_roles_with_rol_insert(local_user_id::INTEGER, param_role_user_id, param_user_id);
 
-            PERFORM user_data.security_answer_insert(local_user_id, param_user_id);
+          PERFORM user_data.security_answer_insert(local_user_id::INTEGER, param_user_id);
 
             SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
                 param_user_id := local_user_id,
@@ -2110,7 +2110,7 @@ AS $BODY$
         json_build_object('id', COALESCE(ans.question_id, 0),'description',  qt.description)  as question
       FROM
         user_data.users usr
-     LEFT OUTER JOIN
+     INNER JOIN
           user_data.security_answers ans
       ON
             usr.email = param_email
@@ -2122,7 +2122,7 @@ AS $BODY$
             usr.is_deleted = '0'
         AND
             ans.is_deleted = '0'
-      LEFT OUTER JOIN
+      INNER JOIN
           user_data.security_questions qt
       ON
               qt.id = ans.question_id
