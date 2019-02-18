@@ -37,7 +37,7 @@ SELECT user_data.security_question_insert('Comida favorita', 0);
 SELECT user_data.security_question_insert('Genero de Musica favorita', 0);
 
 -- data of user root
-INSERT INTO user_data.user(name, surname, email,password, ubication_id, school_id, institute_id, coordination_id, is_active, is_deleted, last_modified_by, user_create_date, last_modified_date)
+INSERT INTO user_data.users(name, surname, email,password, ubication_id, school_id, institute_id, coordination_id, is_active, is_deleted, last_modified_by, user_create_date, last_modified_date)
 VALUES
 ('ADMINISTRADOR', 'UCV-FHE', 'adminsist@ucvfhe.com.ve','$2b$10$ju3GNfHhBaX9BfV1nxBk4.7wrFDW86myKWUIDSg9oP6TQTUUeR2aS',1,0,0,0,'1','0',0,CLOCK_TIMESTAMP(),CLOCK_TIMESTAMP()), --clave Admin.UCV01
 ('ESCUELA', 'UCV-FHE', 'escuelasist@ucvfhe.com.ve','$2b$10$SXYorupzR1qZk1jrOAF1B.8AhO1qwtlmqG2yylcC7dNpq8r3ODIHi',2,1,0,0,'1','0',0,CLOCK_TIMESTAMP(),CLOCK_TIMESTAMP()), --clave School.UCV02
