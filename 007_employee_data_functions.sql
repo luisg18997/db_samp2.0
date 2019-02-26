@@ -4852,11 +4852,101 @@ AS $udf$
 			id = param_employee_id;
 
 		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
-			param_employee_id := param_user_id,
-			param_change_type := 'Update for form movement personal',
-			param_change_description := 'Update value for form movement personal'
+			param_employee_id := param_employee_id,
+			param_change_type := 'UPDATE BY MOV PERSONAL FORM',
+			param_change_description := 'UPDATE VALUES BY MOV PERSONAL FORM'
 		);
 
+		RETURN local_is_successful;
+	END;
+$udf$;
+
+-- function udapte admission date
+CREATE OR REPLACE FUNCTION employee_data.employee_update_admission(
+	param_employee_id INTEGER,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employees SET
+			admission_date = CLOCK_TIMESTAMP(),
+			is_active = '1',
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE 
+			id = param_employee_id;
+
+
+		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+			param_employee_id := param_employee_id,
+			param_change_type := 'UPDATE ADMISSION DATE',
+			param_change_description := 'UPDATE VALUES ADMISSION DATE'
+		);
+		RETURN local_is_successful;
+	END;
+$udf$;
+
+-- function udapte last_updated_date
+CREATE OR REPLACE FUNCTION employee_data.employee_update_last_updated_date(
+	param_employee_id INTEGER,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employees SET
+			last_updated_date = CLOCK_TIMESTAMP(),
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE 
+			id = param_employee_id;
+
+
+		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+			param_employee_id := param_employee_id,
+			param_change_type := 'UPDATE LAST UPDATE DATE',
+			param_change_description := 'UPDATE VALUES LAST UPDATE DATE'
+		);
+		RETURN local_is_successful;
+	END;
+$udf$;
+
+-- function udapte retirement_date
+CREATE OR REPLACE FUNCTION employee_data.employee_update_retirement_date(
+	param_employee_id INTEGER,
+	param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+		local_is_successful BIT := '0';
+	BEGIN
+		UPDATE employee_data.employees SET
+			retirement_date = CLOCK_TIMESTAMP(),
+			is_active = '0',
+			is_deleted = '1',
+			last_modified_by = param_user_id,
+			last_modified_date = CLOCK_TIMESTAMP()
+		WHERE 
+			id = param_employee_id;
+
+
+		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+			param_employee_id := param_employee_id,
+			param_change_type := 'UPDATE RETIREMENT DATE',
+			param_change_description := 'UPDATE VALUES RETIREMENT DATE'
+		);
 		RETURN local_is_successful;
 	END;
 $udf$;

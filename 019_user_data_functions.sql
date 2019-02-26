@@ -2027,10 +2027,10 @@ SELECT ROW_TO_JSON(DATA)
 FROM (
   SELECT
     usr.id,
-    usr.name||' '||usr.surname as name,
+    usr.name,
+    usr.surname,
     usr.email,
     json_build_object('id',usr.ubication_id,'description', ub.name) as ubication,
-    usr.password,
     usr.is_active,
     usr.is_deleted,
     json_build_object('id',usrol.role_id, 'description', COALESCE(rol.description,'')) as rol,
@@ -2220,5 +2220,63 @@ AS $udf$
       );
 
       RETURN local_is_successful;
-      END;
-  $udf$;
+    END;
+$udf$;
+
+CREATE OR REPLACE FUNCTION user_data.user_update_is_deleted(
+  param_id INTEGER,
+  param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+      local_is_successful BIT := '0';
+  BEGIN
+    UPDATE user_data.users SET
+      is_active = '0',
+      is_deleted = '1',
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+
+      SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
+          param_user_id := param_id,
+          param_change_type := 'UPDATE IS DELETED',
+          param_change_description := 'UPDATE VALUE OF DELETED USER'
+      );
+
+      RETURN local_is_successful;
+    END;
+$udf$;
+
+CREATE OR REPLACE FUNCTION user_data.user_update_is_recovery(
+  param_id INTEGER,
+  param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+      local_is_successful BIT := '0';
+  BEGIN
+    UPDATE user_data.users SET
+      is_active = '1',
+      is_deleted = '0',
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+
+      SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
+          param_user_id := param_id,
+          param_change_type := 'UPDATE IS RECOVERY',
+          param_change_description := 'UPDATE VALUE OF RECOVERY USER'
+      );
+
+      RETURN local_is_successful;
+    END;
+$udf$;

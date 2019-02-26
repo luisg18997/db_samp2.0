@@ -1783,6 +1783,7 @@ AS $BODY$
 		json_build_object('id',COALESCE(emp.ingress_id,0),'description', COALESCE(ing.description,'')) as ingres,
 		json_build_object('id',COALESCE(emp.income_type_id,0),'description',COALESCE(inct.description,'')) as income_type,
 		mov.description as movement_type,
+		mov.id as movement_type_id,
 		fomp.start_date,
 		fomp.finish_date,
 		idac.code as idac_code,
@@ -2030,7 +2031,7 @@ LEFT OUTER JOIN
 			GROUP BY
 			fomp.id,fmp.code_form,fmp.registration_date,
 			fomp.mov_personal_form_id,fomp.employee_id,fmp.salary,
-			emp.first_name,second_name,emp.surname,second_surname,
+			emp.first_name,second_name,emp.surname,second_surname, mov.id,
 			nacionality,documentation,emp.identification,emp.admission_date,emp.state_id,
 			sta.name,emp.municipality_id,mun.name,emp.parish_id,par.name,
 			emp.ubication,emp.address,emp.housing_type,emp.housing_identifier,
@@ -2041,6 +2042,67 @@ LEFT OUTER JOIN
 			emsal.salary_id,sal.salary,fmp.reason,pfmp.status_process_form_id,process_mov_personal_form_id
 	)DATA;
 $BODY$;
+
+CREATE OR REPLACE FUNCTION form_data.mov_personal_form_update_approval(
+    	param_id INTEGER,
+		param_mov_personal_form_process_id INTEGER,
+		param_employee_id INTEGER,
+		param_movement_type_id INTEGER,
+		param_ubication_id INTEGER,
+		param_status_process_form_id INTEGER,
+		param_accountant_type_id INTEGER,
+		param_progam_type_id INTEGER,
+ 		param_observation VARCHAR,
+		param_is_active BIT,
+		param_is_deleted BIT,
+		param_user_id BIGINT
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+	DECLARE
+    	local_is_successful BIT := '0';
+  	BEGIN
+			UPDATE form_data.movement_personal_forms SET
+				accountant_type_id = param_accountant_type_id,
+				progam_type_id =  param_progam_type_id,
+				approval_date = CLOCK_TIMESTAMP(),
+				last_modified_by = param_user_id,
+				last_modified_date = CLOCK_TIMESTAMP()
+			WHERE
+				id = param_id;
+
+		PERFORM process_form.process_movement_personal_form_update_all_columns(
+			param_mov_personal_form_process_id,
+			param_user_id,
+			param_id,
+			param_ubication_id,
+			param_observation,
+			param_status_process_form_id,
+			param_is_active,
+			param_is_deleted
+		);
+		IF (param_movement_type_id = 1)
+		THEN
+			PERFORM employee_data.employee_update_admission(param_employee_id, param_user_id);
+		ELSE IF (param_movement_type_id >= 13 AND  param_movement_type_id <= 18)
+			THEN
+				PERFORM employee_data.employee_update_last_updated_date(param_employee_id, param_user_id);
+			ELSE
+				PERFORM employee_data.employee_update_retirement_date(param_employee_id, param_user_id);
+			END IF;
+		END IF;
+
+		SELECT movement_personal_forms_insert_history INTO local_is_successful FROM form_data.movement_personal_forms_insert_history(
+			param_emp_form_mov_per_id := param_id,
+			param_change_type := 'UPDATE MOV PERSONAL FORM APPROVAL',
+			param_change_description := 'UPDATE VALUE BY MOV PERSONAL FORM APPROVAL'
+		);
+
+		RETURN local_is_successful;
+	END;
+$udf$;
 
 -- function of employee_official_mov_personal_forms
 -- function of insert
