@@ -1970,7 +1970,9 @@ AS $BODY$
     )DATA;
 $BODY$;
 
-CREATE OR REPLACE FUNCTION user_data.get_user_list()
+CREATE OR REPLACE FUNCTION user_data.get_user_list(
+  param_id INTEGER
+)
 RETURNS json
 LANGUAGE 'sql'
 COST 100.0
@@ -1991,6 +1993,8 @@ AS $BODY$
       INNER JOIN
 	       user_data.ubications ub
 	    ON
+            us.id != param_id
+        AND
             us.ubication_id = ub.id
         AND
             ub.is_active = '1'
@@ -2280,3 +2284,46 @@ AS $udf$
       RETURN local_is_successful;
     END;
 $udf$;
+
+CREATE OR REPLACE FUNCTION user_data.user_update_all_columns(
+  param_id INTEGER,
+  param_name VARCHAR,
+  param_surname VARCHAR,
+  param_email VARCHAR,
+  param_ubication_id INTEGER,
+  param_school_id INTEGER,
+  param_institute_id INTEGER,
+  param_coordination_id INTEGER,
+  param_is_active BIT,
+  param_user_id INTEGER
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+      local_is_successful BIT := '0';
+  BEGIN
+    UPDATE user_data.users SET
+      name = param_name,
+      surname = param_surname,
+      email = param_email,
+      ubication_id = param_ubication_id,
+      school_id = param_school_id,
+      institute_id = param_institute_id,
+      coordination_id = param_coordination_id,
+      is_active = param_is_active,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+
+      SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
+          param_user_id := param_id,
+          param_change_type := 'UPDATE IS ALL COLUMNS',
+          param_change_description := 'UPDATE VALUE OF  ALL COLUMNS'
+      );
+
+      RETURN local_is_successful;
+    END;
+  $udf$;

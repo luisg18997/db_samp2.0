@@ -44,7 +44,7 @@ VALUES
 ('INSTITUTO', 'UCV-FHE', 'institutosist@ucvfhe.com.ve','$2b$10$BudNA2XmvW7sDHa5HluvAOMM6nvUKRHDvn6Ssp5gWMGBmgJjRw0VS',3,0,1,0,'1','0',0,CLOCK_TIMESTAMP(),CLOCK_TIMESTAMP()), --clave Institute.UCV03
 ('COORDINACION', 'UCV-FHE', 'coordinacionsist@ucvfhe.com.ve','$2b$10$bzqxae0mm/8VnJ6WsK2ubui0vHO6QggadAqlxUX1OAukHDTPDJb2e',4,0,0,1,'1','0',0,CLOCK_TIMESTAMP(),CLOCK_TIMESTAMP()), --clave Coordination.UCV04
 ('RECURSOS HUMANO', 'UCV-FHE', 'rrhhsist@ucvfhe.com.ve','$2b$10$okYM7R09R4NDC7bzEjVqguvtoIUY3h3YwG/sr8V9YoyhkgiXgnR4u',5,0,0,0,'1','0',0,CLOCK_TIMESTAMP(),CLOCK_TIMESTAMP()), --clave RRHH.UCV05
-('PRESUPUESTO', 'UCV-FHE', 'presupuestosist@ucvfhe.com.ve','$2b$10$p0LKucAXdC2MHzbROcoVFel0Dj23YXr8GdtFqw/6.EvHpgsTUY75m',6,0,0,0,'1','0',0,CLOCK_TIMESTAMP(),CLOCK_TIMESTAMP()); --clave Prespuesto.UCV06
+('PRESUPUESTO', 'UCV-FHE', 'presupuestosist@ucvfhe.com.ve','$2b$10$JtfbNoneONrWFaChnkitauwlnext0rmdAWlm7N.kBOb1t9qiznc8G',6,0,0,0,'1','0',0,CLOCK_TIMESTAMP(),CLOCK_TIMESTAMP()); --clave Presupuesto.UCV06
 
 
 INSERT INTO user_data.user_roles(user_id,role_id,is_active,is_deleted,last_modified_by,last_modified_date)
