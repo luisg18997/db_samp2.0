@@ -1531,8 +1531,6 @@ AS $BODY$
 					emp.id = fomp.employee_id
 				AND
 					emp.is_deleted = '0'
-				AND
-					emp.retirement_date IS NULL
 				INNER JOIN
 					employee_data.employee_idac_code emid
 				ON
@@ -2267,6 +2265,228 @@ LEFT OUTER JOIN
 	)DATA;
 $BODY$;
 
+CREATE OR REPLACE FUNCTION form_data.get_mov_personal_form_list_rejected(
+	param_ubication_id INTEGER,
+	param_school_id INTEGER,
+	param_institute_id INTEGER,
+	param_coordination_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM(
+		SELECT
+			fmp.id,
+			fmp.code_form,
+			emp.first_name||' '||emp.surname as name,
+			emp.identification,
+			exe.description as execunting_unit,
+			id.code idac_code,
+			mov.description as movement_type,
+			pfmp.date_made,
+			pfmp.observation
+		FROM
+			form_data.movement_personal_forms fmp
+		INNER JOIN
+			form_data.employee_official_mov_personal_forms fomp
+		ON
+					fmp.approval_date IS NULL
+			AND
+					fmp.id = fomp.mov_personal_form_id
+			AND
+				(
+						fomp.school_id = param_school_id
+					OR
+						fomp.institute_id = param_institute_id
+					OR
+						fomp.coordination_id = param_coordination_id
+				)
+			AND
+				fmp.is_deleted = '0'
+			AND
+				fmp.is_active = '1'
+			INNER JOIN
+				form_data.movement_types mov
+			ON
+					mov.id = fomp.movement_type_id
+			AND
+					mov.is_deleted = '0'
+			AND
+					mov.is_active = '1'
+			INNER JOIN
+				employee_data.employees emp
+			ON
+				(
+						emp.school_id = param_school_id
+					OR
+						emp.institute_id = param_institute_id
+					OR
+						emp.cordination_id = param_coordination_id
+				)
+				AND
+					emp.id = fomp.employee_id
+				AND
+					emp.is_deleted = '0'
+				AND
+					emp.retirement_date IS NULL
+				INNER JOIN
+					employee_data.employee_idac_code emid
+				ON
+							emid.employee_id = emp.id
+					AND
+							emid.is_deleted = '0'
+					AND
+							emid.is_active = '1'
+					INNER JOIN
+						employee_data.idac_codes id
+					ON
+								id.id = emid.idac_code_id
+						AND
+								id.is_deleted = '0'
+						AND
+								id.is_active = '0'
+					INNER JOIN
+						employee_data.execunting_unit exe
+					ON
+								exe.id = id.execunting_unit_id
+						AND
+								exe.is_deleted = '0'
+						AND
+								exe.is_active = '1'
+				INNER JOIN
+					process_form.process_movement_personal_form pfmp
+						ON
+								fmp.id = pfmp.movement_personal_form_id
+							AND
+								pfmp.ubication_id = param_ubication_id
+							AND
+								pfmp.is_active = '1'
+							AND
+								pfmp.is_deleted = '0'
+						INNER JOIN
+							process_form.status_process_form spf
+						ON
+									spf.id = pfmp.status_process_form_id
+								AND
+									pfmp.status_process_form_id = 4
+								AND
+									spf.is_active = '1'
+								AND
+									spf.is_deleted = '0'
+	)DATA;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION form_data.get_mov_personal_form_list_approval(
+	param_ubication_id INTEGER,
+	param_school_id INTEGER,
+	param_institute_id INTEGER,
+	param_coordination_id INTEGER
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ARRAY_TO_JSON(ARRAY_AGG(ROW_TO_JSON(DATA)))
+	FROM(
+		SELECT
+			fmp.id,
+			fmp.code_form,
+			emp.first_name||' '||emp.surname as name,
+			emp.identification,
+			exe.description as execunting_unit,
+			id.code idac_code,
+			mov.description as movement_type,
+			fmp.approval_date
+		FROM
+			form_data.movement_personal_forms fmp
+		INNER JOIN
+			form_data.employee_official_mov_personal_forms fomp
+		ON
+					fmp.id = fomp.mov_personal_form_id
+			AND
+				(
+						fomp.school_id = param_school_id
+					OR
+						fomp.institute_id = param_institute_id
+					OR
+						fomp.coordination_id = param_coordination_id
+				)
+			AND
+				fmp.is_deleted = '0'
+			AND
+				fmp.is_active = '1'
+			INNER JOIN
+				form_data.movement_types mov
+			ON
+					mov.id = fomp.movement_type_id
+			AND
+					mov.is_deleted = '0'
+			AND
+					mov.is_active = '1'
+			INNER JOIN
+				employee_data.employees emp
+			ON
+				(
+						emp.school_id = param_school_id
+					OR
+						emp.institute_id = param_institute_id
+					OR
+						emp.cordination_id = param_coordination_id
+				)
+				AND
+					emp.id = fomp.employee_id
+				AND
+					emp.is_deleted = '0'
+				INNER JOIN
+					employee_data.employee_idac_code emid
+				ON
+							emid.employee_id = emp.id
+					AND
+							emid.is_deleted = '0'
+					AND
+							emid.is_active = '1'
+					INNER JOIN
+						employee_data.idac_codes id
+					ON
+								id.id = emid.idac_code_id
+						AND
+								id.is_deleted = '0'
+						AND
+								id.is_active = '0'
+					INNER JOIN
+						employee_data.execunting_unit exe
+					ON
+								exe.id = id.execunting_unit_id
+						AND
+								exe.is_deleted = '0'
+						AND
+								exe.is_active = '1'
+			INNER JOIN
+				process_form.process_movement_personal_form pfmp
+					ON
+							fmp.id = pfmp.movement_personal_form_id
+						AND
+							pfmp.ubication_id = param_ubication_id
+						AND
+							pfmp.is_active = '1'
+						AND
+							pfmp.is_deleted = '0'
+					INNER JOIN
+						process_form.status_process_form spf
+					ON
+								spf.id = pfmp.status_process_form_id
+							AND
+								pfmp.status_process_form_id = 3
+							AND
+								spf.is_active = '1'
+							AND
+								spf.is_deleted = '0'
+	)DATA;
+$BODY$;
+
 CREATE OR REPLACE FUNCTION form_data.mov_personal_form_update_approval(
     	param_id INTEGER,
 		param_mov_personal_form_process_id INTEGER,
@@ -2956,7 +3176,6 @@ BEGIN
 	SELECT
 		fomp.id,
 		fo.code_form,
-		fo.registration_date,
 		mov.description as movement_type,
 		ub.name as ubication,
 		emp.identification,
@@ -2964,6 +3183,7 @@ BEGIN
 		fo.id as official_form_id,
 		pfo.id as process_official_form_id,
 		pfo.status_process_form_id,
+		pfo.date_made,
 		spf.description as status_form
 	FROM
 		form_data.official_forms fo
@@ -3041,7 +3261,6 @@ BEGIN
 	SELECT
 		fomp.id,
 		fmp.code_form,
-		fmp.registration_date,
 		mov.description as movement_type,
 		ub.name as ubication,
 		emp.identification,
@@ -3049,6 +3268,7 @@ BEGIN
 		fmp.id as mov_personal_form_id,
 		pfmp.id as process_mov_personal_form_id,
 		pfmp.status_process_form_id,
+		pfmp.date_made,
 		spf.description as status_form
 	FROM
 		form_data.movement_personal_forms fmp
