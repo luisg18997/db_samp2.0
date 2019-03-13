@@ -2488,7 +2488,7 @@ AS $BODY$
 $BODY$;
 
 CREATE OR REPLACE FUNCTION form_data.mov_personal_form_update_approval(
-    	param_id INTEGER,
+    param_id INTEGER,
 		param_mov_personal_form_process_id INTEGER,
 		param_employee_id INTEGER,
 		param_movement_type_id INTEGER,
@@ -2497,6 +2497,7 @@ CREATE OR REPLACE FUNCTION form_data.mov_personal_form_update_approval(
 		param_accountant_type_id INTEGER,
 		param_progam_type_id INTEGER,
  		param_observation VARCHAR,
+		param_admission_date DATE,
 		param_is_active BIT,
 		param_is_deleted BIT,
 		param_user_id BIGINT
@@ -2527,14 +2528,17 @@ AS $udf$
 			param_is_active,
 			param_is_deleted
 		);
-		IF (param_movement_type_id = 1)
+		IF (param_admission_date IS NULL)
 		THEN
 			PERFORM employee_data.employee_update_admission(param_employee_id, param_user_id);
-		ELSE IF (param_movement_type_id >= 13 AND  param_movement_type_id <= 18)
+		END IF;
+
+		IF (param_movement_type_id >= 13 AND  param_movement_type_id <= 18)
+		THEN
+				PERFORM employee_data.THENemployee_update_retirement_date(param_employee_id, param_user_id);
+			ELSE IF (param_movement_type_id != 1)
 			THEN
 				PERFORM employee_data.employee_update_last_updated_date(param_employee_id, param_user_id);
-			ELSE
-				PERFORM employee_data.employee_update_retirement_date(param_employee_id, param_user_id);
 			END IF;
 		END IF;
 
