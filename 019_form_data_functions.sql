@@ -1985,6 +1985,7 @@ AS $BODY$
 		fomp.official_form_id,
 		fomp.employee_id,
 		emp.first_name,
+		emidac.id as employee_idac_id,
 		COALESCE(emp.second_name,'') as second_name,
 		emp.surname,
 		COALESCE(emp.second_surname,'') as second_surname,
@@ -2008,7 +2009,7 @@ AS $BODY$
 		mov.id as movement_type_id,
 		fomp.start_date,
 		fomp.finish_date,
-		idac.code as idac_code,
+		json_build_object('id',idac.id, 'code',idac.code) as idac_code,
 		exe.description as execunting_unit,
 		sch.name as school,
 		ins.name as institute,
@@ -2255,12 +2256,12 @@ LEFT OUTER JOIN
 			fomp.mov_personal_form_id,fomp.employee_id,fmp.salary,
 			emp.first_name,second_name,emp.surname,second_surname, mov.id,
 			nacionality,documentation,emp.identification,emp.admission_date,emp.state_id,
-			sta.name,emp.municipality_id,mun.name,emp.parish_id,par.name,
+			sta.name,emp.municipality_id,mun.name,emp.parish_id,par.name, emidac.id,
 			emp.ubication,emp.address,emp.housing_type,emp.housing_identifier,
 			emp.apartament,dept.name,cha.name,emp.ingress_id, ing.description,emp.income_type_id,inct.description,
 			mov.description,fomp.start_date,fomp.finish_date,idac.code, fomp.official_form_id,
 			exe.description,sch.name,ins.name,coord.name,sal.dedication_type_id, fomp.dedication_id,cded.description,
-			pded.description,sal.category_type_id,cat.description,emsal.id,
+			pded.description,sal.category_type_id,cat.description,emsal.id, idac.id,
 			emsal.salary_id,sal.salary,fmp.reason,pfmp.status_process_form_id,process_mov_personal_form_id
 	)DATA;
 $BODY$;
