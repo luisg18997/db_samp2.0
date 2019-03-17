@@ -2491,7 +2491,10 @@ CREATE OR REPLACE FUNCTION form_data.mov_personal_form_update_approval(
     param_id INTEGER,
 		param_mov_personal_form_process_id INTEGER,
 		param_employee_id INTEGER,
+		param_employee_idac_id INTEGER,
 		param_movement_type_id INTEGER,
+		param_idac_id INTEGER,
+		param_employee_salary_id INTEGER,
 		param_ubication_id INTEGER,
 		param_status_process_form_id INTEGER,
 		param_accountant_type_id INTEGER,
@@ -2536,6 +2539,10 @@ AS $udf$
 		IF (param_movement_type_id >= 13 AND  param_movement_type_id <= 18)
 		THEN
 				PERFORM employee_data.THENemployee_update_retirement_date(param_employee_id, param_user_id);
+				PERFORM employee_data.employee_idac_code_udpate_is_deleted(param_employee_idac_id, param_employee_id,'1', param_user_id);
+				PERFORM employee_data.employee_salary_update_is_deleted(param_employee_salary_id, param_employee_id, '1', param_user_id);
+				PERFORM employee_data.idac_codes_update_vacant_date(param_idac_id, CLOCK_TIMESTAMP(), '1', param_user_id);
+
 			ELSE IF (param_movement_type_id != 1)
 			THEN
 				PERFORM employee_data.employee_update_last_updated_date(param_employee_id, param_user_id);

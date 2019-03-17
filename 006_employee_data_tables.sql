@@ -160,7 +160,7 @@ CREATE TABLE employee_data.employee_salaries(
 
 CREATE TABLE employee_data.idac_codes(
 	id INTEGER DEFAULT nextval('employee_data.idac_codes_id_seq'::regclass) NOT NULL,
-	code VARCHAR(100) NOT NULL,
+	code VARCHAR(100),
 	execunting_unit_id INTEGER NOT NULL,
 	vacant_date  DATE,
 	is_active BIT(1) NOT NULL,
