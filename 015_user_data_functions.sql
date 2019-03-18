@@ -1119,7 +1119,7 @@ AS $udf$
 $udf$;
 
 -- function of update is_active
-CREATE OR REPLACE FUNCTION user_data.user_rol_update_role_is_active(
+CREATE OR REPLACE FUNCTION user_data.user_rol_update_is_active(
 param_id INTEGER,
 param_user_role_id INTEGER,
 param_is_active BIT,
@@ -2041,7 +2041,9 @@ FROM (
     usr.school_id,
     usr.institute_id,
     usr.coordination_id,
-    exe.description as ubication_user
+    exe.description as ubication_user,
+    usrol.id as user_role_id,
+    ans.id as answer_id
   FROM
     user_data.users usr
   INNER JOIN
@@ -2094,6 +2096,12 @@ faculty_data.coordinations cord
           exe.is_deleted = '0'
       AND
           exe.is_active = '1'
+      INNER JOIN
+        user_data.security_answers ans
+      ON
+              ans.user_id = usr.id
+          AND
+              ans.is_deleted = '0'
 )DATA;
 $BODY$;
 
@@ -2237,6 +2245,7 @@ COST 100.0
 AS $udf$
   DECLARE
       local_is_successful BIT := '0';
+      updated_rows INTEGER := 0;
   BEGIN
     UPDATE user_data.users SET
       is_active = '0',
@@ -2245,12 +2254,15 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+     IF updated_rows != 0 THEN
       SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
           param_user_id := param_id,
           param_change_type := 'UPDATE IS DELETED',
           param_change_description := 'UPDATE VALUE OF DELETED USER'
       );
+    END IF;
 
       RETURN local_is_successful;
     END;
@@ -2266,6 +2278,7 @@ COST 100.0
 AS $udf$
   DECLARE
       local_is_successful BIT := '0';
+      updated_rows INTEGER := 0;
   BEGIN
     UPDATE user_data.users SET
       is_active = '1',
@@ -2274,12 +2287,15 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+      GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+    IF updated_rows != 0 THEN
       SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
           param_user_id := param_id,
           param_change_type := 'UPDATE IS RECOVERY',
           param_change_description := 'UPDATE VALUE OF RECOVERY USER'
       );
+    END IF;
 
       RETURN local_is_successful;
     END;
@@ -2294,6 +2310,8 @@ CREATE OR REPLACE FUNCTION user_data.user_update_all_columns(
   param_school_id INTEGER,
   param_institute_id INTEGER,
   param_coordination_id INTEGER,
+  param_user_role_id INTEGER,
+  param_role_id INTEGER,
   param_is_active BIT,
   param_user_id INTEGER
 )
@@ -2303,6 +2321,7 @@ COST 100.0
 AS $udf$
   DECLARE
       local_is_successful BIT := '0';
+       updated_rows INTEGER := 0;
   BEGIN
     UPDATE user_data.users SET
       name = param_name,
@@ -2317,12 +2336,19 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+     GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+     IF updated_rows != 0 THEN
+      PERFORM user_data.user_rol_update_role(param_user_role_id, param_id, param_role_id, param_user_id);
+      PERFORM user_data.user_rol_update_is_active(param_user_role_id, param_id, param_is_active, param_user_id);
+      PERFORM user_data.security_answer_update_is_active(param_answer_user_id, param_is_active, param_user_id);
 
       SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
           param_user_id := param_id,
           param_change_type := 'UPDATE IS ALL COLUMNS',
           param_change_description := 'UPDATE VALUE OF  ALL COLUMNS'
       );
+    END IF;
 
       RETURN local_is_successful;
     END;
