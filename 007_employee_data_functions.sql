@@ -149,6 +149,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.states SET
   			name = param_name,
@@ -158,12 +159,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
-      		param_state_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
+	      		param_state_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -181,6 +185,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.states SET
   			is_active = param_is_active,
@@ -188,12 +193,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
-      		param_state_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
+	      		param_state_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -211,6 +219,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.states SET
   			is_deleted = param_is_deleted,
@@ -218,12 +227,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
-      		param_state_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT state_insert_history into local_is_successful FROM employee_data.state_insert_history(
+	      		param_state_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -407,6 +419,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.states SET
   			name = param_name,
@@ -418,12 +431,15 @@ AS $udf$
       		id = param_id
       	AND
       		state_id = param_state_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
-      		param_municipality_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
+	      		param_municipality_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -442,6 +458,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.municipalities SET
   			is_active = param_is_active,
@@ -451,13 +468,15 @@ AS $udf$
       		id = param_id
       	AND
       		state_id = param_state_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
-      		param_municipality_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
+	      		param_municipality_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -476,6 +495,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.municipalities SET
   			is_deleted = param_is_deleted,
@@ -485,13 +505,15 @@ AS $udf$
       		id = param_id
       	AND
       		state_id = param_state_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
-      		param_municipality_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT municipality_insert_history into local_is_successful FROM employee_data.municipality_insert_history(
+	      		param_municipality_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -674,7 +696,8 @@ LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
 	DECLARE
-    	local_is_successful BIT := '0';
+			local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.parish SET
   			name = param_name,
@@ -686,13 +709,15 @@ AS $udf$
       		id = param_id
       	AND
       		municipality_id = param_municipality_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
-      		param_parish_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
+	      		param_parish_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -710,7 +735,8 @@ LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
 	DECLARE
-    	local_is_successful BIT := '0';
+			local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.parish SET
   			is_active = param_is_active,
@@ -720,13 +746,15 @@ AS $udf$
       		id = param_id
       	AND
       		municipality_id = param_municipality_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
-      		param_parish_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
+	      		param_parish_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -745,6 +773,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.parish SET
   			is_deleted = param_is_deleted,
@@ -754,13 +783,15 @@ AS $udf$
       		id = param_id
       	AND
       		municipality_id = param_municipality_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
-      		param_parish_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT parish_insert_history into local_is_successful FROM employee_data.parish_insert_history(
+	      		param_parish_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -915,6 +946,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.ingress SET
   			description = param_description,
@@ -924,13 +956,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
-      		param_ingress_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
+	      		param_ingress_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -948,6 +982,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.ingress SET
   			is_active = param_is_active,
@@ -955,13 +990,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
-      		param_ingress_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
+	      		param_ingress_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -979,6 +1016,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.ingress SET
   			is_deleted = param_is_deleted,
@@ -986,12 +1024,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
-      		param_ingress_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT ingress_insert_history into local_is_successful FROM employee_data.ingress_insert_history(
+	      		param_ingress_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1146,6 +1187,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.income_types SET
   			description = param_description,
@@ -1155,13 +1197,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
-      		param_income_type_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
+	      		param_income_type_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1179,6 +1223,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.income_types SET
   			is_active = param_is_active,
@@ -1186,13 +1231,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
-      		param_income_type_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
+	      		param_income_type_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1210,6 +1257,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.income_types SET
   			is_deleted = param_is_deleted,
@@ -1217,13 +1265,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
-      		param_income_type_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT income_type_insert_history into local_is_successful FROM employee_data.income_type_insert_history(
+	      		param_income_type_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1401,6 +1451,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.category_types SET
   			description = param_description,
@@ -1411,13 +1462,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
-      		param_category_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
+	      		param_category_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1435,6 +1488,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.category_types SET
   			is_active = param_is_active,
@@ -1442,13 +1496,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
-      		param_category_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
+	      		param_category_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1466,6 +1522,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.category_types SET
   			is_deleted = param_is_deleted,
@@ -1473,13 +1530,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
-      		param_category_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT category_type_insert_history into local_is_successful FROM employee_data.category_type_insert_history(
+	      		param_category_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1657,6 +1716,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.dedication_types SET
   			description = param_description,
@@ -1667,13 +1727,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
-      		param_dedication_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
+	      		param_dedication_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1691,6 +1753,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.dedication_types SET
   			is_active = param_is_active,
@@ -1698,13 +1761,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
-      		param_dedication_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
+	      		param_dedication_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1722,6 +1787,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.dedication_types SET
   			is_deleted = param_is_deleted,
@@ -1729,12 +1795,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
-      		param_dedication_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT dedication_type_insert_history into local_is_successful FROM employee_data.dedication_type_insert_history(
+	      		param_dedication_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1938,6 +2007,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.execunting_unit SET
   			description = param_description,
@@ -1948,13 +2018,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
-      		param_execunting_unit_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
+	      		param_execunting_unit_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -1972,6 +2044,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.execunting_unit SET
   			is_active = param_is_active,
@@ -1979,12 +2052,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
-      		param_execunting_unit_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
+	      		param_execunting_unit_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2002,6 +2078,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.execunting_unit SET
   			is_deleted = param_is_deleted,
@@ -2009,12 +2086,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
-      		param_execunting_unit_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT execunting_unit_insert_history into local_is_successful FROM employee_data.execunting_unit_insert_history(
+	      		param_execunting_unit_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2324,6 +2404,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.salaries SET
   			category_type_id = param_category_id,
@@ -2335,12 +2416,15 @@ AS $udf$
   			last_modified_date = CLOCK_TIMESTAMP()
   		WHERE
   			id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+			IF updated_rows != 0 THEN
   			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
       		param_salary_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2358,6 +2442,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.salaries SET
   			is_active = param_is_active,
@@ -2365,12 +2450,15 @@ AS $udf$
   			last_modified_date = CLOCK_TIMESTAMP()
   		WHERE
   			id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+			IF updated_rows != 0 THEN
   			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
       		param_salary_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2388,6 +2476,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.salaries SET
   			is_deleted = param_is_deleted,
@@ -2395,12 +2484,15 @@ AS $udf$
   			last_modified_date = CLOCK_TIMESTAMP()
   		WHERE
   			id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+			IF updated_rows != 0 THEN
   			SELECT salary_insert_history into local_is_successful FROM employee_data.salary_insert_history(
       		param_salary_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2555,6 +2647,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.documentations SET
   			description = param_description,
@@ -2564,13 +2657,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
-      		param_documentation_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
+	      		param_documentation_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2588,6 +2683,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.documentations SET
   			is_active = param_is_active,
@@ -2595,13 +2691,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
-      		param_documentation_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
+	      		param_documentation_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2619,6 +2717,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.documentations SET
   			is_deleted = param_is_deleted,
@@ -2626,12 +2725,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
-      		param_documentation_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT documentations_insert_history into local_is_successful FROM employee_data.documentations_insert_history(
+	      		param_documentation_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2786,6 +2888,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.genders SET
   			description = param_description,
@@ -2795,13 +2898,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
-      		param_gender_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
+	      		param_gender_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2819,6 +2924,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.genders SET
   			is_active = param_is_active,
@@ -2826,13 +2932,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
-      		param_gender_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
+	      		param_gender_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -2850,6 +2958,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.genders SET
   			is_deleted = param_is_deleted,
@@ -2857,12 +2966,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
-      		param_gender_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT genders_insert_history into local_is_successful FROM employee_data.genders_insert_history(
+	      		param_gender_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -3017,6 +3129,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.nacionalities SET
   			description = param_description,
@@ -3026,13 +3139,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
-      		param_nacionality_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
-
+				IF updated_rows != 0 THEN
+	      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
+	      		param_nacionality_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END;
 
     	RETURN local_is_successful;
   	END;
@@ -3050,6 +3165,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.nacionalities SET
   			is_active = param_is_active,
@@ -3057,12 +3173,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
-      		param_nacionality_id := param_id,
-      		param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
+	      		param_nacionality_id := param_id,
+	      		param_change_type := 'UPDATE is_active',
+	      		param_change_description := 'UPDATE value of is_active'
+	      	);
+				END IF;
 
 
     	RETURN local_is_successful;
@@ -3081,6 +3200,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.nacionalities SET
   			is_deleted = param_is_deleted,
@@ -3088,12 +3208,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
-      		param_nacionality_id := param_id,
-      		param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-      	);
+				IF updated_rows != 0 THEN
+	      	SELECT nacionalities_insert_history into local_is_successful FROM employee_data.nacionalities_insert_history(
+	      		param_nacionality_id := param_id,
+	      		param_change_type := 'UPDATE is_deleted',
+	      		param_change_description := 'UPDATE value of is_deleted'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -3418,6 +3541,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.employee_salaries SET
   			salary_id = param_salary_id,
@@ -3430,13 +3554,15 @@ AS $udf$
   			id = param_id
   		AND
   			employee_id = param_employee_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+			IF updated_rows != 0 THEN
+	  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
       		param_employee_salary_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
-
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -3455,6 +3581,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.employee_salaries SET
   			salary_id = param_salary_id,
@@ -3465,13 +3592,15 @@ AS $udf$
   			id = param_id
   		AND
   			employee_id = param_employee_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+			IF updated_rows != 0 THEN
+  			SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
       		param_employee_salary_id := param_id,
       		param_change_type := 'UPDATE salary',
       		param_change_description := 'UPDATE value of salary'
       	);
-
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -3491,6 +3620,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.employee_salaries SET
   			is_active = param_is_active,
@@ -3500,13 +3630,15 @@ AS $udf$
   			id = param_id
   		AND
   			employee_id = param_employee_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+			IF updated_rows != 0 THEN
+  			SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
       		param_employee_salary_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
-
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -3525,6 +3657,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.employee_salaries SET
   			is_deleted = param_is_deleted,
@@ -3534,18 +3667,19 @@ AS $udf$
   			id = param_id
   		AND
   			employee_id = param_employee_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
+			IF updated_rows != 0 THEN
+  			SELECT employee_salaries_insert_history into local_is_successful FROM employee_data.employee_salaries_insert_history(
       		param_employee_salary_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
-
+			END IF;
 
     	RETURN local_is_successful;
   	END;
 $udf$;
-
 
 -- function of idac
 
@@ -3990,6 +4124,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.idac_codes SET
   			code = param_idac_code,
@@ -4001,12 +4136,15 @@ AS $udf$
   			last_modified_date = CLOCK_TIMESTAMP()
   		WHERE
   			id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
-  			param_idac_id := param_id,
-  			param_change_type := 'UPDATE all_columns',
+			IF updated_rows != 0 THEN
+	  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
+	  			param_idac_id := param_id,
+	  			param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
-  		);
+  			);
+			END IF;
 
   		RETURN local_is_successful;
   	END;
@@ -4025,6 +4163,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.idac_codes SET
   			vacant_date = param_vacant_date::DATE,
@@ -4033,17 +4172,19 @@ AS $udf$
   			last_modified_date = CLOCK_TIMESTAMP()
   		WHERE
   			id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
-  			param_idac_id := param_id,
-  			param_change_type := 'UPDATE vacant_date',
+			IF updated_rows != 0 THEN
+	  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
+	  			param_idac_id := param_id,
+	  			param_change_type := 'UPDATE vacant_date',
       		param_change_description := 'UPDATE value of vacant_date'
-  		);
+  			);
+			END IF;
 
   		RETURN local_is_successful;
   	END;
 $udf$;
-
 
 -- function update is_active
 CREATE OR REPLACE FUNCTION employee_data.idac_codes_update_is_active(
@@ -4058,6 +4199,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.idac_codes SET
   			is_active = param_is_active,
@@ -4067,12 +4209,15 @@ AS $udf$
   			id = param_id
   		AND
   			code = param_idac_code;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
-  			param_idac_id := param_id,
-  			param_change_type := 'UPDATE is_active',
+			IF updated_rows != 0 THEN
+	  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
+	  			param_idac_id := param_id,
+	  			param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
-  		);
+  			);
+			END IF;
 
   		RETURN local_is_successful;
   	END;
@@ -4091,6 +4236,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE employee_data.idac_codes SET
   			is_deleted = param_is_deleted,
@@ -4100,12 +4246,15 @@ AS $udf$
   			id = param_id
   		AND
   			code = param_idac_code;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
-  			param_idac_id := param_id,
-  			param_change_type := 'UPDATE is_deleted',
+			IF updated_rows != 0 THEN
+	  		SELECT idac_codes_insert_history INTO local_is_successful FROM employee_data.idac_codes_insert_history(
+	  			param_idac_id := param_id,
+	  			param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
-  		);
+  			);
+			END IF;
 
   		RETURN local_is_successful;
   	END;
@@ -4388,6 +4537,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employee_idac_code SET
 			idac_code_id = param_idac_id,
@@ -4399,13 +4549,15 @@ AS $udf$
 			id = param_id
 		AND
 			employee_id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
-			param_employee_idac_id := param_id,
-			param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+				param_employee_idac_id := param_id,
+				param_change_type := 'UPDATE all_columns',
+      	param_change_description := 'UPDATE value of all columns'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -4424,6 +4576,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employee_idac_code SET
 			idac_code_id = param_idac_id,
@@ -4433,13 +4586,15 @@ AS $udf$
 			id = param_id
 		AND
 			employee_id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
-			param_employee_idac_id := param_id,
-			param_change_type := 'UPDATE idac_code',
-      		param_change_description := 'UPDATE value of idac_code'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+				param_employee_idac_id := param_id,
+				param_change_type := 'UPDATE idac_code',
+      	param_change_description := 'UPDATE value of idac_code'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -4458,6 +4613,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employee_idac_code SET
 			is_active = param_is_active,
@@ -4467,13 +4623,15 @@ AS $udf$
 			id = param_id
 		AND
 			employee_id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
-			param_employee_idac_id := param_id,
-			param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_deleted'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+				param_employee_idac_id := param_id,
+				param_change_type := 'UPDATE is_active',
+    		param_change_description := 'UPDATE value of is_deleted'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -4492,6 +4650,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employee_idac_code SET
 			is_deleted = param_is_deleted,
@@ -4501,18 +4660,19 @@ AS $udf$
 			id = param_id
 		AND
 			employee_id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
-			param_employee_idac_id := param_id,
-			param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_idac_code_insert_history INTO local_is_successful FROM employee_data.employee_idac_code_insert_history(
+				param_employee_idac_id := param_id,
+				param_change_type := 'UPDATE is_deleted',
+    		param_change_description := 'UPDATE value of is_deleted'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
 $udf$;
-
 
 -- funtion of employee
 --function of insert employee
@@ -4834,6 +4994,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employees SET
 			state_id = param_state_id,
@@ -4850,12 +5011,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
-			param_employee_id := param_employee_id,
-			param_change_type := 'UPDATE BY MOV PERSONAL FORM',
-			param_change_description := 'UPDATE VALUES BY MOV PERSONAL FORM'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+				param_employee_id := param_employee_id,
+				param_change_type := 'UPDATE BY MOV PERSONAL FORM',
+				param_change_description := 'UPDATE VALUES BY MOV PERSONAL FORM'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -4872,21 +5036,25 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employees SET
 			admission_date = CLOCK_TIMESTAMP(),
 			is_active = '1',
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+		IF updated_rows != 0 THEN
+			SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+				param_employee_id := param_employee_id,
+				param_change_type := 'UPDATE ADMISSION DATE',
+				param_change_description := 'UPDATE VALUES ADMISSION DATE'
+			);
+		END IF;
 
-		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
-			param_employee_id := param_employee_id,
-			param_change_type := 'UPDATE ADMISSION DATE',
-			param_change_description := 'UPDATE VALUES ADMISSION DATE'
-		);
 		RETURN local_is_successful;
 	END;
 $udf$;
@@ -4902,20 +5070,23 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employees SET
 			last_updated_date = CLOCK_TIMESTAMP(),
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
-			param_employee_id := param_employee_id,
-			param_change_type := 'UPDATE LAST UPDATE DATE',
-			param_change_description := 'UPDATE VALUES LAST UPDATE DATE'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+				param_employee_id := param_employee_id,
+				param_change_type := 'UPDATE LAST UPDATE DATE',
+				param_change_description := 'UPDATE VALUES LAST UPDATE DATE'
+			);
+		END IF;
 		RETURN local_is_successful;
 	END;
 $udf$;
@@ -4931,6 +5102,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE employee_data.employees SET
 			retirement_date = CLOCK_TIMESTAMP(),
@@ -4938,15 +5110,17 @@ AS $udf$
 			is_deleted = '1',
 			last_modified_by = param_user_id,
 			last_modified_date = CLOCK_TIMESTAMP()
-		WHERE 
+		WHERE
 			id = param_employee_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
-			param_employee_id := param_employee_id,
-			param_change_type := 'UPDATE RETIREMENT DATE',
-			param_change_description := 'UPDATE VALUES RETIREMENT DATE'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_insert_history into local_is_successful FROM employee_data.employee_insert_history(
+				param_employee_id := param_employee_id,
+				param_change_type := 'UPDATE RETIREMENT DATE',
+				param_change_description := 'UPDATE VALUES RETIREMENT DATE'
+			);
+		END IF;
 		RETURN local_is_successful;
 	END;
 $udf$;

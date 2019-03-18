@@ -205,6 +205,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.schools SET
       name = param_name,
@@ -216,12 +217,15 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
-      param_school_id := param_id,
-      param_change_type := 'UPDATE all_columns',
-      param_change_description := 'UPDATE value of all columns'
-    );
+    IF updated_rows != 0 THEN
+      SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE all_columns',
+        param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
@@ -240,6 +244,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.schools SET
       is_active = param_is_active,
@@ -247,14 +252,17 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
-      param_school_id := param_id,
-      param_change_type := 'UPDATE is_active',
-      param_change_description := 'UPDATE value of is_active'
-    );
+    IF updated_rows != 0 THEN
 
+      SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE is_active',
+        param_change_description := 'UPDATE value of is_active'
+      );
 
+    END IF;
     RETURN local_is_successful;
   END;
 $udf$;
@@ -272,6 +280,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.schools SET
       is_deleted = param_is_deleted,
@@ -279,13 +288,15 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
-      param_school_id := param_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
@@ -493,7 +504,8 @@ LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
   DECLARE
-    local_is_successful BIT := '0';
+  local_is_successful BIT := '0';
+  updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.institutes SET
       name = param_name,
@@ -505,20 +517,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
-      param_institute_id := param_id,
-      param_change_type := 'UPDATE all_columns',
-      param_change_description := 'UPDATE value of all columns'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
+        param_institute_id := param_id,
+        param_change_type := 'UPDATE all_columns',
+        param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function update institute is active
-
 CREATE OR REPLACE FUNCTION faculty_data.institute_update_is_active(
   param_id INTEGER,
   param_user_id BIGINT,
@@ -529,7 +542,8 @@ LANGUAGE plpgsql VOLATILE
 COST 100.0
 AS $udf$
   DECLARE
-    local_is_successful BIT := '0';
+  local_is_successful BIT := '0';
+  updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.institutes SET
       is_active = param_is_active,
@@ -537,20 +551,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
-      param_institute_id := param_id,
-      param_change_type := 'UPDATE is_active',
-      param_change_description := 'UPDATE value of is_active'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
+        param_institute_id := param_id,
+        param_change_type := 'UPDATE is_active',
+        param_change_description := 'UPDATE value of is_active'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function update institute is deleted
-
 CREATE OR REPLACE FUNCTION faculty_data.institute_update_is_deleted(
   param_id INTEGER,
   param_user_id BIGINT,
@@ -562,6 +577,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.institutes SET
       is_deleted = param_is_deleted,
@@ -570,12 +586,15 @@ AS $udf$
     WHERE
       id = param_id;
 
-    SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
-      param_institute_id := param_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted'
-    );
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+    IF updated_rows != 0 THEN
+      SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
+        param_institute_id := param_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
@@ -584,7 +603,6 @@ $udf$;
 -- functions of departaments
 
 -- function of departament insert of the school
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_school_insert(
   param_code VARCHAR,
   param_name VARCHAR,
@@ -909,7 +927,6 @@ AS $BODY$
 $BODY$;
 
 -- function departament of school update all columns
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_school_update_all_columns(
   param_id INTEGER,
   param_code VARCHAR,
@@ -925,6 +942,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.departaments SET
       name = param_name,
@@ -936,20 +954,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
-      param_departament_id := param_id,
-      param_change_type := 'UPDATE all_columns',
-      param_change_description := 'UPDATE value of all columns'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
+        param_departament_id := param_id,
+        param_change_type := 'UPDATE all_columns',
+        param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function departament of school update is active
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_school_update_is_active(
   param_id INTEGER,
   param_school_id INTEGER,
@@ -962,6 +981,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.departaments SET
       is_active = param_is_active,
@@ -971,20 +991,21 @@ AS $udf$
       id = param_id
     AND
       school_id = param_school_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
-      param_departament_id := param_id,
-      param_change_type := 'UPDATE is_active',
-      param_change_description := 'UPDATE value of is_active'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
+        param_departament_id := param_id,
+        param_change_type := 'UPDATE is_active',
+        param_change_description := 'UPDATE value of is_active'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function departament of school update is deleted
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_school_update_is_deleted(
   param_id INTEGER,
   param_school_id INTEGER,
@@ -997,6 +1018,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.departaments SET
       is_deleted = param_is_deleted,
@@ -1006,20 +1028,21 @@ AS $udf$
       id = param_id
     AND
       school_id = param_school_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
-      param_departament_id := param_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
+        param_departament_id := param_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function departament of institutes update all columns
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_all_columns(
   param_id INTEGER,
   param_code VARCHAR,
@@ -1035,6 +1058,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.departaments SET
       name = param_name,
@@ -1046,20 +1070,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
-      param_departament_id := param_id,
-      param_change_type := 'UPDATE all_columns',
-      param_change_description := 'UPDATE value of all columns'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
+        param_departament_id := param_id,
+        param_change_type := 'UPDATE all_columns',
+        param_change_description := 'UPDATE value of all columns'
+      );
+    END IF
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function departament of school update is active
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_is_active(
   param_id INTEGER,
   param_institute_id INTEGER,
@@ -1072,6 +1097,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.departaments SET
       is_active = param_is_active,
@@ -1081,20 +1107,21 @@ AS $udf$
       id = param_id
     AND
       institute_id = param_institute_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
-      param_departament_id := param_id,
-      param_change_type := 'UPDATE is_active',
-      param_change_description := 'UPDATE value of is_active'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
+        param_departament_id := param_id,
+        param_change_type := 'UPDATE is_active',
+        param_change_description := 'UPDATE value of is_active'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function departament of school update is deleted
-
 CREATE OR REPLACE FUNCTION faculty_data.departament_institute_update_is_deleted(
   param_id INTEGER,
   param_institute_id INTEGER,
@@ -1107,6 +1134,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.departaments SET
       is_deleted = param_is_deleted,
@@ -1116,13 +1144,15 @@ AS $udf$
       id = param_id
     AND
       institute_id = param_institute_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
-      param_departament_id := param_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT departament_insert_history INTO local_is_successful FROM faculty_data.departament_insert_history(
+        param_departament_id := param_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
@@ -1131,7 +1161,6 @@ $udf$;
 -- functions of faculty_data.coordinations
 
 --function of insert
-
 CREATE OR REPLACE FUNCTION faculty_data.coordination_insert(
   param_code VARCHAR,
   param_name VARCHAR,
@@ -1314,9 +1343,7 @@ AS $BODY$
   )DATA;
 $BODY$;
 
-
 --function update coordnation all columns
-
 CREATE OR REPLACE FUNCTION faculty_data.coordination_update_all_columns(
   param_id INTEGER,
   param_code VARCHAR,
@@ -1332,6 +1359,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.coordinations SET
       name = param_name,
@@ -1343,20 +1371,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
-      param_coordination_id := param_id,
-      param_change_type := 'UPDATE all_columns',
-      param_change_description := 'UPDATE value of all columns'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
+        param_coordination_id := param_id,
+        param_change_type := 'UPDATE all_columns',
+        param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 --function update coordination is active
-
 CREATE OR REPLACE FUNCTION faculty_data.coordination_update_is_active(
   param_id INTEGER,
   param_user_id BIGINT,
@@ -1368,6 +1397,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.coordinations SET
       is_active = param_is_active,
@@ -1375,20 +1405,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
-      param_coordination_id := param_id,
-      param_change_type := 'UPDATE is_active',
-      param_change_description := 'UPDATE value of is_active'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
+        param_coordination_id := param_id,
+        param_change_type := 'UPDATE is_active',
+        param_change_description := 'UPDATE value of is_active'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 --function update school is deleted
-
 CREATE OR REPLACE FUNCTION faculty_data.coordination_update_is_deleted(
   param_id INTEGER,
   param_user_id BIGINT,
@@ -1400,6 +1431,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.coordinations SET
       is_deleted = param_is_deleted,
@@ -1407,14 +1439,15 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
-      param_coordination_id := param_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted'
-    );
-
-
+    IF updated_rows != 0 THEN
+      SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
+        param_coordination_id := param_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted'
+      );
+    END IF;
     RETURN local_is_successful;
   END;
 $udf$;
@@ -1422,7 +1455,6 @@ $udf$;
 -- functions of chairs
 
 -- function of insert
-
 CREATE OR REPLACE FUNCTION faculty_data.chair_insert(
   param_code VARCHAR,
   param_name VARCHAR,
@@ -1623,6 +1655,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.chairs SET
       name = param_name,
@@ -1634,20 +1667,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
-      param_chair_id := param_id,
-      param_change_type := 'UPDATE all_columns',
-      param_change_description := 'UPDATE value of all columns'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
+        param_chair_id := param_id,
+        param_change_type := 'UPDATE all_columns',
+        param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function update is active
-
 CREATE OR REPLACE FUNCTION faculty_data.chair_update_is_active(
   param_id INTEGER,
   param_departament_id INTEGER,
@@ -1660,6 +1694,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.chairs SET
       is_active = param_is_active,
@@ -1669,20 +1704,21 @@ AS $udf$
       id = param_id
     AND
       departament_id = param_departament_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
-      param_chair_id := param_id,
-      param_change_type := 'UPDATE is_active',
-      param_change_description := 'UPDATE value of is_active'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
+        param_chair_id := param_id,
+        param_change_type := 'UPDATE is_active',
+        param_change_description := 'UPDATE value of is_active'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
--- function departament of school update is deleted
-
+-- function update is deleted
 CREATE OR REPLACE FUNCTION faculty_data.chair_update_is_deleted(
   param_id INTEGER,
   param_departament_id INTEGER,
@@ -1695,6 +1731,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.cahirs SET
       is_deleted = param_is_deleted,
@@ -1704,13 +1741,15 @@ AS $udf$
       id = param_id
     AND
       departament_id = param_departament_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
-      param_chair_id := param_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT chair_insert_history INTO local_is_successful FROM faculty_data.chair_insert_history(
+        param_chair_id := param_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
@@ -1719,7 +1758,6 @@ $udf$;
 -- functions of faculty table
 
 -- function insert
-
 CREATE OR REPLACE FUNCTION faculty_data.faculty_insert(
   param_code VARCHAR,
   param_name VARCHAR,
@@ -1892,6 +1930,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.faculty SET
       name = param_name,
@@ -1902,20 +1941,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
-      param_faculty_id := param_id,
-      param_change_type := 'UPDATE all_columns',
-      param_change_description := 'UPDATE value of all columns'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
+        param_faculty_id := param_id,
+        param_change_type := 'UPDATE all_columns',
+        param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function update is active
-
 CREATE OR REPLACE FUNCTION faculty_data.faculty_update_is_active(
   param_id INTEGER,
   param_user_id BIGINT,
@@ -1927,6 +1967,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.faculty SET
       is_active = param_is_active,
@@ -1934,20 +1975,21 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
-      param_faculty_id := param_id,
-      param_change_type := 'UPDATE is_active',
-      param_change_description := 'UPDATE value of is_active'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
+        param_faculty_id := param_id,
+        param_change_type := 'UPDATE is_active',
+        param_change_description := 'UPDATE value of is_active'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
 $udf$;
 
 -- function update is deleted
-
 CREATE OR REPLACE FUNCTION faculty_data.faculty_update_is_deleted(
   param_id INTEGER,
   param_user_id BIGINT,
@@ -1959,6 +2001,7 @@ COST 100.0
 AS $udf$
   DECLARE
     local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
   BEGIN
     UPDATE faculty_data.faculty SET
       is_deleted = param_is_deleted,
@@ -1966,13 +2009,15 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
-      param_faculty_id := param_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted'
-    );
-
+    IF updated_rows != 0 THEN
+      SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
+        param_faculty_id := param_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted'
+      );
+    END IF;
 
     RETURN local_is_successful;
   END;
