@@ -163,6 +163,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.movement_types SET
 			description = param_description,
@@ -172,12 +173,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
-			param_movement_type_id := param_id,
-			param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-		);
+		IF updated_rows != 0 THEN
+			SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
+				param_movement_type_id := param_id,
+				param_change_type := 'UPDATE all_columns',
+    		param_change_description := 'UPDATE value of all columns'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -195,6 +199,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.movement_types SET
 			is_active = param_is_active,
@@ -202,12 +207,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
-			param_movement_type_id := param_id,
-			param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-		);
+		IF updated_rows != 0 THEN
+			SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
+				param_movement_type_id := param_id,
+				param_change_type := 'UPDATE is_active',
+    		param_change_description := 'UPDATE value of is_active'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -226,6 +234,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.movement_types SET
 			is_deleted = param_is_deleted,
@@ -233,12 +242,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
-			param_movement_type_id := param_id,
-			param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-		);
+		IF updated_rows != 0 THEN
+			SELECT movement_type_insert_history INTO local_is_successful FROM form_data.movement_type_insert_history(
+				param_movement_type_id := param_id,
+				param_change_type := 'UPDATE is_deleted',
+    		param_change_description := 'UPDATE value of is_deleted'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -416,6 +428,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.accountant_types SET
 			code = param_code,
@@ -426,13 +439,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT accountant_type_insert_history INTO local_is_successful FROM form_data.accountant_type_insert_history(
-			param_accountant_type_id := param_id,
-			param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-		);
+		IF updated_rows != 0 THEN
+			SELECT accountant_type_insert_history INTO local_is_successful FROM form_data.accountant_type_insert_history(
+				param_accountant_type_id := param_id,
+				param_change_type := 'UPDATE all_columns',
+    		param_change_description := 'UPDATE value of all columns'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -450,6 +465,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.accountant_types SET
 			is_active = param_is_active,
@@ -457,13 +473,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT accountant_type_insert_history INTO local_is_successful FROM form_data.accountant_type_insert_history(
-			param_accountant_type_id := param_id,
-			param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-		);
+		IF updated_rows != 0 THEN
+			SELECT accountant_type_insert_history INTO local_is_successful FROM form_data.accountant_type_insert_history(
+				param_accountant_type_id := param_id,
+				param_change_type := 'UPDATE is_active',
+    		param_change_description := 'UPDATE value of is_active'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -481,6 +499,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.accountant_types SET
 			is_deleted = param_is_deleted,
@@ -488,13 +507,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT accountant_type_insert_history INTO local_is_successful FROM form_data.accountant_type_insert_history(
-			param_accountant_type_id := param_id,
-			param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-		);
+		IF updated_rows != 0 THEN
+			SELECT accountant_type_insert_history INTO local_is_successful FROM form_data.accountant_type_insert_history(
+				param_accountant_type_id := param_id,
+				param_change_type := 'UPDATE is_deleted',
+    		param_change_description := 'UPDATE value of is_deleted'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -668,6 +689,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.program_types SET
 			code = param_code,
@@ -678,12 +700,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
-			param_program_type_id := param_id,
-			param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-		);
+		IF updated_rows != 0 THEN
+			SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
+				param_program_type_id := param_id,
+				param_change_type := 'UPDATE all_columns',
+    		param_change_description := 'UPDATE value of all columns'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -701,6 +726,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.program_types SET
 			is_active = param_is_active,
@@ -708,12 +734,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
-			param_program_type_id := param_id,
-			param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-		);
+		IF updated_rows != 0 THEN
+			SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
+				param_program_type_id := param_id,
+				param_change_type := 'UPDATE is_active',
+    		param_change_description := 'UPDATE value of is_active'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -732,6 +761,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.program_types SET
 			is_deleted = param_is_deleted,
@@ -739,12 +769,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
-			param_program_type_id := param_id,
-			param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-		);
+		IF updated_rows != 0 THEN
+			SELECT program_type_insert_history INTO local_is_successful FROM form_data.program_type_insert_history(
+				param_program_type_id := param_id,
+				param_change_type := 'UPDATE is_deleted',
+  			param_change_description := 'UPDATE value of is_deleted'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -915,6 +948,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.annex_types SET
 			description = param_description,
@@ -924,12 +958,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
-			param_annex_type_id := param_id,
-			param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-		);
+		IF updated_rows != 0 THEN
+			SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
+				param_annex_type_id := param_id,
+				param_change_type := 'UPDATE all_columns',
+    		param_change_description := 'UPDATE value of all columns'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -947,6 +984,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.annex_types SET
 			is_active = param_is_active,
@@ -954,12 +992,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
-			param_annex_type_id := param_id,
-			param_change_type := 'UPDATE is_active',
-      		param_change_description := 'UPDATE value of is_active'
-		);
+		IF updated_rows != 0 THEN
+			SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
+				param_annex_type_id := param_id,
+				param_change_type := 'UPDATE is_active',
+    		param_change_description := 'UPDATE value of is_active'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -978,6 +1019,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.annex_types SET
 			is_deleted = param_is_deleted,
@@ -985,12 +1027,15 @@ AS $udf$
 			last_modified_date = CLOCK_TIMESTAMP()
 		WHERE
 			id = param_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
-			param_annex_type_id := param_id,
-			param_change_type := 'UPDATE is_deleted',
-      		param_change_description := 'UPDATE value of is_deleted'
-		);
+		IF updated_rows != 0 THEN
+			SELECT annex_type_insert_history INTO local_is_successful FROM form_data.annex_type_insert_history(
+				param_annex_type_id := param_id,
+				param_change_type := 'UPDATE is_deleted',
+    		param_change_description := 'UPDATE value of is_deleted'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -1774,6 +1819,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
 			UPDATE form_data.official_forms SET
 				approval_date = CLOCK_TIMESTAMP(),
@@ -1781,25 +1827,28 @@ AS $udf$
 				last_modified_date = CLOCK_TIMESTAMP()
 			WHERE
 				id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		PERFORM process_form.process_official_form_update_all_columns(
-			param_official_form_process_id,
-			param_user_id,
-			param_id,
-			param_ubication_id,
-			param_observation,
-			param_status_process_form_id,
-			param_is_active,
-			param_is_deleted
-		);
+			IF updated_rows != 0 THEN
+				PERFORM process_form.process_official_form_update_all_columns(
+					param_official_form_process_id,
+					param_user_id,
+					param_id,
+					param_ubication_id,
+					param_observation,
+					param_status_process_form_id,
+					param_is_active,
+					param_is_deleted
+				);
 
-		SELECT official_forms_insert_history INTO local_is_successful FROM form_data.official_forms_insert_history(
-			param_emp_official_form_id := param_id,
-			param_change_type := 'UPDATE OFFICIAL FORM APPROVAL',
-			param_change_description := 'UPDATE VALUE BY OFFICIAL FORM APPROVAL'
-		);
+				SELECT official_forms_insert_history INTO local_is_successful FROM form_data.official_forms_insert_history(
+					param_emp_official_form_id := param_id,
+					param_change_type := 'UPDATE OFFICIAL FORM APPROVAL',
+					param_change_description := 'UPDATE VALUE BY OFFICIAL FORM APPROVAL'
+				);
+			END IF;
 
-		RETURN local_is_successful;
+			RETURN local_is_successful;
 	END;
 $udf$;
 
@@ -2512,6 +2561,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
 			UPDATE form_data.movement_personal_forms SET
 				accountant_type_id = param_accountant_type_id,
@@ -2521,45 +2571,48 @@ AS $udf$
 				last_modified_date = CLOCK_TIMESTAMP()
 			WHERE
 				id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-		PERFORM process_form.process_movement_personal_form_update_all_columns(
-			param_mov_personal_form_process_id,
-			param_user_id,
-			param_id,
-			param_ubication_id,
-			param_observation,
-			param_status_process_form_id,
-			param_is_active,
-			param_is_deleted
-		);
-		IF (param_admission_date IS NULL)
-		THEN
-			PERFORM employee_data.employee_update_admission(param_employee_id, param_user_id);
-		END IF;
-
-		IF (param_movement_type_id >= 13 AND  param_movement_type_id <= 18)
-		THEN
-				PERFORM employee_data.employee_update_retirement_date(param_employee_id, param_user_id);
-				PERFORM employee_data.employee_idac_code_udpate_is_deleted(param_employee_idac_id, param_employee_id,'1', param_user_id);
-				PERFORM employee_data.employee_salary_update_is_deleted(param_employee_salary_id, param_employee_id, '1', param_user_id);
-				PERFORM employee_data.idac_codes_update_vacant_date(param_idac_id, CLOCK_TIMESTAMP(), '1', param_user_id);
-
-			ELSE IF (param_movement_type_id != 1)
-			THEN
-			PERFORM employee_data.employee_update_last_updated_date(param_employee_id, param_user_id);
-				IF(param_movement_type_id = 19)
+			IF updated_rows != 0 THEN
+				PERFORM process_form.process_movement_personal_form_update_all_columns(
+					param_mov_personal_form_process_id,
+					param_user_id,
+					param_id,
+					param_ubication_id,
+					param_observation,
+					param_status_process_form_id,
+					param_is_active,
+					param_is_deleted
+				);
+				IF (param_admission_date IS NULL)
 				THEN
-				PERFORM employee_data.employee_idac_code_udpate_is_active(param_employee_idac_id, param_employee_id,'1', param_user_id);
-				PERFORM employee_data.employee_salary_update_is_active(param_employee_salary_id, param_employee_id, '1', param_user_id);
+					PERFORM employee_data.employee_update_admission(param_employee_id, param_user_id);
 				END IF;
-			END IF;
-		END IF;
 
-		SELECT movement_personal_forms_insert_history INTO local_is_successful FROM form_data.movement_personal_forms_insert_history(
-			param_emp_form_mov_per_id := param_id,
-			param_change_type := 'UPDATE MOV PERSONAL FORM APPROVAL',
-			param_change_description := 'UPDATE VALUE BY MOV PERSONAL FORM APPROVAL'
-		);
+				IF (param_movement_type_id >= 13 AND  param_movement_type_id <= 18)
+				THEN
+						PERFORM employee_data.employee_update_retirement_date(param_employee_id, param_user_id);
+						PERFORM employee_data.employee_idac_code_udpate_is_deleted(param_employee_idac_id, param_employee_id,'1', param_user_id);
+						PERFORM employee_data.employee_salary_update_is_deleted(param_employee_salary_id, param_employee_id, '1', param_user_id);
+						PERFORM employee_data.idac_codes_update_vacant_date(param_idac_id, CLOCK_TIMESTAMP(), '1', param_user_id);
+
+					ELSE IF (param_movement_type_id != 1)
+					THEN
+					PERFORM employee_data.employee_update_last_updated_date(param_employee_id, param_user_id);
+						IF(param_movement_type_id = 19)
+						THEN
+						PERFORM employee_data.employee_idac_code_udpate_is_active(param_employee_idac_id, param_employee_id,'1', param_user_id);
+						PERFORM employee_data.employee_salary_update_is_active(param_employee_salary_id, param_employee_id, '1', param_user_id);
+						END IF;
+					END IF;
+				END IF;
+
+				SELECT movement_personal_forms_insert_history INTO local_is_successful FROM form_data.movement_personal_forms_insert_history(
+					param_emp_form_mov_per_id := param_id,
+					param_change_type := 'UPDATE MOV PERSONAL FORM APPROVAL',
+					param_change_description := 'UPDATE VALUE BY MOV PERSONAL FORM APPROVAL'
+				);
+			END IF;
 
 		RETURN local_is_successful;
 	END;
@@ -2732,6 +2785,7 @@ COST 100.0
 AS $udf$
 	DECLARE
 		local_is_successful BIT := '0';
+		updated_rows INTEGER := 0;
 	BEGIN
 		UPDATE form_data.employee_official_mov_personal_forms SET
 			mov_personal_form_id = param_movement_per_id,
@@ -2742,13 +2796,15 @@ AS $udf$
 			id = param_id
 		AND
 			official_form_id = param_ofice_id;
+		GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-		SELECT employee_official_mov_personal_form_insert_history INTO local_is_successful FROM form_data.employee_official_mov_personal_form_insert_history(
-			param_emp_form_of_per_mov_id := param_movement_per_id,
-			param_change_type := 'UPDATE MOVEMENT PERSONAL',
-			param_change_description := 'UPDATE value of MOVEMENT PERSONAL'
-		);
+		IF updated_rows != 0 THEN
+			SELECT employee_official_mov_personal_form_insert_history INTO local_is_successful FROM form_data.employee_official_mov_personal_form_insert_history(
+				param_emp_form_of_per_mov_id := param_movement_per_id,
+				param_change_type := 'UPDATE MOVEMENT PERSONAL',
+				param_change_description := 'UPDATE value of MOVEMENT PERSONAL'
+			);
+		END IF;
 
 		RETURN local_is_successful;
 	END;

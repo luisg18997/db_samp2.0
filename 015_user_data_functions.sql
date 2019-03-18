@@ -163,6 +163,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.roles SET
             description = param_description,
@@ -172,12 +173,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
             param_role_id := param_id,
             param_change_type := 'UPDATE all_columns',
             param_change_description := 'UPDATE value of all columns'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -195,6 +199,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.roles SET
             is_active = param_is_active,
@@ -202,12 +207,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
             param_role_id := param_id,
             param_change_type := 'UPDATE is_active',
             param_change_description := 'UPDATE value of is_active'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -225,6 +233,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.roles SET
             is_deleted = param_is_deleted,
@@ -232,12 +241,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT roles_insert_history INTO local_is_successful FROM user_data.roles_insert_history(
             param_role_id := param_id,
             param_change_type := 'UPDATE is_deleted',
             param_change_description := 'UPDATE value of is_deleted'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -408,6 +420,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.ubications SET
             name = param_name,
@@ -417,12 +430,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
             param_ubication_id := param_id,
             param_change_type := 'UPDATE all_columns',
             param_change_description := 'UPDATE value of all columns'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -440,6 +456,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.ubications SET
             is_active = param_is_active,
@@ -447,12 +464,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
             param_ubication_id := param_id,
             param_change_type := 'UPDATE is_active',
             param_change_description := 'UPDATE value of is_active'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -470,6 +490,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.ubications SET
             is_deleted = param_is_deleted,
@@ -477,12 +498,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT ubication_insert_history INTO local_is_successful FROM user_data.ubication_insert_history(
             param_ubication_id := param_id,
             param_change_type := 'UPDATE is_deleted',
             param_change_description := 'UPDATE value of is_deleted'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -653,6 +677,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.security_questions SET
             description = param_description,
@@ -662,12 +687,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
             param_question_id := param_id,
             param_change_type := 'UPDATE all_columns',
             param_change_description := 'UPDATE value of all columns'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -685,6 +713,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.security_questions SET
             is_active = param_is_active,
@@ -692,12 +721,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
             param_question_id := param_id,
             param_change_type := 'UPDATE is_active',
             param_change_description := 'UPDATE value of is_active'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -715,6 +747,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.security_questions SET
             is_deleted = param_is_deleted,
@@ -722,12 +755,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT security_question_insert_history INTO local_is_successful FROM user_data.security_question_insert_history(
             param_question_id := param_id,
             param_change_type := 'UPDATE is_deleted',
             param_change_description := 'UPDATE value of is_deleted'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1064,6 +1100,7 @@ COST 100.0
 AS $udf$
   DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.user_roles SET
             user_id = param_user_role_id,
@@ -1074,12 +1111,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
             param_user_role_id := param_id,
             param_change_type := 'UPDATE all_columns',
             param_change_description := 'UPDATE value of all columns'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1098,6 +1138,7 @@ COST 100.0
 AS $udf$
   DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.user_roles SET
             role_id = param_role_id,
@@ -1107,12 +1148,15 @@ AS $udf$
             id = param_id
         AND
             user_id = param_user_role_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
-                param_user_role_id := param_id,
-                param_change_type := 'UPDATE role_id',
-                param_change_description := 'UPDATE value role_id'
-        );
+        IF updated_rows != 0 THEN
+          SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+            param_user_role_id := param_id,
+            param_change_type := 'UPDATE role_id',
+            param_change_description := 'UPDATE value role_id'
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1131,6 +1175,7 @@ COST 100.0
 AS $udf$
   DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.user_roles SET
             is_active = param_is_active,
@@ -1140,12 +1185,15 @@ AS $udf$
             id = param_id
         AND
             user_id = param_user_role_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
-                param_user_role_id := param_id,
-                param_change_type := 'UPDATE is_active',
-                param_change_description := 'UPDATE value is_active'
-        );
+        IF updated_rows != 0 THEN
+          SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+            param_user_role_id := param_id,
+            param_change_type := 'UPDATE is_active',
+            param_change_description := 'UPDATE value is_active'
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1164,6 +1212,7 @@ COST 100.0
 AS $udf$
   DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.user_roles SET
             is_deleted = param_is_deleted,
@@ -1173,12 +1222,15 @@ AS $udf$
             id = param_id
         AND
             user_id = param_user_role_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
-                param_user_role_id := param_id,
-                param_change_type := 'UPDATE is_deleted',
-                param_change_description := 'UPDATE value is_deleted'
-        );
+        IF updated_rows != 0 THEN
+          SELECT user_roles_insert_history INTO local_is_successful FROM user_data.user_roles_insert_history(
+            param_user_role_id := param_id,
+            param_change_type := 'UPDATE is_deleted',
+            param_change_description := 'UPDATE value is_deleted'
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1473,6 +1525,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.security_answers SET
             user_id = param_answer_user_id,
@@ -1484,12 +1537,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
             param_security_answer_id := param_id,
             param_change_type := 'UPDATE all_columns',
             param_change_description := 'UPDATE value of all columns'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1509,6 +1565,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.security_answers SET
             question_id = param_question_id,
@@ -1520,12 +1577,15 @@ AS $udf$
             id = param_id
         AND
             user_id = param_answer_user_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
             param_security_answer_id := param_id,
             param_change_type := 'UPDATE answer',
             param_change_description := 'UPDATE value of answer'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1543,6 +1603,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.security_answers SET
             is_active = param_is_active,
@@ -1550,12 +1611,15 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
             param_security_answer_id := param_id,
             param_change_type := 'UPDATE is_active',
             param_change_description := 'UPDATE value of is_active'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
@@ -1573,6 +1637,7 @@ COST 100.0
 AS $udf$
     DECLARE
         local_is_successful BIT := '0';
+        updated_rows INTEGER := 0;
     BEGIN
         UPDATE user_data.security_answers SET
             is_deleted = param_is_deleted,
@@ -1580,17 +1645,19 @@ AS $udf$
             last_modified_date = CLOCK_TIMESTAMP()
         WHERE
             id = param_id;
+        GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-        SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
+        IF updated_rows != 0 THEN
+          SELECT security_answer_insert_history INTO local_is_successful FROM user_data.security_answer_insert_history(
             param_security_answer_id := param_id,
             param_change_type := 'UPDATE is_deleted',
             param_change_description := 'UPDATE value of is_deleted'
-        );
+          );
+        END IF;
 
         RETURN local_is_successful;
     END;
 $udf$;
-
 
 -- functions of users
 -- function of insert a me
@@ -2160,6 +2227,7 @@ COST 100.0
 AS $udf$
   DECLARE
       local_is_successful BIT := '0';
+      updated_rows INTEGER := 0;
       local_security_answer_id BIGINT;
   BEGIN
     UPDATE user_data.users SET
@@ -2169,39 +2237,42 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    PERFORM  user_data.user_rol_update_role_is_active(param_role_user_id, param_id, param_is_active, param_user_id);
+    IF updated_rows != 0 THEN
+      PERFORM  user_data.user_rol_update_role_is_active(param_role_user_id, param_id, param_is_active, param_user_id);
 
-    iF(param_is_deleted = '1' AND param_role_id = 0)
-    THEN
-      PERFORM user_data.user_rol_update_is_deleted(param_role_user_id, param_id, param_is_deleted, param_user_id);
-    ELSE
-      PERFORM user_data.user_rol_update_role(param_role_user_id,param_id, param_role_id, param_user_id);
+      iF(param_is_deleted = '1' AND param_role_id = 0)
+      THEN
+        PERFORM user_data.user_rol_update_is_deleted(param_role_user_id, param_id, param_is_deleted, param_user_id);
+      ELSE
+        PERFORM user_data.user_rol_update_role(param_role_user_id,param_id, param_role_id, param_user_id);
+      END IF;
+
+      IF (param_is_active = '0' AND  param_is_deleted = '1')
+      THEN
+        UPDATE user_data.security_answers SET
+          is_active = param_is_active,
+          is_deleted = param_is_deleted,
+          last_modified_by = param_user_id,
+          last_modified_date = CLOCK_TIMESTAMP()
+        WHERE
+          user_id = param_id
+          RETURNING id
+          INTO STRICT local_security_answer_id;
+
+        PERFORM user_data.security_answer_insert_history(
+        param_security_answer_id := local_security_answer_id,
+        param_change_type := 'UPDATE is_deleted',
+        param_change_description := 'UPDATE value of is_deleted');
+      END IF;
+
+      SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
+          param_user_id := param_id,
+          param_change_type := 'UPDATE IS VALIDATE',
+          param_change_description := 'UPDATE VALUE IS VALIDATE'
+      );
     END IF;
-
-    IF (param_is_active = '0' AND  param_is_deleted = '1')
-    THEN
-      UPDATE user_data.security_answers SET
-        is_active = param_is_active,
-        is_deleted = param_is_deleted,
-        last_modified_by = param_user_id,
-        last_modified_date = CLOCK_TIMESTAMP()
-      WHERE
-        user_id = param_id
-        RETURNING id
-        INTO STRICT local_security_answer_id;
-
-      PERFORM user_data.security_answer_insert_history(
-      param_security_answer_id := local_security_answer_id,
-      param_change_type := 'UPDATE is_deleted',
-      param_change_description := 'UPDATE value of is_deleted');
-    END IF;
-
-    SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
-        param_user_id := param_id,
-        param_change_type := 'UPDATE IS VALIDATE',
-        param_change_description := 'UPDATE VALUE IS VALIDATE'
-    );
 
     RETURN local_is_successful;
     END;
@@ -2217,6 +2288,7 @@ COST 100.0
 AS $udf$
   DECLARE
       local_is_successful BIT := '0';
+      updated_rows INTEGER := 0;
   BEGIN
     UPDATE user_data.users SET
       password = param_password,
@@ -2224,12 +2296,15 @@ AS $udf$
       last_modified_date = CLOCK_TIMESTAMP()
     WHERE
       id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
+    IF updated_rows != 0 THEN
       SELECT user_insert_history INTO local_is_successful FROM user_data.user_insert_history(
           param_user_id := param_id,
           param_change_type := 'UPDATE IS PASSWORD',
           param_change_description := 'UPDATE VALUE OF PASSWORD USER'
       );
+    END IF;
 
       RETURN local_is_successful;
     END;

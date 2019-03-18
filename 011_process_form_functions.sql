@@ -172,25 +172,29 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.process_movement_personal_form SET
-            movement_personal_form_id = param_movement_personal_form_id,
-            date_made = CLOCK_TIMESTAMP(),
-            ubication_id = param_ubication_id,
-						observation=param_observation,
-            status_process_form_id = param_status_process_form_id,
-            is_active = param_is_active,
-		    is_deleted = param_is_deleted,
+          movement_personal_form_id = param_movement_personal_form_id,
+          date_made = CLOCK_TIMESTAMP(),
+          ubication_id = param_ubication_id,
+					observation=param_observation,
+          status_process_form_id = param_status_process_form_id,
+          is_active = param_is_active,
+		    	is_deleted = param_is_deleted,
   		    last_modified_by = param_user_id,
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+				GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT process_movement_personal_form_insert_history into local_is_successful FROM process_form.process_movement_personal_form_insert_history(
-      		param_process_movement_personal_form_id := param_id,
-      		param_change_type := 'UPDATE all_columns',
-      		param_change_description := 'UPDATE value of all columns'
-      	);
+				IF updated_rows != 0 THEN
+    			SELECT process_movement_personal_form_insert_history into local_is_successful FROM process_form.process_movement_personal_form_insert_history(
+	      		param_process_movement_personal_form_id := param_id,
+	      		param_change_type := 'UPDATE all_columns',
+	      		param_change_description := 'UPDATE value of all columns'
+	      	);
+				END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -208,21 +212,23 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.process_movement_personal_form SET
   			is_active = param_is_active,
   			last_modified_by = param_user_id,
-      		last_modified_date = CLOCK_TIMESTAMP()
-      	WHERE
-      		id = param_id;
+      	last_modified_date = CLOCK_TIMESTAMP()
+    	WHERE
+    		id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-    SELECT process_movement_personal_form_insert_history into local_is_successful FROM process_form.process_movement_personal_form_insert_history(
+			IF updated_rows != 0 THEN
+    		SELECT process_movement_personal_form_insert_history into local_is_successful FROM process_form.process_movement_personal_form_insert_history(
       		param_process_movement_personal_form_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
-
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -240,26 +246,27 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.process_movement_personal_form SET
-  		is_deleted = param_is_deleted,
+  			is_deleted = param_is_deleted,
   			last_modified_by = param_user_id,
-      		last_modified_date = CLOCK_TIMESTAMP()
-      	WHERE
-      		id = param_id;
+    		last_modified_date = CLOCK_TIMESTAMP()
+    	WHERE
+    		id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-    SELECT process_movement_personal_form_insert_history into local_is_successful FROM process_form.process_movement_personal_form_insert_history(
+			IF updated_rows != 0 THEN
+    		SELECT process_movement_personal_form_insert_history into local_is_successful FROM process_form.process_movement_personal_form_insert_history(
       		param_process_movement_personal_form_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
-
+			END IF;
 
     	RETURN local_is_successful;
   	END;
 $udf$;
-
 
 	-- functions of process_official_form
 
@@ -290,7 +297,7 @@ INSERT INTO process_form.process_official_form(
                 )
     VALUES (
     	     param_official_form_id,
-	   		 CLOCK_TIMESTAMP(),
+	   		 	CLOCK_TIMESTAMP(),
 	   		 5,
 	   	     1,
             '1',
@@ -365,7 +372,6 @@ $udf$;
 	  END;
 	$udf$;
 
-
 -- funciton of list official_form
 CREATE OR REPLACE FUNCTION process_form.get_process_official_form_list()
 RETURNS json
@@ -437,25 +443,29 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.process_official_form SET
-         	official_form_id = param_official_form_id,
+         official_form_id = param_official_form_id,
 		    date_made = CLOCK_TIMESTAMP(),
 		    ubication_id = param_ubication_id,
-					observation=param_observation,
+				observation=param_observation,
 		    status_process_form_id = param_status_process_form_id,
 		    is_active = param_is_active,
 	    	is_deleted = param_is_deleted,
 	    	last_modified_by = param_user_id,
 		    last_modified_date = CLOCK_TIMESTAMP()
-      	WHERE
-      		id = param_id;
+      WHERE
+      	id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    	SELECT process_official_form_insert_history into local_is_successful FROM process_form.process_official_form_insert_history(
+			IF updated_rows != 0 THEN
+    		SELECT process_official_form_insert_history into local_is_successful FROM process_form.process_official_form_insert_history(
       		param_process_official_form_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -473,19 +483,23 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.process_official_form SET
   			is_active = param_is_active,
   			last_modified_by = param_user_id,
-      		last_modified_date = CLOCK_TIMESTAMP()
-      	WHERE
+    		last_modified_date = CLOCK_TIMESTAMP()
+    	WHERE
       		id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT process_official_form_insert_history into local_is_successful FROM process_form.process_official_form_insert_history(
+			IF updated_rows != 0 THEN
+    		SELECT process_official_form_insert_history into local_is_successful FROM process_form.process_official_form_insert_history(
       		param_process_official_form_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -503,6 +517,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.process_official_form SET
   		is_deleted = param_is_deleted,
@@ -510,12 +525,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    SELECT process_official_form_insert_history into local_is_successful FROM process_form.process_official_form_insert_history(
+			IF updated_rows != 0 THEN
+	    	SELECT process_official_form_insert_history into local_is_successful FROM process_form.process_official_form_insert_history(
       		param_process_official_form_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -604,11 +622,10 @@ AS $udf$
 		DESC
 		LIMIT 1;
 
-		local_is_successful := '1';
+			local_is_successful := '1';
 	    RETURN local_is_successful;
 	  END;
 	$udf$;
-
 
 -- funciton of list status_process_form
 CREATE OR REPLACE FUNCTION process_form.get_status_process_form_list()
@@ -671,6 +688,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.status_process_form SET
   			description = param_description,
@@ -680,17 +698,19 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-    	SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
+			IF updated_rows != 0 THEN
+    		SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
       		param_status_process_form_id := param_id,
       		param_change_type := 'UPDATE all_columns',
       		param_change_description := 'UPDATE value of all columns'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
 $udf$;
-
 
 -- function update is active status_process_form
 CREATE OR REPLACE FUNCTION process_form.status_process_form_update_is_active(
@@ -704,6 +724,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.status_process_form SET
   			is_active = param_is_active,
@@ -711,13 +732,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
-
-    SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
+			IF updated_rows != 0 THEN
+    		SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
       		param_status_process_form_id := param_id,
       		param_change_type := 'UPDATE is_active',
       		param_change_description := 'UPDATE value of is_active'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
@@ -735,6 +758,7 @@ COST 100.0
 AS $udf$
 	DECLARE
     	local_is_successful BIT := '0';
+			updated_rows INTEGER := 0;
   	BEGIN
   		UPDATE process_form.status_process_form SET
   			is_deleted = param_is_deleted,
@@ -742,12 +766,15 @@ AS $udf$
       		last_modified_date = CLOCK_TIMESTAMP()
       	WHERE
       		id = param_id;
+			GET DIAGNOSTICS updated_rows = ROW_COUNT;
 
- SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
+			IF updated_rows != 0 THEN
+ 				SELECT status_process_form_insert_history into local_is_successful FROM process_form.status_process_form_insert_history(
       		param_status_process_form_id := param_id,
       		param_change_type := 'UPDATE is_deleted',
       		param_change_description := 'UPDATE value of is_deleted'
       	);
+			END IF;
 
     	RETURN local_is_successful;
   	END;
