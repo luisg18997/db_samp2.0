@@ -2312,6 +2312,7 @@ CREATE OR REPLACE FUNCTION user_data.user_update_all_columns(
   param_coordination_id INTEGER,
   param_user_role_id INTEGER,
   param_role_id INTEGER,
+  param_answer_user_id INTEGER,
   param_is_active BIT,
   param_user_id INTEGER
 )
