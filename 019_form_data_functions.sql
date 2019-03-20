@@ -2550,7 +2550,7 @@ CREATE OR REPLACE FUNCTION form_data.mov_personal_form_update_approval(
 		param_accountant_type_id INTEGER,
 		param_progam_type_id INTEGER,
  		param_observation VARCHAR,
-		param_admission_date DATE,
+		param_admission_date VARCHAR,
 		param_is_active BIT,
 		param_is_deleted BIT,
 		param_user_id BIGINT
@@ -2584,9 +2584,10 @@ AS $udf$
 					param_is_active,
 					param_is_deleted
 				);
-				IF (param_admission_date IS NULL)
+				IF (param_admission_date IS NULL OR param_movement_type_id = 1)
 				THEN
-					PERFORM employee_data.employee_update_admission(param_employee_id, param_user_id);
+						RAISE NOTICE 'admission_data is null';
+						PERFORM employee_data.employee_update_admission(param_employee_id, param_user_id);
 				END IF;
 
 				IF (param_movement_type_id >= 13 AND  param_movement_type_id <= 18)
