@@ -249,7 +249,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.school_update_principal_name(
   param_id INTEGER,
   param_principal_name VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -283,7 +283,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.school_update_initials(
   param_id INTEGER,
   param_initials VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -627,7 +627,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.institute_update_principal_name(
   param_id INTEGER,
   param_principal_name VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -661,7 +661,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.institute_update_initials(
   param_id INTEGER,
   param_initials VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -1565,7 +1565,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.coordination_update_principal_name(
   param_id INTEGER,
   param_principal_name VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -1599,7 +1599,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.coordination_update_initials(
   param_id INTEGER,
   param_initials VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -2217,7 +2217,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.faculty_update_principal_name(
   param_id INTEGER,
   param_principal_name VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
@@ -2251,7 +2251,7 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.faculty_update_initials(
   param_id INTEGER,
   param_initials VARCHAR,
-  param_user_id,
+  param_user_id BIGINT
 )
 RETURNS BIT
 LANGUAGE plpgsql VOLATILE
