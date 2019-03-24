@@ -5,6 +5,8 @@
 CREATE OR REPLACE FUNCTION faculty_data.schools_insert(
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_user_id BIGINT,
   param_faculty_id INTEGER
 )
@@ -34,6 +36,8 @@ AS $udf$
       (
         code,
         name,
+        principal_name,
+        initials,
         faculty_id,
         is_active,
         is_deleted,
@@ -44,6 +48,8 @@ AS $udf$
       (
         param_code,
         param_name,
+        param_principal_name,
+        param_initials,
         param_faculty_id,
         '1',
         '0',
@@ -81,6 +87,8 @@ AS $udf$
       school_id,
       code,
       name,
+      principal_name,
+      initials,
       faculty_id,
       is_active,
       is_deleted,
@@ -93,6 +101,8 @@ AS $udf$
       id,
       code,
       name,
+      principal_name,
+      initials,
       faculty_id,
       is_active,
       is_deleted,
@@ -194,6 +204,8 @@ CREATE OR REPLACE FUNCTION faculty_data.school_update_all_columns(
   param_id INTEGER,
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_faculty_id INTEGER,
   param_user_id BIGINT,
   param_is_active BIT,
@@ -210,6 +222,8 @@ AS $udf$
     UPDATE faculty_data.schools SET
       name = param_name,
       code = param_code,
+      principal_name = param_principal_name,
+      initials = param_initials,
       faculty_id = param_faculty_id,
       is_active = param_is_active,
       is_deleted = param_is_deleted,
@@ -224,6 +238,74 @@ AS $udf$
         param_school_id := param_id,
         param_change_type := 'UPDATE all_columns',
         param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update principal_name
+CREATE OR REPLACE FUNCTION faculty_data.school_update_principal_name(
+  param_id INTEGER,
+  param_principal_name VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.schools SET
+      principal_name = param_principal_name,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE principal name',
+        param_change_description := 'UPDATE value of principal_name'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update principal_name
+CREATE OR REPLACE FUNCTION faculty_data.school_update_initials(
+  param_id INTEGER,
+  param_initials VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.schools SET
+      initials = param_initials,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT schools_insert_history INTO local_is_successful FROM faculty_data.schools_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE initials',
+        param_change_description := 'UPDATE value of initials'
       );
     END IF;
 
@@ -309,6 +391,8 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.institute_insert(
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_user_id BIGINT,
   param_faculty_id INTEGER
 )
@@ -383,6 +467,8 @@ AS $udf$
       institute_id,
       code,
       name,
+      principal_name,
+      initials,
       faculty_id,
       is_active,
       is_deleted,
@@ -395,6 +481,8 @@ AS $udf$
       id,
       code,
       name,
+      principal_name,
+      initials,
       faculty_id,
       is_active,
       is_deleted,
@@ -494,6 +582,8 @@ CREATE OR REPLACE FUNCTION faculty_data.institute_update_all_columns(
   param_id INTEGER,
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_faculty_id INTEGER,
   param_user_id BIGINT,
   param_is_active BIT,
@@ -510,6 +600,8 @@ AS $udf$
     UPDATE faculty_data.institutes SET
       name = param_name,
       code = param_code,
+      principal_name = param_principal_name,
+      initials = param_initials,
       faculty_id = param_faculty_id,
       is_active = param_is_active,
       is_deleted = param_is_deleted,
@@ -524,6 +616,74 @@ AS $udf$
         param_institute_id := param_id,
         param_change_type := 'UPDATE all_columns',
         param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update principal_name
+CREATE OR REPLACE FUNCTION faculty_data.institute_update_principal_name(
+  param_id INTEGER,
+  param_principal_name VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.institutes SET
+      principal_name = param_principal_name,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE principal name',
+        param_change_description := 'UPDATE value of principal_name'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update initials
+CREATE OR REPLACE FUNCTION faculty_data.institute_update_initials(
+  param_id INTEGER,
+  param_initials VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.institutes SET
+      initials = param_initials,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT institute_insert_history INTO local_is_successful FROM faculty_data.institute_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE initials',
+        param_change_description := 'UPDATE value of initials'
       );
     END IF;
 
@@ -1164,6 +1324,8 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.coordination_insert(
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_user_id BIGINT,
   param_faculty_id INTEGER
 )
@@ -1192,6 +1354,8 @@ AS $udf$
       INSERT INTO faculty_data.coordinations(
         code,
         name,
+        principal_name,
+        initials,
         faculty_id,
         is_active,
         is_deleted,
@@ -1202,6 +1366,8 @@ AS $udf$
       (
         param_code,
         param_name,
+        param_principal_name,
+        param_initials,
         param_faculty_id,
         '1',
         '0',
@@ -1239,6 +1405,9 @@ AS $udf$
       coordination_id,
       code,
       name,
+      principal_name,
+      initials,
+      faculty_id,
       is_active,
       is_deleted,
       last_modified_by,
@@ -1250,6 +1419,9 @@ AS $udf$
       id,
       code,
       name,
+      principal_name,
+      initials,
+      faculty_id,
       is_active,
       is_deleted,
       last_modified_by,
@@ -1348,6 +1520,8 @@ CREATE OR REPLACE FUNCTION faculty_data.coordination_update_all_columns(
   param_id INTEGER,
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_faculty_id INTEGER,
   param_user_id BIGINT,
   param_is_active BIT,
@@ -1364,6 +1538,8 @@ AS $udf$
     UPDATE faculty_data.coordinations SET
       name = param_name,
       code = param_code,
+      principal_name = param_principal_name,
+      initials = param_initials,
       faculty_id = param_faculty_id,
       is_active = param_is_active,
       is_deleted = param_is_deleted,
@@ -1378,6 +1554,74 @@ AS $udf$
         param_coordination_id := param_id,
         param_change_type := 'UPDATE all_columns',
         param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update principal_name
+CREATE OR REPLACE FUNCTION faculty_data.coordination_update_principal_name(
+  param_id INTEGER,
+  param_principal_name VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.coordinations SET
+      principal_name = param_principal_name,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE principal name',
+        param_change_description := 'UPDATE value of principal_name'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update initials
+CREATE OR REPLACE FUNCTION faculty_data.coordination_update_initials(
+  param_id INTEGER,
+  param_initials VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.coordinations SET
+      initials = param_initials,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT coordination_insert_history INTO local_is_successful FROM faculty_data.coordination_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE initials',
+        param_change_description := 'UPDATE value of initials'
       );
     END IF;
 
@@ -1761,6 +2005,8 @@ $udf$;
 CREATE OR REPLACE FUNCTION faculty_data.faculty_insert(
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_user_id BIGINT
 )
 RETURNS BIT
@@ -1788,6 +2034,8 @@ AS $udf$
       INSERT INTO faculty_data.faculty(
         code,
         name,
+        principal_name,
+        initials,
         is_active,
         is_deleted,
         last_modified_by,
@@ -1796,6 +2044,8 @@ AS $udf$
       VALUES(
         param_code,
         param_name,
+        param_principal_name,
+        param_initials,
         '1',
         '0',
         param_user_id,
@@ -1833,6 +2083,8 @@ AS $udf$
       faculty_id,
       code,
       name,
+      principal_name,
+      initials,
       is_active,
       is_deleted,
       last_modified_by,
@@ -1844,6 +2096,8 @@ AS $udf$
       id,
       code,
       name,
+      principal_name,
+      initials,
       is_active,
       is_deleted,
       last_modified_by,
@@ -1920,6 +2174,8 @@ CREATE OR REPLACE FUNCTION faculty_data.faculty_update_all_columns(
   param_id INTEGER,
   param_code VARCHAR,
   param_name VARCHAR,
+  param_principal_name VARCHAR,
+  param_initials VARCHAR,
   param_user_id BIGINT,
   param_is_active BIT,
   param_is_deleted BIT
@@ -1935,6 +2191,8 @@ AS $udf$
     UPDATE faculty_data.faculty SET
       name = param_name,
       code = param_code,
+      principal_name = param_principal_name,
+      initials = param_initials,
       is_active = param_is_active,
       is_deleted = param_is_deleted,
       last_modified_by = param_user_id,
@@ -1948,6 +2206,74 @@ AS $udf$
         param_faculty_id := param_id,
         param_change_type := 'UPDATE all_columns',
         param_change_description := 'UPDATE value of all columns'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update principal_name
+CREATE OR REPLACE FUNCTION faculty_data.faculty_update_principal_name(
+  param_id INTEGER,
+  param_principal_name VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.faculty SET
+      principal_name = param_principal_name,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE principal name',
+        param_change_description := 'UPDATE value of principal_name'
+      );
+    END IF;
+
+    RETURN local_is_successful;
+  END;
+$udf$;
+
+-- funciton update initials
+CREATE OR REPLACE FUNCTION faculty_data.faculty_update_initials(
+  param_id INTEGER,
+  param_initials VARCHAR,
+  param_user_id,
+)
+RETURNS BIT
+LANGUAGE plpgsql VOLATILE
+COST 100.0
+AS $udf$
+  DECLARE
+    local_is_successful BIT := '0';
+    updated_rows INTEGER := 0;
+  BEGIN
+    UPDATE faculty_data.faculty SET
+      initials = param_initials,
+      last_modified_by = param_user_id,
+      last_modified_date = CLOCK_TIMESTAMP()
+    WHERE
+      id = param_id;
+    GET DIAGNOSTICS updated_rows = ROW_COUNT;
+
+    IF updated_rows != 0 THEN
+      SELECT faculty_insert_history INTO local_is_successful FROM faculty_data.faculty_insert_history(
+        param_school_id := param_id,
+        param_change_type := 'UPDATE initials',
+        param_change_description := 'UPDATE value of initials'
       );
     END IF;
 

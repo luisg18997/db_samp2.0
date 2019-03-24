@@ -1,35 +1,35 @@
 -- data of schema faculty
 
 -- data of faculty table
-select faculty_data.faculty_insert('0700000000', 'HUMANIDADES Y EDUCACION', 0);
+select faculty_data.faculty_insert('0700000000', 'HUMANIDADES Y EDUCACION','','', 0);
 
 -- data of school table
-select faculty_data.schools_insert('0710000000', 'BIBLIOTECOLOGIA Y ARCHIVOLOGIA', 0, 1);
-select faculty_data.schools_insert('0711000000', 'COMUNICACION SOCIAL', 0, 1);
-select faculty_data.schools_insert('0712000000', 'EDUCACION', 0, 1);
-select faculty_data.schools_insert('0713000000', 'FILOSOFIA', 0, 1);
-select faculty_data.schools_insert('0714000000', 'GEOGRAFIA', 0, 1);
-select faculty_data.schools_insert('0715000000', 'HISTORIA', 0, 1);
+select faculty_data.schools_insert('0710000000', 'BIBLIOTECOLOGIA Y ARCHIVOLOGIA','','', 0, 1);
+select faculty_data.schools_insert('0711000000', 'COMUNICACION SOCIAL','','', 0, 1);
+select faculty_data.schools_insert('0712000000', 'EDUCACION','','', 0, 1);
+select faculty_data.schools_insert('0713000000', 'FILOSOFIA','','', 0, 1);
+select faculty_data.schools_insert('0714000000', 'GEOGRAFIA','','', 0, 1);
+select faculty_data.schools_insert('0715000000', 'HISTORIA','','', 0, 1);
 select faculty_data.schools_insert('0716000000', 'IDIOMAS MODERNOS', 0, 1);
-select faculty_data.schools_insert('0717000000', 'LETRAS ', 0, 1);
-select faculty_data.schools_insert('0718000000', 'PSICOLOGIA ', 0, 1);
-select faculty_data.schools_insert('0719000000', 'ARTE', 0, 1);
+select faculty_data.schools_insert('0717000000', 'LETRAS ','','', 0, 1);
+select faculty_data.schools_insert('0718000000', 'PSICOLOGIA ','','', 0, 1);
+select faculty_data.schools_insert('0719000000', 'ARTE','','', 0, 1);
 
 --data of coordinations table
-select faculty_data.coordination_insert('0703000000', 'ADMINISTRATIVA', 0, 1);
-select faculty_data.coordination_insert('0704000000', 'ACADEMICA', 0, 1);
+select faculty_data.coordination_insert('0703000000', 'ADMINISTRATIVA','','', 0, 1);
+select faculty_data.coordination_insert('0704000000', 'ACADEMICA','','', 0, 1);
 select faculty_data.coordination_insert('0705000000', 'CURSOS DE POSTGRADO', 0, 1);
-select faculty_data.coordination_insert('0706000000', 'EXTENSION', 0, 1);
-select faculty_data.coordination_insert('0707000000', 'INVESTIGACIÓN', 0, 1);
+select faculty_data.coordination_insert('0706000000', 'EXTENSION','','', 0, 1);
+select faculty_data.coordination_insert('0707000000', 'INVESTIGACIÓN','','', 0, 1);
 
 --data of institute table
-select faculty_data.institute_insert('0732000000', 'ESTUDIOS HISPANOAMERICANOS', 0, 1);
-select faculty_data.institute_insert('0733000000', 'FILOLOGIA ANDRES BELLO', 0, 1);
-select faculty_data.institute_insert('0735000000', 'FILOSOFIA', 0, 1);
-select faculty_data.institute_insert('0736000000', 'GEOGRAFIA Y DESARROLLO REGIONAL', 0, 1);
-select faculty_data.institute_insert('0737000000', 'INVESTIGACIONES DE LA COMUNICACIÓN', 0, 1);
-select faculty_data.institute_insert('0738000000', 'PSICOLOGIA', 0, 1);
-select faculty_data.institute_insert('0739000000', 'INVESTIGACIONES LITERARIAS', 0, 1);
+select faculty_data.institute_insert('0732000000', 'ESTUDIOS HISPANOAMERICANOS','','', 0, 1);
+select faculty_data.institute_insert('0733000000', 'FILOLOGIA ANDRES BELLO','','', 0, 1);
+select faculty_data.institute_insert('0735000000', 'FILOSOFIA','','', 0, 1);
+select faculty_data.institute_insert('0736000000', 'GEOGRAFIA Y DESARROLLO REGIONAL','','', 0, 1);
+select faculty_data.institute_insert('0737000000', 'INVESTIGACIONES DE LA COMUNICACIÓN','','', 0, 1);
+select faculty_data.institute_insert('0738000000', 'PSICOLOGIA','','', 0, 1);
+select faculty_data.institute_insert('0739000000', 'INVESTIGACIONES LITERARIAS','','', 0, 1);
 
 --data of departament of the school table
 select faculty_data.departament_school_insert('0710020000', 'ADMINISTRACION', 0, 1);
