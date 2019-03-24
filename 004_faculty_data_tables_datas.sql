@@ -125,6 +125,7 @@ select faculty_data.chair_insert('0710040100', 'DOCUMENTACION E INFORMACION', 0,
 select faculty_data.chair_insert('0710040200', 'BIBLIOGRAFIA', 0, 3);
 select faculty_data.chair_insert('0710040300', 'AUTOMATIZACION LA INFORMACION', 0, 3);
 select faculty_data.chair_insert('0710050100', 'LOGICA Y FILOSOFIA LAS CIENCIAS', 0, 4);
+select faculty_data.chair_insert('0710050200', 'METODOLOGIA LA INVESTIGACIÓN', 0, 4);
 select faculty_data.chair_insert('0710060100', 'HISTORIA LA CULTURA', 0, 5);
 select faculty_data.chair_insert('0710060200', 'LENGUAJE Y LITERATURA', 0, 5);
 select faculty_data.chair_insert('0710060300', 'CIENCIAS SOCIALES', 0, 5);
