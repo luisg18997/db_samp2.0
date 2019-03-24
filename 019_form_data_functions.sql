@@ -1638,24 +1638,25 @@ AS $BODY$
 		fomp.id,
 		fomp.official_form_id,
 		fomp.employee_id,
+		fomp.ubication_id as origin_ubication_form,
 		emp.first_name,
 		COALESCE(emp.second_name,'') as second_name,
 		emp.surname,
 		COALESCE(emp.second_surname,'') as second_surname,
 		emp.identification,
-		exe.description as execunting_unit,
-		idac.code idac_code,
+		json_build_object('id',exe.id,'description',exe.description) as execunting_unit,
+		json_build_object('id',COALESCE(idac.id,0),code,idac.code) as idac_code,
 		mov.description as movement_type,
-		fo.registration_date,
+		COALESCE(fo.registration_date,'') as registration_date,
 		fo.code_form,
 		fomp.start_date,
 		fomp.finish_date,
-		sch.name as school,
-		inst.name as institute,
-		coord.name as coordination,
-		dept.name as departament,
-		cha.name as chair,
-		pfo.id as process_form_id,
+		json_build_object('id',COALESCE(sch.id, 0),'name', sch.name) as school,
+		json_build_object('id',COALESCE(inst.id, 0),'name', inst.name) as institute,
+		json_build_object('id',COALESCE(coord.id, 0),'name',coord.name as coordination,
+		json_build_object('id',COALESCE(dept.id, 0),'name',dept.name as departament,
+		json_build_object('id',COALESCE(cha.id, 0),'name',cha.name as chair,
+		pfo.id as process_official_form_id,
 		pfo.status_process_form_id,
 		COALESCE(cded.description,pded.description) as dedication_type
 		FROM
@@ -1754,7 +1755,7 @@ AS $BODY$
 					coord.is_active = '1'
 			AND
 			 		coord.is_deleted = '0'
-		INNER JOIN
+		LEFT OUTER JOIN
 			process_form.process_official_form pfo
 		ON
 				fo.id = pfo.official_form_id
@@ -2032,6 +2033,7 @@ AS $BODY$
 		fomp.mov_personal_form_id,
 		fomp.official_form_id,
 		fomp.employee_id,
+		fomp.ubication_id as origin_ubication_form,
 		emp.first_name,
 		emidac.id as employee_idac_id,
 		COALESCE(emp.second_name,'') as second_name,
@@ -2300,7 +2302,7 @@ LEFT OUTER JOIN
 						AND
 							anx.is_deleted = '0'
 			GROUP BY
-			fomp.id,fmp.code_form,fmp.registration_date,
+			fomp.id,fmp.code_form,fmp.registration_date, fomp.ubication_id,
 			fomp.mov_personal_form_id,fomp.employee_id,fmp.salary,
 			emp.first_name,second_name,emp.surname,second_surname, mov.id,
 			nacionality,documentation,emp.identification,emp.admission_date,emp.state_id,
