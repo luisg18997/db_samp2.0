@@ -3107,13 +3107,11 @@ BEGIN
 			INNER JOIN
 				process_form.status_process_form spf
 			ON
-						(
-								spf.id != 3
-							OR
-								spf.id != 4
-						)
-					AND
 						spf.id = pfo.status_process_form_id
+					AND
+						spf.id != 3
+					AND
+						spf.id != 4
 					AND
 						spf.is_active = '1'
 					AND
@@ -3215,13 +3213,11 @@ BEGIN
 			INNER JOIN
 				process_form.status_process_form spf
 			ON
-					(
-							spf.id != 3
-						OR
-							spf.id != 4
-					)
-				AND
 					spf.id = pfmp.status_process_form_id
+				AND
+					spf.id != 3
+				AND
+					spf.id != 4
 				AND
 					spf.is_active = '1'
 				AND
