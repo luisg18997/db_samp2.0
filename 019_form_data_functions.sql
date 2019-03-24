@@ -1887,7 +1887,6 @@ AS $udf$
 				code_form,
 				salary,
 				reason,
-				registration_date,
 				is_active,
 				is_deleted,
 				last_modified_by,
@@ -2628,6 +2627,7 @@ CREATE OR REPLACE FUNCTION form_data.employee_official_mov_personal_form_insert(
 	param_movement_type_id INTEGER,
 	param_start_date DATE,
 	param_finish_date DATE,
+	param_ubication_id INTEGER,
 	param_school_id INTEGER,
 	param_institute_id INTEGER,
 	param_coordination_id INTEGER,
@@ -2671,6 +2671,7 @@ AS $udf$
 				movement_type_id,
 				start_date,
 				finish_date,
+				ubication_id,
 				school_id,
 				institute_id,
 				coordination_id,
@@ -2686,6 +2687,7 @@ AS $udf$
 				param_movement_type_id,
 				param_start_date,
 				param_finish_date,
+				param_ubication_id,
 				param_school_id,
 				param_institute_id,
 				param_coordination_id,
@@ -2731,6 +2733,7 @@ AS $udf$
 			movement_type_id,
 			start_date,
 			finish_date,
+			ubication_id,
 			school_id,
 			institute_id,
 			is_active,
@@ -2749,6 +2752,7 @@ AS $udf$
 			movement_type_id,
 			start_date,
 			finish_date,
+			ubication_id,
 			school_id,
 			institute_id,
 			is_active,
@@ -2907,6 +2911,7 @@ AS $udf$
 						(param_official_form_json->>'movement_type_id')::INTEGER,
 						(param_official_form_json->>'start_date')::DATE,
 						(param_official_form_json->>'finish_date')::DATE,
+						(param_official_form_json->>'ubication_id')::INTEGER,
 						(param_official_form_json->>'school_id')::INTEGER,
 						(param_official_form_json->>'institute_id')::INTEGER,
 						(param_official_form_json->>'coordination_id')::INTEGER,
@@ -2915,6 +2920,7 @@ AS $udf$
 
 					SELECT process_official_form_insert INTO local_is_successful FROM process_form.process_official_form_insert(
 						local_official_form_id::INTEGER,
+						(param_official_form_json->>'ubication_id')::INTEGER,
 						param_user_id
 					);
 				END IF;
@@ -2988,6 +2994,7 @@ AS $udf$
 
 					SELECT process_movement_personal_form_insert INTO local_is_successful FROM process_form.process_movement_personal_form_insert(
 						local_form_mov_per_id::INTEGER,
+						(param_form_mov_per_json->>'ubication_id')::INTEGER,
 						param_user_id
 					);
 

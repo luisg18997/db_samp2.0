@@ -3,6 +3,7 @@
 --function of insert process_movement_personal_form
 CREATE OR REPLACE FUNCTION process_form.process_movement_personal_form_insert(
 	param_movement_personal_form_id INTEGER,
+	param_ubication_id INTEGER,
 	param_user_id BIGINT
 )
 RETURNS BIT
@@ -25,15 +26,15 @@ AS $udf$
         )
     	VALUES (
     	   	param_movement_personal_form_id,
-	   		CLOCK_TIMESTAMP(),
-	   		5,
+	   			CLOCK_TIMESTAMP(),
+	   			param_ubication_id,
 	   	    1,
-            '1',
-			'0',
-			param_user_id,
-			CLOCK_TIMESTAMP()
-		)
-		RETURNING id
+          '1',
+					'0',
+					param_user_id,
+					CLOCK_TIMESTAMP()
+			)
+			RETURNING id
       	INTO STRICT local_process_movement_personal_form_id;
 
       	SELECT process_movement_personal_form_insert_history into local_is_successful FROM process_form.process_movement_personal_form_insert_history(
@@ -124,7 +125,6 @@ AS $BODY$
 			pf.is_deleted = '0'
 	)DATA;
 $BODY$;
-
 
 --function get one data process_movement_personal_form
 CREATE OR REPLACE FUNCTION process_form.get_process_movement_personal_form(
@@ -273,6 +273,7 @@ $udf$;
 --function of insert process_official_form
 CREATE OR REPLACE FUNCTION process_form.process_official_form_insert(
 	param_official_form_id INTEGER,
+	param_ubication_id INTEGER,
 	param_user_id BIGINT
 
 )
@@ -298,7 +299,7 @@ INSERT INTO process_form.process_official_form(
     VALUES (
     	     param_official_form_id,
 	   		 	CLOCK_TIMESTAMP(),
-	   		 5,
+	   		 param_ubication_id,
 	   	     1,
             '1',
 			'0',
