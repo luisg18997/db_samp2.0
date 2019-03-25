@@ -1238,7 +1238,7 @@ updated_rows INTEGER := 0;
         param_change_type := 'UPDATE all_columns',
         param_change_description := 'UPDATE value of all columns'
       );
-    END IF
+    END IF;
 
     RETURN local_is_successful;
   END;

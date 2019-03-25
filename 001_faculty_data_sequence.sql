@@ -1,3 +1,4 @@
+DROP SCHEMA public;
 CREATE SCHEMA faculty_data;
 
 CREATE SEQUENCE faculty_data.chairs_id_seq

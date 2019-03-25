@@ -10,7 +10,7 @@ select faculty_data.schools_insert('0712000000', 'EDUCACION','','', 0, 1);
 select faculty_data.schools_insert('0713000000', 'FILOSOFIA','','', 0, 1);
 select faculty_data.schools_insert('0714000000', 'GEOGRAFIA','','', 0, 1);
 select faculty_data.schools_insert('0715000000', 'HISTORIA','','', 0, 1);
-select faculty_data.schools_insert('0716000000', 'IDIOMAS MODERNOS', 0, 1);
+select faculty_data.schools_insert('0716000000', 'IDIOMAS MODERNOS','','', 0, 1);
 select faculty_data.schools_insert('0717000000', 'LETRAS ','','', 0, 1);
 select faculty_data.schools_insert('0718000000', 'PSICOLOGIA ','','', 0, 1);
 select faculty_data.schools_insert('0719000000', 'ARTE','','', 0, 1);
@@ -18,7 +18,7 @@ select faculty_data.schools_insert('0719000000', 'ARTE','','', 0, 1);
 --data of coordinations table
 select faculty_data.coordination_insert('0703000000', 'ADMINISTRATIVA','','', 0, 1);
 select faculty_data.coordination_insert('0704000000', 'ACADEMICA','','', 0, 1);
-select faculty_data.coordination_insert('0705000000', 'CURSOS DE POSTGRADO', 0, 1);
+select faculty_data.coordination_insert('0705000000', 'CURSOS DE POSTGRADO','','', 0, 1);
 select faculty_data.coordination_insert('0706000000', 'EXTENSION','','', 0, 1);
 select faculty_data.coordination_insert('0707000000', 'INVESTIGACIÓN','','', 0, 1);
 
