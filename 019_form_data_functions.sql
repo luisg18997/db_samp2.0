@@ -1668,10 +1668,6 @@ AS $BODY$
 			AND
 				 emp.id = fomp.employee_id
 			AND
-				emp.retirement_date IS NULL
-			AND
-				emp.is_deleted = '0'
-			AND
 					fomp.is_deleted = '0'
 			AND
 				fomp.official_form_id IS NOT NULL
@@ -1683,8 +1679,6 @@ AS $BODY$
 						fo.is_deleted = '0'
 				AND
 						fo.is_active = '1'
-				AND
-						fo.approval_date IS NULL
 			INNER JOIN
 				form_data.movement_types mov
 			ON
@@ -2083,10 +2077,6 @@ AS $BODY$
 			AND
 				 emp.id = fomp.employee_id
 			AND
-				emp.retirement_date IS NULL
-			AND
-				emp.is_deleted = '0'
-			AND
 				(
 					fomp.school_id = emp.school_id
 				OR
@@ -2106,8 +2096,6 @@ AS $BODY$
 					fmp.is_active = '1'
 				AND
 					fmp.is_deleted = '0'
-				AND
-					fmp.approval_date IS NULL
 		LEFT OUTER JOIN
 			faculty_data.schools sch
 		ON

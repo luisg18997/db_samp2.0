@@ -4920,56 +4920,44 @@ AS $BODY$
 						OR
 							emp.cordination_id = param_coordination_id
 					)
-			AND
-					emp.is_deleted = '0'
-			AND
-					emp.is_active = '1'
-			AND
-					emp.retirement_date IS NULL
-			AND
-					emid.employee_id = emp.id
-			AND
-					emid.is_deleted = '0'
-			AND
-					emid.is_active = '1'
+					AND
+							emp.admission_date IS NOT NULL
+					AND
+							emid.employee_id = emp.id
+					INNER JOIN
+						employee_data.idac_codes id
+					ON
+								id.id = emid.idac_code_id
+						AND
+								id.is_deleted = '0'
+					INNER JOIN
+						employee_data.execunting_unit exe
+					ON
+								exe.id = id.execunting_unit_id
+						AND
+								exe.is_deleted = '0'
+						AND
+								exe.is_active = '1'
+				INNER JOIN
+					employee_data.employee_salaries emsal
+				ON
+						emsal.employee_id = emp.id
+		 		INNER JOIN
+					employee_data.salaries sal
+				ON
+						sal.id = emsal.salary_id
+					AND
+						sal.is_active = '1'
+					AND
+						sal.is_deleted = '0'
 			INNER JOIN
-				employee_data.idac_codes id
+				employee_data.dedication_types ded
 			ON
-						id.id = emid.idac_code_id
+						ded.id = sal.dedication_type_id
 				AND
-						id.is_deleted = '0'
+						ded.is_deleted = '0'
 				AND
-						id.is_active = '1'
-			INNER JOIN
-				employee_data.execunting_unit exe
-			ON
-						exe.id = id.execunting_unit_id
-				AND
-						exe.is_deleted = '0'
-				AND
-						exe.is_active = '1'
-		INNER JOIN
-			employee_data.employee_salaries emsal
-		ON
-				emsal.employee_id = emp.id
-			AND
-				emsal.is_deleted = '0'
- 		INNER JOIN
-			employee_data.salaries sal
-		ON
-				sal.id = emsal.salary_id
-			AND
-				sal.is_active = '1'
-			AND
-				sal.is_deleted = '0'
-	INNER JOIN
-		employee_data.dedication_types ded
-	ON
-				ded.id = sal.dedication_type_id
-		AND
-				ded.is_deleted = '0'
-		AND
-				ded.is_active = '1'
+						ded.is_active = '1'
 	)DATA;
 $BODY$;
 
