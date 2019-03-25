@@ -1888,6 +1888,7 @@ AS $udf$
 				code_form,
 				salary,
 				reason,
+				registration_date,
 				is_active,
 				is_deleted,
 				last_modified_by,
