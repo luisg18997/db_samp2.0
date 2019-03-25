@@ -1646,7 +1646,7 @@ AS $BODY$
 		emp.identification,
 		json_build_object('id',exe.id,'description',exe.description) as execunting_unit,
 		json_build_object('id',COALESCE(idac.id,0),'code',idac.code) as idac_code,
-		mov.description as movement_type,
+		json_build_object('id',mov.id,'description',mov.description) as movement_type,
 		fo.registration_date as registration_date,
 		fo.code_form,
 		fomp.start_date,
@@ -1658,7 +1658,7 @@ AS $BODY$
 		json_build_object('id',COALESCE(cha.id, 0),'name',cha.name) as chair,
 		pfo.id as process_official_form_id,
 		pfo.status_process_form_id,
-		COALESCE(cded.description,pded.description) as dedication_type
+		json_build_object('id',COALESCE(cded.id,pded.id),'description',COALESCE(cded.description,pded.description)) as dedication_type
 		FROM
 			form_data.employee_official_mov_personal_forms fomp
 		INNER JOIN
