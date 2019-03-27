@@ -1625,7 +1625,8 @@ $BODY$;
 
 CREATE OR REPLACE FUNCTION form_data.get_form_official(
 	param_identification VARCHAR,
-	param_ubication_id INTEGER
+	param_ubication_id INTEGER,
+	param_form_id INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -1637,13 +1638,21 @@ AS $BODY$
 		SELECT
 		fomp.id,
 		fomp.official_form_id,
-		fomp.employee_id,
+		emp.id,
 		fomp.ubication_id as origin_ubication_form,
 		emp.first_name,
 		COALESCE(emp.second_name,'') as second_name,
 		emp.surname,
 		COALESCE(emp.second_surname,'') as second_surname,
 		emp.identification,
+		emp.birth_date,
+		emp.gender_id,
+		emp.admission_date,
+		emp.email,
+		emp.nacionality_id,
+		emp.documentation_id,
+		emp.mobile_phone_number,
+		emp.local_phone_number,
 		json_build_object('id',exe.id,'description',exe.description) as execunting_unit,
 		json_build_object('id',COALESCE(idac.id,0),'code',idac.code) as idac_code,
 		json_build_object('id',mov.id,'description',mov.description) as movement_type,
@@ -1669,12 +1678,13 @@ AS $BODY$
 				 emp.id = fomp.employee_id
 			AND
 					fomp.is_deleted = '0'
-			AND
-				fomp.official_form_id IS NOT NULL
-			INNER JOIN
+		LEFT OUTER JOIN
 				form_data.official_forms fo
 			ON
-						fo.id = fomp.official_form_id
+					(		fo.id = param_form_id
+						OR
+							fo.id = fomp.official_form_id
+					)
 				AND
 						fo.is_deleted = '0'
 				AND
@@ -2013,7 +2023,8 @@ $BODY$;
 -- function get mov pers
 CREATE OR REPLACE FUNCTION form_data.get_movement_personal_form(
 	param_identification VARCHAR,
-	param_ubication_id integer
+	param_ubication_id integer,
+	param_form_id INTEGER
 )
 RETURNS json
 LANGUAGE 'sql'
@@ -2067,6 +2078,8 @@ AS $BODY$
 		fmp.reason,
 		pfmp.status_process_form_id,
 		pfmp.id as process_mov_personal_form_id,
+		json_build_object('id',COALESCE(act.id, 0),'description',COALESCE(act.code,'0')) as code_count_type,
+		json_build_object('id',COALESCE(pro.id, 0),'description',COALESCE(pro.code,'0')) as code_program_type,
 		jsonb_agg(jsonb_build_object('id',anx.id, 'description', anx.description)) as annex_types
 		FROM
 			form_data.employee_official_mov_personal_forms fomp
@@ -2090,8 +2103,11 @@ AS $BODY$
 				fomp.official_form_id IS NOT NULL
 		LEFT OUTER JOIN
 			form_data.movement_personal_forms fmp
-		ON
-					fmp.id = fomp.mov_personal_form_id
+		ON		(
+						fmp.id = param_form_id
+					OR
+						fmp.id = fomp.mov_personal_form_id
+				)
 				AND
 					fmp.is_active = '1'
 				AND
@@ -2264,7 +2280,7 @@ AS $BODY$
 				par.is_deleted = '0'
 		AND
 				par.is_active = '1'
-LEFT OUTER JOIN
+	LEFT OUTER JOIN
 			process_form.process_movement_personal_form pfmp
 		ON
 				fmp.id = pfmp.movement_personal_form_id
@@ -2290,13 +2306,29 @@ LEFT OUTER JOIN
 							anx.is_active = '1'
 						AND
 							anx.is_deleted = '0'
+	LEFT OUTER JOIN
+			form_data.accountant_types act
+		ON
+				act.id = fmp.accountant_type_id
+			AND
+				act.is_active = '1'
+			AND
+				act.is_deleted = '0'
+	LEFT OUTER JOIN
+			form_data.program_types pro
+		ON
+				pro.id = fmp.progam_type_id
+			AND
+				pro.is_active = '1'
+			AND
+				pro.is_deleted = '0'
 			GROUP BY
 			fomp.id,fmp.code_form,fmp.registration_date, fomp.ubication_id,
-			fomp.mov_personal_form_id,fomp.employee_id,fmp.salary,
+			fomp.mov_personal_form_id,fomp.employee_id,fmp.salary,act.id, act.code,
 			emp.first_name,second_name,emp.surname,second_surname, mov.id,
 			nacionality,documentation,emp.identification,emp.admission_date,emp.state_id,
 			sta.name,emp.municipality_id,mun.name,emp.parish_id,par.name, emidac.id,
-			emp.ubication,emp.address,emp.housing_type,emp.housing_identifier,
+			emp.ubication,emp.address,emp.housing_type,emp.housing_identifier, pro.id, pro.code,
 			emp.apartament,dept.name,cha.name,emp.ingress_id, ing.description,emp.income_type_id,inct.description,
 			mov.description,fomp.start_date,fomp.finish_date,idac.code, fomp.official_form_id,
 			exe.description,sch.name,ins.name,coord.name,sal.dedication_type_id, fomp.dedication_id,cded.description,

@@ -4961,6 +4961,133 @@ AS $BODY$
 	)DATA;
 $BODY$;
 
+-- function get one
+CREATE OR REPLACE FUNCTION employee_data.get_employee(
+	param_id
+)
+RETURNS json
+LANGUAGE 'sql'
+COST 100.0
+
+AS $BODY$
+	SELECT ROW_TO_JSON(DATA)
+	FROM(
+		SELECT
+			emp.id,
+			emp.first_name,
+			COALESCE(emp.second_name,'') as second_name,
+			emp.surname,
+			COALESCE(emp.second_surname,'') as second_surname,
+			emp.identification,
+			emp.birth_date,
+			emp.gender_id,
+			emp.admission_date,
+			emp.email,
+			emp.nacionality_id,
+			emp.documentation_id,
+			emp.mobile_phone_number,
+			emp.local_phone_number,
+			json_build_object('id',exe.id,'description',exe.description) as execunting_unit,
+			json_build_object('id',COALESCE(idac.id,0),'code',idac.code) as idac_code,
+			json_build_object('id',COALESCE(sch.id, 0),'name', sch.name) as school,
+			json_build_object('id',COALESCE(inst.id, 0),'name', inst.name) as institute,
+			json_build_object('id',COALESCE(coord.id, 0),'name',coord.name) as coordination,
+			json_build_object('id',COALESCE(dept.id, 0),'name',dept.name) as departament,
+			json_build_object('id',COALESCE(cha.id, 0),'name',cha.name) as chair,
+			json_build_object('id',COALESCE(cded.id,0),'description',COALESCE(cded.description,'')) as dedication_type
+		FROM
+			employee_data.employees emp
+		INNER JOIN
+			employee_data.employee_idac_code emidac
+		ON
+				emp.id = param_id
+			AND
+				emidac.employee_id = emp.id
+			AND
+				emidac.is_deleted = '0'
+			INNER JOIN
+				employee_data.idac_codes idac
+			ON
+					idac.id = emidac.idac_code_id
+				AND
+					idac.is_active = '0'
+				AND
+					idac.is_deleted = '0'
+			INNER JOIN
+				employee_data.execunting_unit exe
+			ON
+						exe.id = idac.execunting_unit_id
+				AND
+						exe.is_deleted = '0'
+				AND
+						exe.is_active = '1'
+			LEFT OUTER JOIN
+				faculty_data.schools sch
+			ON
+					sch.id = emp.school_id
+			AND
+					sch.is_active = '1'
+			AND
+			 		sch.is_deleted = '0'
+			LEFT OUTER JOIN
+				faculty_data.institutes inst
+			ON
+					inst.id = emp.institute_id
+			AND
+					inst.is_active = '1'
+			AND
+			 		inst.is_deleted = '0'
+			LEFT OUTER JOIN
+				faculty_data.coordinations coord
+			ON
+					coord.id = emp.cordination_id
+			AND
+					coord.is_active = '1'
+			AND
+			 		coord.is_deleted = '0'
+			INNER JOIN
+				faculty_data.chairs cha
+			ON
+					cha.id = emp.chair_id
+				AND
+					cha.is_active = '1'
+				AND
+					cha.is_deleted = '0'
+			INNER JOIN
+				faculty_data.departaments dept
+			ON
+					dept.id = emp.departament_id
+				AND
+					dept.is_active = '1'
+				AND
+					dept.is_deleted = '0'
+			LEFT OUTER JOIN
+					employee_data.employee_salaries emsal
+				ON
+						emsal.employee_id = emp.id
+					AND
+						emsal.is_deleted = '0'
+					 LEFT OUTER JOIN
+						employee_data.salaries sal
+					ON
+							sal.id = emsal.salary_id
+						AND
+							sal.is_active = '1'
+						AND
+							sal.is_deleted = '0'
+			INNER JOIN
+				employee_data.dedication_types cded
+			ON
+						cded.id = sal.dedication_type_id
+				AND
+						cded.is_deleted = '0'
+				AND
+						cded.is_active = '1'
+	)DATA;
+$BODY$;
+
+
+
 -- function update by form movent per
 CREATE OR REPLACE FUNCTION employee_data.employee_update_for_movement_personal(
 	param_employee_id INTEGER,
