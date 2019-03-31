@@ -1,7 +1,7 @@
 # DB UCV FHE
 
 ## Prerequisites
-have installed PostgreSQL 9 or higher on the local machine with any operating system (Linux, Windows or Mac 'OS) or DOCKER CEHave installed PostgreSQL 9 or higher on the local machine or DOCKER CE
+Have installed PostgreSQL 9 or higher on the local machine with any operating system (Linux, Windows or Mac 'OS) or DOCKER CE
 
 ## Install Database and Usage
 
